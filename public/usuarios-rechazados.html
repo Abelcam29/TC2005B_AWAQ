@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Usuarios Rechazados - MAWI Admin</title>
+    <link rel="stylesheet" href="css/admin-dashboard-stats.css">
+    <link rel="stylesheet" href="css/sidebar-enhanced.css">
+    <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="css/loading.css">
+</head>
+<body data-page="usuarios-rechazados">
+    <div class="admin-app-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-logo">
+                <div class="admin-logo-icon">M</div>
+                <h1>MAWI Admin</h1>
+            </div>
+            <div class="admin-user-menu">
+                <div class="admin-user-info">
+                    <div class="admin-avatar" id="userAvatar">SA</div>
+                    <div>
+                        <div class="admin-username" id="userName">Super Admin</div>
+                        <div class="admin-user-role" id="userRole">Administrador</div>
+                    </div>
+                </div>
+                <button class="admin-btn admin-btn-secondary" onclick="logout()">
+                    <span>🚪</span> Cerrar Sesión
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar Toggle -->
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir/cerrar menú lateral">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+        </button>
+
+        <div class="admin-content-wrapper">
+            <!-- Sidebar Container -->
+            <div id="sidebar-container"></div>
+
+            <!-- Main Content -->
+            <main class="admin-main-content with-sidebar">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">❌ Usuarios Rechazados</h1>
+                        <p class="page-subtitle">Gestiona usuarios que han sido rechazados y pueden ser reactivados</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="admin-btn admin-btn-primary" onclick="loadRejectedUsers()">
+                            🔄 Actualizar Lista
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Bar -->
+                <div class="admin-action-bar">
+                    <div class="admin-action-left">
+                        <div class="admin-stats-summary">
+                            <div class="admin-stat-item">
+                                <span class="admin-stat-number" id="rejectedCount">0</span>
+                                <span class="admin-stat-label">Usuarios Rechazados</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="admin-action-right">
+                        <button class="admin-btn admin-btn-success" onclick="reactivateAllVisible()" id="reactivateAllBtn" style="display: none;">
+                            ✅ Reactivar Todos Visibles
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="admin-table-section">
+                    <div class="admin-table-container">
+                        <table class="admin-table" id="rejectedUsersTable">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Fecha Registro</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rejectedUsersTableBody">
+                                <tr>
+                                    <td colspan="6" class="admin-loading">
+                                        <div class="admin-spinner"></div>
+                                        Cargando usuarios rechazados...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="admin-empty-state" style="display: none;">
+                        <div class="admin-empty-icon">✅</div>
+                        <h3 class="admin-empty-title">No hay usuarios rechazados</h3>
+                        <p class="admin-empty-description">Todos los usuarios han sido procesados correctamente</p>
+                    </div>
+                </div>
+            </main>
+        </div>    </div>
+
+    <!-- Scripts -->
+    <script src="js/notification.js"></script>
+    <script src="js/loading.js"></script>
+    <script>
+        // Variables globales
+        let userToken = localStorage.getItem('token');
+        let rejectedUsers = [];
+
+        // Función para verificar autenticación
+        function checkAuth() {
+            if (!userToken) {
+                console.log('❌ No hay token, redirigiendo a login');
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }        // Cargar sidebar
+        async function loadSidebar() {
+            try {
+                const response = await fetch('components/admin-sidebar.html');
+                const sidebarHtml = await response.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+                
+                // Establecer elemento activo
+                const activeItem = document.querySelector('[data-page="usuarios-rechazados"]');
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+                
+                // Cargar contador de usuarios rechazados
+                loadRejectedUsersCount();
+                
+                // Inicializar sidebar enhanced después de cargar
+                if (window.SidebarManager) {
+                    const sidebarManager = new window.SidebarManager();
+                } else {
+                    // Fallback al sistema anterior
+                    setupSidebarToggle();
+                }
+            } catch (error) {
+                console.error('Error loading sidebar:', error);
+                // Fallback al sistema anterior
+                setupSidebarToggle();
+            }
+        }
+
+        // Setup sidebar toggle
+        function setupSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.admin-sidebar');
+            const mainContent = document.querySelector('.admin-main-content');
+
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', () => {
+                    const isExpanded = sidebar.classList.contains('expanded');
+                    
+                    if (isExpanded) {
+                        sidebar.classList.remove('expanded');
+                        mainContent.classList.remove('sidebar-expanded');
+                    } else {
+                        sidebar.classList.add('expanded');
+                        mainContent.classList.add('sidebar-expanded');
+                    }
+                });
+            }
+        }
+
+        // Cargar contador de usuarios rechazados
+        async function loadRejectedUsersCount() {
+            try {
+                const response = await fetch('/Consultas/api/getRechazadosCount', {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const count = data.count || 0;
+                    
+                    const countElement = document.getElementById('rejectedUsersCount');
+                    if (countElement) {
+                        countElement.textContent = count;
+                        countElement.style.display = count > 0 ? 'block' : 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading rejected users count:', error);
+            }
+        }
+
+        // Función principal para cargar usuarios rechazados
+        async function loadRejectedUsers() {
+            console.log('📋 Cargando usuarios rechazados...');
+            
+            if (!checkAuth()) return;
+
+            try {
+                const tbody = document.getElementById('rejectedUsersTableBody');
+                const emptyState = document.getElementById('emptyState');
+                const reactivateAllBtn = document.getElementById('reactivateAllBtn');
+                
+                if (!tbody) {
+                    console.error('❌ No se encontró elemento rejectedUsersTableBody');
+                    return;
+                }
+                
+                // Mostrar loading
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="admin-loading">
+                            <div class="admin-spinner"></div>
+                            Cargando usuarios rechazados...
+                        </td>
+                    </tr>
+                `;
+                
+                if (emptyState) emptyState.style.display = 'none';
+
+                console.log('🌐 Realizando petición a /Consultas/api/getUsersRechazados');
+                const response = await fetch('/Consultas/api/getUsersRechazados', {
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('📡 Respuesta recibida:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('📊 Datos recibidos:', data);
+                
+                rejectedUsers = data.records || [];
+                
+                const countElement = document.getElementById('rejectedCount');
+                if (countElement) {
+                    countElement.textContent = rejectedUsers.length;
+                }
+
+                if (rejectedUsers.length === 0) {
+                    tbody.innerHTML = '';
+                    if (emptyState) emptyState.style.display = 'block';
+                    if (reactivateAllBtn) reactivateAllBtn.style.display = 'none';
+                    console.log('ℹ️ No hay usuarios rechazados');
+                    return;
+                }
+
+                // Mostrar usuarios
+                tbody.innerHTML = rejectedUsers.map(user => `
+                    <tr id="user-${user.idUsuario}">
+                        <td>
+                            <div class="admin-user-cell">
+                                <div class="admin-avatar-sm">
+                                    ${user.Nombre ? user.Nombre.charAt(0).toUpperCase() : 'U'}
+                                </div>
+                                <div class="admin-user-info">
+                                    <div class="admin-user-name">${user.Nombre || 'Sin nombre'} ${user.Apellidos || ''}</div>
+                                    <div class="admin-user-id">ID: ${user.idUsuario}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${user.email || 'Sin email'}</td>
+                        <td>
+                            <span class="admin-badge admin-badge-info">
+                                ${getRoleText(user.rol)}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="admin-date">
+                                ${user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleDateString('es-ES') : 'Sin fecha'}
+                            </div>
+                        </td>
+                        <td>
+                            <span class="admin-badge admin-badge-danger">
+                                Rechazado
+                            </span>
+                        </td>
+                        <td>
+                            <div class="admin-actions">
+                                <button class="admin-btn admin-btn-success admin-btn-sm" onclick="reactivateUser(${user.idUsuario})">
+                                    ✅ Reactivar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+
+                if (reactivateAllBtn) reactivateAllBtn.style.display = 'inline-flex';
+                console.log(`✅ ${rejectedUsers.length} usuarios rechazados cargados exitosamente`);
+
+            } catch (error) {
+                console.error('❌ Error loading rejected users:', error);
+                const tbody = document.getElementById('rejectedUsersTableBody');
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="admin-error">
+                                ❌ Error al cargar usuarios: ${error.message}
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+        }
+
+        // Función para reactivar usuario
+        async function reactivateUser(userId) {
+            console.log(`👍 Reactivando usuario ${userId}`);
+            
+            if (!confirm('¿Estás seguro de que quieres reactivar este usuario? Será movido a la lista de pendientes.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/Consultas/api/reactivarUsuario/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${userToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('📡 Respuesta de reactivación:', response.status);
+
+                if (response.ok) {
+                    // Remover usuario de la tabla
+                    const userRow = document.getElementById(`user-${userId}`);
+                    if (userRow) {
+                        userRow.style.background = 'rgba(16, 185, 129, 0.1)';
+                        setTimeout(() => {
+                            userRow.remove();
+                            // Actualizar contador
+                            const remaining = document.querySelectorAll('#rejectedUsersTableBody tr[id^="user-"]').length;
+                            const countElement = document.getElementById('rejectedCount');
+                            if (countElement) {
+                                countElement.textContent = remaining;
+                            }
+                            
+                            if (remaining === 0) {
+                                const emptyState = document.getElementById('emptyState');
+                                const reactivateAllBtn = document.getElementById('reactivateAllBtn');
+                                if (emptyState) emptyState.style.display = 'block';
+                                if (reactivateAllBtn) reactivateAllBtn.style.display = 'none';
+                            }
+                        }, 500);
+                    }
+                    
+                    console.log(`✅ Usuario ${userId} reactivado exitosamente`);
+                    alert('Usuario reactivado exitosamente. Ahora aparece en la lista de usuarios pendientes.');
+                } else {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+            } catch (error) {
+                console.error('❌ Error reactivating user:', error);
+                alert('Error al reactivar usuario. Inténtalo de nuevo.');
+            }
+        }
+
+        // Función para reactivar todos los usuarios visibles
+        async function reactivateAllVisible() {
+            if (!confirm('¿Estás seguro de que quieres reactivar todos los usuarios rechazados? Serán movidos a la lista de pendientes.')) {
+                return;
+            }
+
+            const userRows = document.querySelectorAll('#rejectedUsersTableBody tr[id^="user-"]');
+            
+            if (userRows.length === 0) {
+                alert('No hay usuarios rechazados para reactivar');
+                return;
+            }
+
+            console.log(`📦 Reactivando ${userRows.length} usuarios en lote`);
+            
+            for (let row of userRows) {
+                const userId = row.id.split('-')[1];
+                await reactivateUser(parseInt(userId));
+                // Pequeña pausa entre reactivaciones
+                await new Promise(resolve => setTimeout(resolve, 200));
+            }
+        }
+
+        // Funciones auxiliares
+        function getRoleText(role) {
+            switch (parseInt(role)) {
+                case 1: return 'Usuario';
+                case 2: return 'Biomonitor';
+                case 3: return 'Administrador';
+                case 4: return 'Super Admin';
+                default: return 'Sin rol';
+            }
+        }
+
+        // Función para cerrar sesión
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+
+        // Inicialización cuando el DOM está listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 DOM cargado, inicializando página de usuarios rechazados');
+            
+            if (!checkAuth()) {
+                return;
+            }            loadSidebar();
+            
+            // Cargar scripts de sidebar enhanced
+            const script = document.createElement('script');
+            script.src = 'js/sidebar-enhanced.js';
+            document.head.appendChild(script);
+            
+            loadRejectedUsers();
+        });
+    </script>
+</body>
+</html>

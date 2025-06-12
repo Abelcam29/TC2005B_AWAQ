@@ -112,7 +112,7 @@
 
         // Configuration
         const AI_CONFIG = {
-            endpoint: '/Consultas/api/ai-chat', // Corregido para coincidir con el backend
+            endpoint: '/Consultas/api/ai-chat',
             systemPrompt: `Eres un asistente especializado en biodiversidad y ecosistemas (Biomo). 
             Ayudas a los usuarios a entender y analizar su información de biodiversidad. 
             Responde de manera clara, técnica pero accesible, y siempre enfócate en temas relacionados con:
@@ -123,16 +123,34 @@
             - Proyectos de investigación en biodiversidad`
         };
 
-        let conversationHistory = [];
+        // --- Persistencia con localStorage ---
+        const STORAGE_KEY = 'biomo_chat_history';
+        let conversationHistory = loadHistory();
+
+        function saveHistory() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(conversationHistory));
+        }
+        function loadHistory() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            return saved ? JSON.parse(saved) : [];
+        }
+        function renderHistory() {
+            chatMessages.innerHTML = '';
+            if (conversationHistory.length === 0) {
+                addMessage('Hola, soy tu asistente de Biomo. ¿En qué puedo ayudarte hoy?', false);
+                return;
+            }
+            conversationHistory.forEach(msg => {
+                addMessage(msg.content, msg.role === 'user');
+            });
+        }
 
         function addMessage(content, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            
             const messageP = document.createElement('p');
             messageP.textContent = content;
             messageDiv.appendChild(messageP);
-            
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -148,14 +166,10 @@
 
         async function sendMessage(message) {
             if (!message.trim()) return;
-
-            // Add user message
             addMessage(message, true);
             conversationHistory.push({ role: 'user', content: message });
-
-            // Show typing indicator
+            saveHistory();
             const typingIndicator = showTypingIndicator();
-
             try {
                 const response = await fetch(AI_CONFIG.endpoint, {
                     method: 'POST',
@@ -167,23 +181,18 @@
                         systemPrompt: AI_CONFIG.systemPrompt
                     })
                 });
-
-                // Remove typing indicator
                 typingIndicator.remove();
-
                 if (!response.ok) {
                     throw new Error(`Error: ${response.status}`);
                 }
-
                 const data = await response.json();
-                
                 if (data.success && data.response) {
                     addMessage(data.response, false);
                     conversationHistory.push({ role: 'assistant', content: data.response });
+                    saveHistory();
                 } else {
                     throw new Error(data.error || 'Error desconocido');
                 }
-
             } catch (error) {
                 console.error('Error sending message:', error);
                 typingIndicator.remove();
@@ -201,13 +210,15 @@
 
         // Event listeners
         sendButton.addEventListener('click', handleSend);
-        
         chatInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 handleSend();
             }
         });
+
+        // Render historial al cargar
+        renderHistory();
 
         // Focus on input when page loads
         document.addEventListener('DOMContentLoaded', function() {

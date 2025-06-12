@@ -2,12 +2,17 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Super Admin - MAWI</title>
-    <link rel="stylesheet" href="css/admin-styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Super Admin - MAWI</title>
+    <link rel="stylesheet" href="css/admin-dashboard-stats.css">
+    <link rel="stylesheet" href="css/sidebar-styles.css">
+    <link rel="stylesheet" href="css/sidebar-enhanced.css">
+    <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <!-- Chart.js para gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-    <div class="admin-container">
+<body data-page="super-admin">
+    <div class="admin-app-container">
         <!-- Header -->
         <header class="admin-header">
             <div class="admin-logo">
@@ -18,220 +23,324 @@
                 <div class="admin-user-info">
                     <div class="admin-avatar" id="userAvatar">SA</div>
                     <div>
-                        <div style="font-weight: 600;" id="userName">Super Admin</div>
-                        <div style="font-size: 0.875rem; color: var(--admin-text-secondary);" id="userEmail">admin@mawi.com</div>
+                        <div class="admin-username" id="userName">Super Admin</div>
+                        <div class="admin-user-role" id="userRole">Sistema</div>
                     </div>
                 </div>
-                <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="logout()">
+                <button class="admin-btn admin-btn-secondary" onclick="logout()">
                     <span>🚪</span> Cerrar Sesión
                 </button>
             </div>
-        </header>        <!-- Navigation -->
-        <nav class="admin-nav">
-            <ul>
-                <li><a href="indexSAdmin.html" class="active">
-                    <span>📊</span> Dashboard
-                </a></li>
-                <li><a href="dashboard.html">
-                    <span>🏠</span> Dashboard MAWI
-                </a></li>
-                <li><a href="SAaceptarusuarios.html">
-                    <span>👥</span> Usuarios Pendientes
-                </a></li>
-                <li><a href="AdmUpReguser.html">
-                    <span>⚙️</span> Gestión de Usuarios
-                </a></li>
-            </ul>
-        </nav>        <!-- Main Content -->
-        <main class="admin-content">
-            <div class="admin-page-header">
-                <h1 class="admin-page-title">Panel de Control Super Admin</h1>
-                <p class="admin-page-subtitle">Administra usuarios, permisos y configuraciones del sistema MAWI</p>
-            </div>
+        </header>
 
-            <!-- Statistics Cards -->
-            <div class="admin-cards-grid">
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div class="admin-card-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white;">
-                            👥
-                        </div>
-                        <h3 class="admin-card-title">Usuarios Pendientes</h3>
-                    </div>
-                    <p class="admin-card-description">Usuarios registrados esperando aprobación</p>
-                    <div class="admin-card-stats">
-                        <div class="admin-stat">
-                            <span class="admin-stat-value" id="pendingUsersCount">-</span>
-                            <span class="admin-stat-label">Pendientes</span>
-                        </div>
-                        <a href="SAaceptarusuarios.html" class="admin-btn admin-btn-primary admin-btn-sm">
-                            Ver Todos
-                        </a>
-                    </div>
-                </div>
+        <!-- Sidebar Toggle -->
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir/cerrar menú lateral">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+        </button>
 
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div class="admin-card-icon" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
-                            ✅
-                        </div>
-                        <h3 class="admin-card-title">Usuarios Activos</h3>
-                    </div>
-                    <p class="admin-card-description">Usuarios aprobados y activos en el sistema</p>
-                    <div class="admin-card-stats">
-                        <div class="admin-stat">
-                            <span class="admin-stat-value" id="activeUsersCount">-</span>
-                            <span class="admin-stat-label">Activos</span>
-                        </div>
-                        <a href="AdmUpReguser.html" class="admin-btn admin-btn-primary admin-btn-sm">
-                            Gestionar
-                        </a>
-                    </div>
-                </div>
+        <div class="admin-content-wrapper">
+            <!-- Sidebar Container -->
+            <div id="sidebar-container"></div>
 
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div class="admin-card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
-                            📋
-                        </div>
-                        <h3 class="admin-card-title">Total Registros</h3>
+            <!-- Main Content -->
+            <main class="admin-main-content">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">🔧 Panel Super Admin</h1>
+                        <p class="page-subtitle">Control total del sistema MAWI</p>
                     </div>
-                    <p class="admin-card-description">Cantidad total de registros en el sistema</p>
-                    <div class="admin-card-stats">
-                        <div class="admin-stat">
-                            <span class="admin-stat-value" id="totalRecordsCount">-</span>
-                            <span class="admin-stat-label">Registros</span>
-                        </div>
-                        <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="refreshStats()">
+                    <div class="page-actions">
+                        <button class="admin-btn admin-btn-outline" onclick="refreshSystemStats()">
                             🔄 Actualizar
                         </button>
+                        <button class="admin-btn admin-btn-primary" onclick="goToDashboard()">
+                            📊 Dashboard
+                        </button>
+                    </div>
+                </div>                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Usuarios Totales</h3>
+                            <p class="stat-value" id="totalUsers">0</p>
+                            <p class="stat-change" id="usersChange">Cargando...</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Usuarios Pendientes</h3>
+                            <p class="stat-value" id="pendingUsers">0</p>
+                            <p class="stat-change" id="pendingChange">Requieren aprobación</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">❌</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Usuarios Rechazados</h3>
+                            <p class="stat-value" id="rejectedUsers">0</p>
+                            <p class="stat-change" id="rejectedChange">Para revisar</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">🌿</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Biomonitoreos</h3>
+                            <p class="stat-value" id="totalBiomonitoreos">0</p>
+                            <p class="stat-change" id="biomonitoreoChange">Total registrados</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="admin-card">
-                    <div class="admin-card-header">
-                        <div class="admin-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">
-                            ⚙️
+                <!-- Management Modules -->
+                <div class="modules-grid">
+                    <!-- User Management -->
+                    <div class="module-card primary">
+                        <div class="module-header">
+                            <div class="module-icon">👥</div>
+                            <div>
+                                <h3 class="module-title">Gestión de Usuarios</h3>
+                                <p class="module-description">Administrar usuarios del sistema</p>
+                            </div>
                         </div>
-                        <h3 class="admin-card-title">Configuración</h3>
+                        <div class="module-content">
+                            <div class="module-stats">
+                                <div class="module-stat">
+                                    <span class="stat-number" id="pendingCount">0</span>
+                                    <span class="stat-label">Pendientes</span>
+                                </div>
+                                <div class="module-stat">
+                                    <span class="stat-number" id="rejectedCount">0</span>
+                                    <span class="stat-label">Rechazados</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <a href="SAaceptarusuarios.html" class="admin-btn admin-btn-primary">
+                                Gestionar Pendientes
+                            </a>
+                            <a href="usuarios-rechazados.html" class="admin-btn admin-btn-outline">
+                                Ver Rechazados
+                            </a>
+                        </div>
                     </div>
-                    <p class="admin-card-description">Acceso rápido a configuraciones del sistema</p>
-                    <div class="admin-card-stats">
-                        <div class="admin-flex admin-gap-2">
-                            <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="exportData()">
-                                📤 Exportar
+
+                    <!-- System Analytics -->
+                    <div class="module-card secondary">
+                        <div class="module-header">
+                            <div class="module-icon">📊</div>
+                            <div>
+                                <h3 class="module-title">Análisis del Sistema</h3>
+                                <p class="module-description">Estadísticas y métricas avanzadas</p>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="module-stats">
+                                <div class="module-stat">
+                                    <span class="stat-number" id="activeUsers">0</span>
+                                    <span class="stat-label">Activos</span>
+                                </div>
+                                <div class="module-stat">
+                                    <span class="stat-number" id="systemUptime">99%</span>
+                                    <span class="stat-label">Uptime</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <a href="dashboard-stats.html" class="admin-btn admin-btn-primary">
+                                Ver Dashboard
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- System Settings -->
+                    <div class="module-card accent">
+                        <div class="module-header">
+                            <div class="module-icon">⚙️</div>
+                            <div>
+                                <h3 class="module-title">Configuración</h3>
+                                <p class="module-description">Ajustes del sistema</p>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="module-stats">
+                                <div class="module-stat">
+                                    <span class="stat-number">🔧</span>
+                                    <span class="stat-label">Sistema</span>
+                                </div>
+                                <div class="module-stat">
+                                    <span class="stat-number">🛡️</span>
+                                    <span class="stat-label">Seguridad</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <button class="admin-btn admin-btn-outline" onclick="showSystemSettings()">
+                                Configurar
                             </button>
-                            <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="viewLogs()">
-                                📝 Logs
-                            </button>
+                        </div>
+                    </div>
+
+                    <!-- MAWI Platform -->
+                    <div class="module-card success">
+                        <div class="module-header">
+                            <div class="module-icon">🌿</div>
+                            <div>
+                                <h3 class="module-title">Plataforma MAWI</h3>
+                                <p class="module-description">Acceso a la plataforma principal</p>
+                            </div>
+                        </div>
+                        <div class="module-content">
+                            <div class="module-stats">
+                                <div class="module-stat">
+                                    <span class="stat-number" id="totalProjectsCount">0</span>
+                                    <span class="stat-label">Proyectos</span>
+                                </div>
+                                <div class="module-stat">
+                                    <span class="stat-number" id="totalSpeciesCount">0</span>
+                                    <span class="stat-label">Especies</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <a href="dashboard.html" class="admin-btn admin-btn-primary">
+                                Ir a MAWI
+                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
-    </div>    <script>
-        // Variables globales
-        let userToken = localStorage.getItem('token');
-        
-        // Función para cargar estadísticas
-        async function loadStatistics() {
-            try {
-                if (!userToken) {
-                    console.error('No token found');
-                    window.location.href = 'login.html';
-                    return;
-                }
-
-                // Cargar usuarios pendientes
-                const pendingResponse = await fetch('/Consultas/api/listpendientes', {
-                    headers: {
-                        'Authorization': `Bearer ${userToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (pendingResponse.ok) {
-                    const pendingData = await pendingResponse.json();
-                    document.getElementById('pendingUsersCount').textContent = pendingData.count || 0;
-                }
-
-                // Cargar usuarios activos
-                const usersResponse = await fetch('/Consultas/api/usuariosActivos', {
-                    headers: {
-                        'Authorization': `Bearer ${userToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (usersResponse.ok) {
-                    const usersData = await usersResponse.json();
-                    document.getElementById('activeUsersCount').textContent = usersData.count || 0;  
-                }
-                // Calcular total de registros
-                const totalRecords = await fetch('/Consultas/api/totalRegistros', {
-                    headers: {
-                        'Authorization': `Bearer ${userToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-                if( totalRecords.ok) {
-                    const totalRecordsData = await totalRecords.json();
-                    document.getElementById('totalRecordsCount').textContent = totalRecordsData.count || 0;
-                } else {
-                    document.getElementById('totalRecordsCount').textContent = 'Error';
-                }
-
-            } catch (error) {
-                console.error('Error loading statistics:', error);
-                document.getElementById('pendingUsersCount').textContent = 'Error';
-                document.getElementById('activeUsersCount').textContent = 'Error';
-                document.getElementById('totalRecordsCount').textContent = 'Error';
-            }
-        }
-
-        // Función para actualizar estadísticas
-        function refreshStats() {
-            document.getElementById('pendingUsersCount').textContent = '-';
-            document.getElementById('activeUsersCount').textContent = '-';
-            document.getElementById('totalRecordsCount').textContent = '-';
-            loadStatistics();
-        }
-
-        // Función para cerrar sesión
+            </main>
+        </div>
+    </div>    <!-- Scripts -->
+    <script src="js/notification.js"></script>
+    <script src="js/loading.js"></script>
+    <script src="js/sidebar-enhanced.js"></script>
+    <script src="js/admin-super-admin-clean.js"></script>
+    <script>
+        // Logout function
         function logout() {
             localStorage.removeItem('token');
-            window.location.href = 'login.html';
-        }
-
-        // Funciones placeholder para acciones rápidas
-        function exportData() {
-            alert('Función de exportación en desarrollo');
-        }
-
-        function viewLogs() {
-            alert('Visor de logs en desarrollo');
-        }
-
-        function generateReport() {
-            alert('Generador de reportes en desarrollo');
-        }
-
-        function systemMaintenance() {
-            alert('Panel de mantenimiento en desarrollo');
-        }
-
-        // Inicializar página
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verificar autenticación
-            if (!userToken) {
+            localStorage.removeItem('userData');
+            showInfo('Cerrando sesión...', 2000);
+            setTimeout(() => {
                 window.location.href = 'login.html';
-                return;
+            }, 1500);
+        }
+
+        // Navigate to dashboard
+        function goToDashboard() {
+            showLoading('Cargando dashboard...');
+            setTimeout(() => {
+                window.location.href = 'dashboard-stats.html';
+            }, 1000);
+        }
+
+        // Refresh system stats
+        function refreshSystemStats() {
+            const loadingId = showLoading('Actualizando estadísticas del sistema...');
+            
+            setTimeout(() => {
+                try {
+                    loadSystemStats();
+                    hideNotification(loadingId);
+                    showSuccess('Estadísticas actualizadas correctamente');
+                } catch (error) {
+                    hideNotification(loadingId);
+                    showError('Error al actualizar estadísticas');
+                }
+            }, 2000);
+        }
+
+        // Show system settings using notification system
+        async function showSystemSettings() {
+            const confirmed = await confirmAction(
+                'Acceder a la configuración avanzada del sistema?\n\nEsto incluye configuraciones críticas que pueden afectar el funcionamiento.',
+                'Configuración del Sistema'
+            );
+            
+            if (confirmed) {
+                showInfo('🔧 Configuración del Sistema\n\nFuncionalidad en desarrollo.\n\nIncluirá:\n• Configuración de base de datos\n• Parámetros del sistema\n• Configuración de seguridad', 6000);
             }
+        }
 
-            // Cargar estadísticas
-            loadStatistics();
+        // Show support dialog with notification system
+        function showSupport() {
+            showInfo('💬 Soporte Técnico\n\nPara obtener ayuda técnica:\n📧 Email: soporte@mawi.com\n📞 Teléfono: +52 (55) 1234-5678\n\nHorarios de atención:\nLunes a Viernes: 9:00 AM - 6:00 PM', 8000);
+        }
 
-            // Actualizar información del usuario si está disponible
+        // Show system logs
+        async function showSystemLogs() {
+            const loadingId = showLoading('Accediendo a logs del sistema...');
+            
+            setTimeout(() => {
+                hideNotification(loadingId);
+                showInfo('📄 Logs del Sistema\n\nVisor de logs en tiempo real.\nFuncionalidad en desarrollo.\n\nIncluirá:\n• Logs en tiempo real\n• Filtros por nivel\n• Exportación de logs\n• Alertas automáticas', 8000);
+            }, 1500);
+        }
+
+        // Show backups management
+        async function showBackups() {
+            const confirmed = await confirmAction(
+                'Acceder a la gestión de respaldos?\n\nEsta función maneja los respaldos críticos del sistema.',
+                'Gestión de Respaldos'
+            );
+            
+            if (confirmed) {
+                const loadingId = showLoading('Verificando estado de respaldos...');
+                
+                setTimeout(() => {
+                    hideNotification(loadingId);
+                    showInfo('💾 Gestión de Respaldos\n\nFuncionalidad en desarrollo.\n\nIncluirá:\n• Respaldos automáticos\n• Respaldos manuales\n• Restauración desde respaldos\n• Programación de respaldos\n• Verificación de integridad', 10000);
+                }, 2000);
+            }        }
+
+        // Show system settings (placeholder)
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Inicializando Super Admin Dashboard...');
+            
+            // Verificar token de autenticación
+            let token = localStorage.getItem('token');
+            
+            // Token temporal para pruebas (eliminar en producción)
+            if (!token) {
+                console.log('⚠️ No token found, usando token temporal para pruebas');
+                token = 'temp-token-for-testing';
+                localStorage.setItem('token', token);
+            }
+            
+            console.log('🔑 Token disponible:', !!token);
+            
+            // Cargar sidebar primero
+            loadSidebar().then(() => {
+                console.log('✅ Sidebar cargado correctamente');
+            }).catch(error => {
+                console.error('❌ Error cargando sidebar:', error);
+                showError('Error al cargar el menú lateral');
+            });
+            
+            // Mostrar mensaje de bienvenida
+            setTimeout(() => {
+                showSuccess('Panel Super Admin cargado correctamente', 3000);
+            }, 1500);
+            
+            // Inicializar dashboard después de un breve delay
+            setTimeout(() => {
+                try {
+                    initializeSuperAdminDashboard();
+                    console.log('✅ Dashboard inicializado');
+                } catch (error) {
+                    console.error('❌ Error inicializando dashboard:', error);
+                }
+            }, 500);
+            
+            // Cargar información del usuario si está disponible
             const userData = localStorage.getItem('userData');
             if (userData) {
                 try {
@@ -240,13 +349,194 @@
                         document.getElementById('userName').textContent = user.name;
                         document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
                     }
-                    if (user.email) {
-                        document.getElementById('userEmail').textContent = user.email;
-                    }
                 } catch (e) {
                     console.warn('Error parsing user data:', e);
                 }
             }
+        });        // Función para cargar sidebar
+        async function loadSidebar() {
+            console.log('🔄 Iniciando carga de sidebar...');
+            
+            try {
+                console.log('📡 Haciendo fetch a components/admin-sidebar.html');
+                const response = await fetch('components/admin-sidebar.html');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+                }
+                
+                console.log('✅ Respuesta recibida, obteniendo HTML...');
+                const sidebarHtml = await response.text();
+                
+                console.log('📄 HTML obtenido, tamaño:', sidebarHtml.length, 'caracteres');
+                
+                const sidebarContainer = document.getElementById('sidebar-container');
+                console.log('🔍 Sidebar container encontrado:', !!sidebarContainer);
+                
+                if (sidebarContainer) {
+                    sidebarContainer.innerHTML = sidebarHtml;
+                    console.log('✅ Sidebar HTML insertado en container');
+                    
+                    // Verificar que la sidebar se insertó correctamente
+                    const insertedSidebar = document.querySelector('.admin-sidebar');
+                    console.log('🔍 Sidebar elemento encontrado después de inserción:', !!insertedSidebar);
+                      // Activar la sidebar usando el sistema enhanced
+                    if (insertedSidebar) {
+                        // Asegurar que el sistema de sidebar detecte el nuevo elemento
+                        if (typeof sidebarSystem !== 'undefined') {
+                            console.log('🔧 Registrando sidebar con el sistema enhanced');
+                            sidebarSystem.registerSidebar(insertedSidebar);
+                            
+                            // Forzar estado expandido inicialmente para páginas de admin
+                            sidebarSystem.open();
+                            console.log('✅ Sidebar forzada a estado expandido');
+                        } else {
+                            console.log('⚠️ Sistema de sidebar no disponible, aplicando clases manualmente');
+                            // Fallback: aplicar clases manualmente
+                            insertedSidebar.classList.add('sidebar-expanded');
+                            insertedSidebar.classList.remove('sidebar-collapsed');
+                        }
+                    }
+                      // Disparar evento para que otros sistemas sepan que la sidebar está lista
+                    document.dispatchEvent(new CustomEvent('sidebarLoaded'));
+                    console.log('📢 Evento sidebarLoaded disparado');
+                    
+                    // Forzar el registro y apertura de la sidebar con el sistema enhanced
+                    setTimeout(() => {
+                        try {
+                            if (typeof sidebarSystem !== 'undefined') {
+                                console.log('🔧 Registrando sidebar con sistema enhanced...');
+                                
+                                // Encontrar y registrar la sidebar
+                                const sidebar = document.querySelector('.admin-sidebar');
+                                const toggleBtn = document.querySelector('.sidebar-toggle');
+                                
+                                if (sidebar) {
+                                    sidebarSystem.registerSidebar(sidebar);
+                                    console.log('✅ Sidebar registrada');
+                                }
+                                
+                                if (toggleBtn) {
+                                    sidebarSystem.registerToggleButton(toggleBtn);
+                                    console.log('✅ Toggle button registrado');
+                                }
+                                
+                                // Forzar apertura de la sidebar
+                                sidebarSystem.open();
+                                console.log('✅ Sidebar abierta automáticamente');
+                                
+                            } else {
+                                console.warn('⚠️ sidebarSystem no está disponible');
+                                // Fallback: abrir manualmente con clase CSS
+                                const sidebar = document.querySelector('.admin-sidebar');
+                                if (sidebar) {
+                                    sidebar.classList.add('sidebar-expanded');
+                                    console.log('✅ Sidebar abierta con fallback CSS');
+                                }
+                            }
+                        } catch (error) {
+                            console.error('❌ Error registrando sidebar:', error);
+                            // Fallback: abrir manualmente
+                            const sidebar = document.querySelector('.admin-sidebar');
+                            if (sidebar) {
+                                sidebar.classList.add('sidebar-expanded');
+                                console.log('✅ Sidebar abierta con fallback después de error');
+                            }
+                        }
+                    }, 200);
+                    
+                    return true;
+                } else {
+                    throw new Error('Sidebar container (#sidebar-container) not found in DOM');
+                }
+            } catch (error) {
+                console.error('❌ Error loading sidebar:', error);
+                console.error('Error details:', {
+                    message: error.message,
+                    stack: error.stack
+                });
+                
+                // Intentar mostrar error usando el sistema de notificaciones si está disponible
+                if (typeof showError === 'function') {
+                    showError('Error al cargar el menú lateral: ' + error.message);
+                } else {
+                    console.log('⚠️ Sistema de notificaciones no disponible para mostrar error');
+                }
+                
+                return false;
+            }
+        }
+    </script>
+    
+    <!-- Script adicional para forzar el layout correcto -->
+    <script>        // Asegurar que el layout se ajuste correctamente después de cargar todo
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const mainContent = document.querySelector('.admin-main-content');
+                const header = document.querySelector('.admin-header');
+                const sidebar = document.querySelector('.admin-sidebar');
+                
+                if (mainContent && sidebar) {
+                    // En desktop, determinar el estado correcto
+                    if (window.innerWidth > 1024) {
+                        const sidebarState = localStorage.getItem('mawi_sidebar_state') || 'expanded';
+                        
+                        if (sidebarState === 'expanded') {
+                            sidebar.classList.add('sidebar-expanded');
+                            sidebar.classList.remove('sidebar-collapsed', 'collapsed');
+                            mainContent.classList.add('sidebar-expanded');
+                            mainContent.classList.remove('sidebar-collapsed');
+                            if (header) {
+                                header.classList.add('sidebar-expanded');
+                                header.classList.remove('sidebar-collapsed');
+                            }
+                            console.log('✅ Layout ajustado: Sidebar expandida por defecto');
+                        } else {
+                            sidebar.classList.add('sidebar-collapsed');
+                            sidebar.classList.remove('sidebar-expanded');
+                            sidebar.classList.add('collapsed');
+                            mainContent.classList.add('sidebar-collapsed');
+                            mainContent.classList.remove('sidebar-expanded');
+                            if (header) {
+                                header.classList.add('sidebar-collapsed');
+                                header.classList.remove('sidebar-expanded');
+                            }
+                            console.log('✅ Layout ajustado: Sidebar colapsada');
+                        }
+                    } else {
+                        // En mobile, siempre colapsada
+                        sidebar.classList.add('sidebar-collapsed', 'collapsed');
+                        sidebar.classList.remove('sidebar-expanded');
+                        mainContent.classList.remove('sidebar-expanded', 'sidebar-collapsed');
+                        if (header) {
+                            header.classList.remove('sidebar-expanded', 'sidebar-collapsed');
+                        }
+                    }
+                }
+                
+                // Escuchar cambios en la sidebar
+                window.addEventListener('sidebarOpened', () => {
+                    if (mainContent && window.innerWidth > 1024) {
+                        mainContent.classList.add('sidebar-expanded');
+                        mainContent.classList.remove('sidebar-collapsed');
+                        if (header) {
+                            header.classList.add('sidebar-expanded');
+                            header.classList.remove('sidebar-collapsed');
+                        }
+                    }
+                });
+                
+                window.addEventListener('sidebarClosed', () => {
+                    if (mainContent && window.innerWidth > 1024) {
+                        mainContent.classList.add('sidebar-collapsed');
+                        mainContent.classList.remove('sidebar-expanded');
+                        if (header) {
+                            header.classList.add('sidebar-collapsed');
+                            header.classList.remove('sidebar-expanded');
+                        }
+                    }
+                });
+            }, 1000); // Esperar a que todo se cargue
         });
     </script>
 </body>

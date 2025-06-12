@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Estadísticas - MAWI Super Admin</title>
+    <link rel="stylesheet" href="css/admin-dashboard-stats.css">
+    <link rel="stylesheet" href="css/sidebar-styles.css">
+    <!-- Chart.js para gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+</head>
+<body data-page="dashboard-stats">
+    <div class="admin-app-container">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-logo">
+                <div class="admin-logo-icon">M</div>
+                <h1>MAWI Dashboard</h1>
+            </div>
+            <div class="admin-user-menu">
+                <div class="admin-user-info">
+                    <div class="admin-avatar" id="userAvatar">SA</div>
+                    <div>
+                        <div class="admin-username" id="userName">Super Admin</div>
+                        <div class="admin-user-role" id="userRole">Administrador del Sistema</div>
+                    </div>
+                </div>
+                <button class="admin-btn admin-btn-secondary" onclick="logout()">
+                    <span>🚪</span> Cerrar Sesión
+                </button>
+            </div>
+        </header>
+
+        <!-- Sidebar Toggle -->
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir/cerrar menú lateral">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+        </button>
+
+        <div class="admin-content-wrapper">
+            <!-- Sidebar Container -->
+            <div id="sidebar-container"></div>
+
+            <!-- Main Content -->
+            <main class="admin-main-content">
+                <!-- Loading Indicator -->
+                <div id="loadingIndicator" class="loading-indicator">
+                    <div class="loading-spinner"></div>
+                    <p>Cargando estadísticas...</p>
+                </div>
+
+                <!-- Dashboard Content -->
+                <div id="dashboardContent" class="dashboard-content" style="display: none;">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1 class="page-title">📊 Dashboard de Estadísticas</h1>
+                        <p class="page-subtitle">Análisis y métricas del sistema MAWI</p>
+                        <div class="page-actions">
+                            <button class="admin-btn admin-btn-primary" onclick="refreshStats()">
+                                🔄 Actualizar
+                            </button>
+                            <button class="admin-btn admin-btn-secondary" onclick="exportStats()">
+                                📥 Exportar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <h3 class="stat-title">Usuarios Activos</h3>
+                                <p class="stat-value" id="totalUsuarios">0</p>
+                                <p class="stat-change">+12% este mes</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">🌿</div>
+                            <div class="stat-content">
+                                <h3 class="stat-title">Biomonitoreos</h3>
+                                <p class="stat-value" id="totalBiomos">0</p>
+                                <p class="stat-change">+8% este mes</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">📋</div>
+                            <div class="stat-content">
+                                <h3 class="stat-title">Anteproyectos</h3>
+                                <p class="stat-value" id="totalProyectos">0</p>
+                                <p class="stat-change">+15% este mes</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">🔬</div>
+                            <div class="stat-content">
+                                <h3 class="stat-title">Especies Registradas</h3>
+                                <p class="stat-value" id="totalEspecies">0</p>
+                                <p class="stat-change">+20% este mes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-grid">
+                        <!-- Users Chart -->
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>👥 Distribución de Usuarios por Rol</h3>
+                                <div class="chart-actions">
+                                    <button class="chart-btn" onclick="toggleChartType('usersChart')">📊</button>
+                                </div>
+                            </div>
+                            <div class="chart-content">
+                                <canvas id="usersChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Projects Chart -->
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>📋 Estado de Anteproyectos</h3>
+                                <div class="chart-actions">
+                                    <button class="chart-btn" onclick="toggleChartType('projectsChart')">📊</button>
+                                </div>
+                            </div>
+                            <div class="chart-content">
+                                <canvas id="projectsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Species Chart -->
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <h3>🔬 Especies por Reino</h3>
+                                <div class="chart-actions">
+                                    <button class="chart-btn" onclick="toggleChartType('speciesChart')">📊</button>
+                                </div>
+                            </div>
+                            <div class="chart-content">
+                                <canvas id="speciesChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Activity Timeline -->
+                        <div class="chart-container full-width">
+                            <div class="chart-header">
+                                <h3>📈 Actividad del Sistema</h3>
+                                <div class="chart-actions">
+                                    <select id="timeRangeSelect" onchange="updateTimelineChart()">
+                                        <option value="7d">Últimos 7 días</option>
+                                        <option value="30d">Últimos 30 días</option>
+                                        <option value="12m" selected>Últimos 12 meses</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="chart-content">
+                                <canvas id="timelineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="activity-section">
+                        <div class="section-header">
+                            <h3>🔄 Actividad Reciente</h3>
+                            <button class="admin-btn admin-btn-outline" onclick="loadRecentActivity()">
+                                Actualizar
+                            </button>
+                        </div>
+                        <div class="activity-feed" id="activityFeed">
+                            <!-- Activity items will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>    <!-- Scripts -->
+    <script src="js/admin-dashboard-stats.js"></script>
+    <script>
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+        });
+    </script>
+</body>
+</html>

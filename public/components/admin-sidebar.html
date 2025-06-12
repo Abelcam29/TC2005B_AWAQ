@@ -1,0 +1,408 @@
+<!-- Sidebar Component para Administradores - Tema Naranja -->
+<aside class="sidebar admin-sidebar" id="sidebar">  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">M</div>
+      <span class="sidebar-text">MAWI Super Admin</span>
+    </div>
+  </div>    <nav class="sidebar-nav">
+    <!-- Dashboard Principal -->
+    <div class="sidebar-section">
+      <h4 class="sidebar-section-title">Dashboard</h4>
+      <a href="indexSAdmin.html" class="sidebar-item" data-page="super-admin">
+        <span class="sidebar-icon">🔧</span>
+        <span class="sidebar-text">Panel Super Admin</span>
+      </a>
+      <a href="dashboard.html" class="sidebar-item" data-page="dashboard">
+        <span class="sidebar-icon">🏠</span>
+        <span class="sidebar-text">Dashboard MAWI</span>
+      </a>
+      <a href="dashboard-stats.html" class="sidebar-item" data-page="dashboard-stats">
+        <span class="sidebar-icon">📊</span>
+        <span class="sidebar-text">Estadísticas</span>
+      </a>
+    </div>
+
+    <!-- Gestión de Usuarios -->
+    <div class="sidebar-section">
+      <h4 class="sidebar-section-title">Gestión de Usuarios</h4>
+      <a href="SAaceptarusuarios.html" class="sidebar-item" data-page="usuarios-pendientes">
+        <span class="sidebar-icon">⏳</span>
+        <span class="sidebar-text">Usuarios Pendientes</span>
+        <span class="sidebar-badge" id="pendingUsersCount">0</span>
+      </a>
+      <a href="AdmUpReguser.html" class="sidebar-item" data-page="gestion-usuarios">
+        <span class="sidebar-icon">⚙️</span>
+        <span class="sidebar-text">Gestionar Usuarios</span>
+      </a>
+      <a href="usuarios-rechazados.html" class="sidebar-item" data-page="usuarios-rechazados">
+        <span class="sidebar-icon">❌</span>
+        <span class="sidebar-text">Usuarios Rechazados</span>
+        <span class="sidebar-badge" id="rejectedUsersCount">0</span>
+      </a>
+    </div>
+
+    <!-- Administración del Sistema -->
+    <div class="sidebar-section">
+      <h4 class="sidebar-section-title">Sistema</h4>
+      <a href="#" class="sidebar-item" data-page="configuracion" onclick="showSystemSettings()">
+        <span class="sidebar-icon">⚙️</span>
+        <span class="sidebar-text">Configuración</span>
+      </a>
+      <a href="#" class="sidebar-item" data-page="logs" onclick="showSystemLogs()">
+        <span class="sidebar-icon">📄</span>
+        <span class="sidebar-text">Logs del Sistema</span>
+      </a>
+      <a href="#" class="sidebar-item" data-page="backups" onclick="showBackups()">
+        <span class="sidebar-icon">💾</span>
+        <span class="sidebar-text">Respaldos</span>
+      </a>
+    </div>  </nav>
+  
+  <div class="sidebar-footer">
+    <a href="#" class="support-link" onclick="showSupport()">
+      <span class="sidebar-icon">💬</span>
+      <span class="sidebar-text">Soporte Técnico</span>
+    </a>
+    
+    <div class="sidebar-version">
+      <span class="sidebar-text">MAWI v2.0.0</span>
+    </div>
+    
+    <div class="sidebar-divider"></div>
+    
+    <a href="#" class="sidebar-logout" onclick="logout()">
+      <span class="sidebar-icon">🚪</span>
+      <span class="sidebar-text">Cerrar Sesión</span>
+    </a>
+  </div>
+</aside>
+
+<style>
+/* Estilos específicos para sidebar de admin */
+.admin-sidebar {
+  background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+  width: 280px;
+  border-right: 1px solid #444;
+  --sidebar-primary: #FF6B35;
+  --sidebar-primary-dark: #E55A2B;
+  --sidebar-accent: #FFB84D;
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #444;
+  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-primary-dark) 100%);
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-logo-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+
+.sidebar-logo .sidebar-text {
+  color: white;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-section-title {
+  padding: 0.75rem 1.5rem 0.5rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  border-bottom: 1px solid #333;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.75rem 1.5rem;
+  color: #ccc;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+  position: relative;
+}
+
+.sidebar-item:hover {
+  background: rgba(255, 107, 53, 0.1);
+  color: var(--sidebar-primary);
+  border-left-color: var(--sidebar-primary);
+}
+
+.sidebar-item.active {
+  background: rgba(255, 107, 53, 0.15);
+  color: var(--sidebar-primary);
+  border-left-color: var(--sidebar-primary);
+  font-weight: 500;
+}
+
+.sidebar-icon {
+  font-size: 1.125rem;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.sidebar-text {
+  font-size: 0.875rem;
+  flex: 1;
+}
+
+.sidebar-badge {
+  background: var(--sidebar-primary);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 1rem;
+  border-top: 1px solid #444;
+}
+
+.sidebar-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0.75rem;
+  background: rgba(255, 107, 53, 0.1);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.sidebar-user-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-primary-dark) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.sidebar-username {
+  color: white;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.sidebar-user-role {
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.support-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem;
+  color: #888;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+
+.support-link:hover {
+  color: var(--sidebar-primary);
+}
+
+.sidebar-version {
+  text-align: center;
+  color: #666;
+  font-size: 0.75rem;
+  padding: 0.5rem;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: #444;
+  margin: 0.5rem 0;
+}
+
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.5rem;
+  color: #ff6b6b;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 107, 107, 0.1);
+  color: #ff5252;
+  transform: translateX(2px);
+}
+</style>
+
+<script>
+// Script para manejar la sidebar de administrador
+(function() {
+  'use strict';
+
+  // Función para marcar el elemento activo en la sidebar
+  function setActiveMenuItem() {
+    const currentPage = document.body.getAttribute('data-page');
+    if (!currentPage) return;
+
+    // Remover clase active de todos los elementos
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+      item.classList.remove('active');
+    });
+
+    // Agregar clase active al elemento correspondiente
+    const activeItem = document.querySelector(`.sidebar-item[data-page="${currentPage}"]`);
+    if (activeItem) {
+      activeItem.classList.add('active');
+    }
+  }
+
+  // Cargar información del usuario
+  function loadUserInfo() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        
+        // Actualizar avatar
+        const userInitials = document.getElementById('userInitials');
+        const sidebarUsername = document.getElementById('sidebarUsername');
+        const sidebarUserRole = document.getElementById('sidebarUserRole');
+        
+        if (userInitials && payload.nombre) {
+          userInitials.textContent = payload.nombre.substring(0, 2).toUpperCase();
+        }
+        
+        if (sidebarUsername && payload.nombre) {
+          sidebarUsername.textContent = payload.nombre;
+        }
+        
+        if (sidebarUserRole && payload.rol) {
+          const roles = {
+            1: 'Usuario',
+            2: 'Biomonitor', 
+            3: 'Administrador',
+            4: 'Super Administrador'
+          };
+          sidebarUserRole.textContent = roles[payload.rol] || 'Usuario';
+        }
+        
+      } catch (error) {
+        console.error('Error decodificando token:', error);
+      }
+    }
+  }
+  // Cargar contador de usuarios pendientes
+  async function loadPendingUsersCount() {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch('/Consultas/api/listpendientes', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const count = data.data ? data.data.length : 0;
+        
+        const badge = document.getElementById('pendingUsersCount');
+        if (badge) {
+          badge.textContent = count;
+          badge.style.display = count > 0 ? 'block' : 'none';
+        }
+      }
+    } catch (error) {
+      console.error('Error cargando usuarios pendientes:', error);
+    }
+  }
+
+  // Cargar contador de usuarios rechazados
+  async function loadRejectedUsersCount() {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch('/Consultas/api/getRechazadosCount', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const count = data.count || 0;
+        
+        const badge = document.getElementById('rejectedUsersCount');
+        if (badge) {
+          badge.textContent = count;
+          badge.style.display = count > 0 ? 'block' : 'none';
+        }
+      }
+    } catch (error) {
+      console.error('Error cargando usuarios rechazados:', error);
+    }
+  }
+
+  // Función de soporte
+  window.showSupport = function() {
+    alert('Contacte al administrador del sistema para soporte técnico.\nEmail: admin@mawi.com\nTeléfono: +1 (555) 123-4567');
+  };
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', function() {
+    setActiveMenuItem();
+    loadUserInfo();
+    loadPendingUsersCount();
+    loadRejectedUsersCount();
+  });
+
+  // Escuchar evento personalizado de carga de sidebar
+  document.addEventListener('sidebarLoaded', function() {
+    setActiveMenuItem();
+    loadUserInfo();
+    loadPendingUsersCount();
+    loadRejectedUsersCount();
+  });
+
+})();
+</script>
