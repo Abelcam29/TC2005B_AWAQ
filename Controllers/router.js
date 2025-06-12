@@ -22,8 +22,8 @@ router.delete(constants.contextURL + constants.apiURL + "/deleteUser", usersRest
 
 //convocatorias
 router.post(constants.contextURL + constants.apiURL + "/insertConvocatorias/:idUsuario", usersRest.authenticateToken, usersRest.insertConvocatorias);
-router.get(constants.contextURL + constants.apiURL + "getConvocatoriasAbiertas", usersRest.authenticateToken, usersRest.getConvocatoriasAbiertas);
-router.get(constants.contextURL + constants.apiURL + "getConvocatoriasCerradas", usersRest.authenticateToken, usersRest.getConvocatoriasCerradas);
+router.get(constants.contextURL + constants.apiURL + "/getConvocatoriasAbiertas", usersRest.authenticateToken, usersRest.getConvocatoriasAbiertas);
+router.get(constants.contextURL + constants.apiURL + "/getConvocatoriasCerradas", usersRest.authenticateToken, usersRest.getConvocatoriasCerradas);
 
 //Imagen
 router.post(constants.contextURL + constants.apiURL + "/imageUpload", usersRest.authenticateToken, imageRest.upload, imageRest.processUpload);

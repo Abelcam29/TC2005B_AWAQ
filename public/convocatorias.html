@@ -69,166 +69,14 @@
             <!-- Tab de Convocatorias Abiertas -->
             <div class="tab-content active" id="tab-abiertas">
               <div class="convocatorias-grid">
-                <!-- Ejemplo de convocatoria abierta -->
-                <div class="convocatoria-card abierta">
-                  <div class="card-header">
-                    <h3>Investigación Biodiversidad Marina</h3>
-                    <span class="status-badge abierta">Abierta</span>
-                  </div>
-                  <div class="card-body">
-                    <p class="descripcion">Proyecto de investigación para el estudio de ecosistemas marinos en el Pacífico.</p>
-                    <div class="card-meta">
-                      <div class="meta-item">
-                        <strong>Organización:</strong> CONACYT
-                      </div>
-                      <div class="meta-item">
-                        <strong>Región:</strong> Pacífico Mexicano
-                      </div>
-                      <div class="meta-item">
-                        <strong>Cierra:</strong> 15 Enero 2025
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-actions">
-                    <button class="btn-secondary" onclick="viewConvocatoria(1)">Ver detalles</button>
-                    <button class="btn-primary" onclick="applyConvocatoria(1)">Aplicar</button>
-                  </div>
-                </div>
-
-                <!-- Ejemplo 2 -->
-                <div class="convocatoria-card abierta">
-                  <div class="card-header">
-                    <h3>Conservación de Bosques Tropicales</h3>
-                    <span class="status-badge abierta">Abierta</span>
-                  </div>
-                  <div class="card-body">
-                    <p class="descripcion">Iniciativa para la protección y restauración de bosques tropicales.</p>
-                    <div class="card-meta">
-                      <div class="meta-item">
-                        <strong>Organización:</strong> WWF México
-                      </div>
-                      <div class="meta-item">
-                        <strong>Región:</strong> Chiapas, México
-                      </div>
-                      <div class="meta-item">
-                        <strong>Cierra:</strong> 28 Enero 2025
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-actions">
-                    <button class="btn-secondary" onclick="viewConvocatoria(2)">Ver detalles</button>
-                    <button class="btn-primary" onclick="applyConvocatoria(2)">Aplicar</button>
-                  </div>
-                </div>
-
-                <!-- Ejemplo 3 -->
-                <div class="convocatoria-card abierta">
-                  <div class="card-header">
-                    <h3>Monitoreo de Aves Migratorias</h3>
-                    <span class="status-badge abierta">Abierta</span>
-                  </div>
-                  <div class="card-body">
-                    <p class="descripcion">Programa de seguimiento de rutas migratorias y población de aves.</p>
-                    <div class="card-meta">
-                      <div class="meta-item">
-                        <strong>Organización:</strong> NABCI México
-                      </div>
-                      <div class="meta-item">
-                        <strong>Región:</strong> Nacional
-                      </div>
-                      <div class="meta-item">
-                        <strong>Cierra:</strong> 10 Febrero 2025
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-actions">
-                    <button class="btn-secondary" onclick="viewConvocatoria(3)">Ver detalles</button>
-                    <button class="btn-primary" onclick="applyConvocatoria(3)">Aplicar</button>
-                  </div>
-                </div>
-
-                <!-- Ejemplo 4 -->
-                <div class="convocatoria-card abierta">
-                  <div class="card-header">
-                    <h3>Estudio de Especies Endémicas</h3>
-                    <span class="status-badge abierta">Abierta</span>
-                  </div>
-                  <div class="card-body">
-                    <p class="descripcion">Investigación sobre especies endémicas en zonas de alta biodiversidad.</p>
-                    <div class="card-meta">
-                      <div class="meta-item">
-                        <strong>Organización:</strong> SEMARNAT
-                      </div>
-                      <div class="meta-item">
-                        <strong>Región:</strong> Oaxaca, México
-                      </div>
-                      <div class="meta-item">
-                        <strong>Cierra:</strong> 5 Febrero 2025
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-actions">
-                    <button class="btn-secondary" onclick="viewConvocatoria(4)">Ver detalles</button>
-                    <button class="btn-primary" onclick="applyConvocatoria(4)">Aplicar</button>
-                  </div>
-                </div>
+                <!-- El contenido se carga dinámicamente -->
               </div>
             </div>
 
             <!-- Tab de Convocatorias Cerradas -->
             <div class="tab-content" id="tab-cerradas">
               <div class="convocatorias-grid">
-                <!-- Ejemplo de convocatoria cerrada -->
-                <div class="convocatoria-card cerrada">
-                  <div class="card-header">
-                    <h3>Estudio de Corales del Caribe</h3>
-                    <span class="status-badge cerrada">Cerrada</span>
-                  </div>
-                  <div class="card-body">
-                    <p class="descripcion">Investigación sobre el estado de los arrecifes coralinos.</p>
-                    <div class="card-meta">
-                      <div class="meta-item">
-                        <strong>Organización:</strong> UNAM
-                      </div>
-                      <div class="meta-item">
-                        <strong>Región:</strong> Quintana Roo
-                      </div>
-                      <div class="meta-item">
-                        <strong>Cerró:</strong> 20 Diciembre 2024
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-actions">
-                    <button class="btn-secondary" onclick="viewConvocatoria(5)">Ver detalles</button>
-                    <span class="status-text">Convocatoria cerrada</span>
-                  </div>
-                </div>
-
-                <!-- Ejemplo 2 cerrada -->
-                <div class="convocatoria-card cerrada">
-                  <div class="card-header">
-                    <h3>Programa de Reforestación Urbana</h3>
-                    <span class="status-badge cerrada">Cerrada</span>
-                  </div>
-                  <div class="card-body">
-                    <p class="descripcion">Iniciativa para aumentar la cobertura vegetal en áreas urbanas.</p>
-                    <div class="card-meta">
-                      <div class="meta-item">
-                        <strong>Organización:</strong> Gobierno CDMX
-                      </div>
-                      <div class="meta-item">
-                        <strong>Región:</strong> Ciudad de México
-                      </div>
-                      <div class="meta-item">
-                        <strong>Cerró:</strong> 10 Diciembre 2024
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-actions">
-                    <button class="btn-secondary" onclick="viewConvocatoria(6)">Ver detalles</button>
-                    <span class="status-text">Convocatoria cerrada</span>
-                  </div>
-                </div>
+                <!-- El contenido se carga dinámicamente -->
               </div>
             </div>
           </div>
@@ -257,7 +105,7 @@
                   type="text" 
                   id="convocatoria-name"
                   class="form-input" 
-                  placeholder="¿Cómo vas a llamar a tu propuesta?"
+                  placeholder="Nombre de la convocatoria"
                   required
                 />
               </div>
@@ -333,7 +181,6 @@
           </form>
         </div>
 
-        <!-- ✅ AGREGAR: Footer del modal con los botones -->
         <div class="modal-footer">
           <button class="btn-primary" onclick="submitConvocatoria()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -349,13 +196,14 @@
     <script src="js/sidebar-loader.js"></script>
     <script src="js/admin-button.js"></script>
     <script>
-      // ✅ NUEVO: Funcionalidad de modal
+      // ===============================
+      // FUNCIONES DE MODAL
+      // ===============================
       function openModal() {
         const modal = document.getElementById('modalOverlay');
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
         
-        // Enfocar primer input
         setTimeout(() => {
           const firstInput = document.getElementById('convocatoria-name');
           if (firstInput) {
@@ -369,56 +217,39 @@
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
         
-        // Limpiar formulario después de la animación
         setTimeout(() => {
           document.getElementById('convocatoriaForm').reset();
         }, 300);
       }
 
-      // ✅ NUEVO: Efectos de focus en los inputs
-      document.addEventListener('DOMContentLoaded', function() {
-        // Efectos para inputs
-        const inputs = document.querySelectorAll('.form-input');
-        inputs.forEach(input => {
-          input.addEventListener('focus', function() {
-            this.closest('.form-group').classList.add('focused');
-          });
-          
-          input.addEventListener('blur', function() {
-            this.closest('.form-group').classList.remove('focused');
-          });
-        });
+      // ===============================
+      // FUNCIÓN PARA ABRIR SITIOS WEB
+      // ===============================
+      function viewConvocatoria(sitioWeb) {
+        if (!sitioWeb || sitioWeb === 'undefined' || sitioWeb === 'null' || sitioWeb.trim() === '') {
+          alert('Esta convocatoria no tiene sitio web disponible');
+          return;
+        }
+        
+        console.log('Abriendo sitio web:', sitioWeb);
+        
+        let url = sitioWeb.trim();
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          url = 'https://' + url;
+        }
+        
+        try {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        } catch (error) {
+          console.error('Error al abrir URL:', error);
+          alert('Error al abrir el sitio web');
+        }
+      }
 
-        // Manejar tabs
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        tabButtons.forEach(button => {
-          button.addEventListener('click', () => {
-            const tabName = button.dataset.tab;
-            
-            // Remover clase active de todos los tabs
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            // Agregar clase active al tab seleccionado
-            button.classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
-          });
-        });
-
-        // Cerrar modal con tecla Escape
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'Escape') {
-            closeModal();
-          }
-        });
-
-        loadUserName();
-      });
-
-      // ✅ MEJORADO: Submit con loading
-      function submitConvocatoria() {
+      // ===============================
+      // SUBMIT CONVOCATORIA
+      // ===============================
+      async function submitConvocatoria() {
         const form = document.getElementById('convocatoriaForm');
         const submitBtn = document.querySelector('.modal-footer .btn-primary');
         
@@ -427,120 +258,81 @@
           return;
         }
 
-        // Mostrar loading
-        submitBtn.classList.add('btn-loading');
-        submitBtn.textContent = 'Creando...';
+        try {
+          const token = localStorage.getItem('token');
+          if(!token) {
+            alert('No se encontró token de autenticación');
+            return;
+          }
 
-        const formData = {
-          nombre: document.getElementById('convocatoria-name').value,
-          fechaCierre: document.getElementById('fecha-cierre').value,
-          sitioWeb: document.getElementById('sitio-web').value,
-          region: document.getElementById('region').value,
-          organizacion: document.getElementById('organizacion').value,
-          pais: document.getElementById('pais').value,
-          descripcion: document.getElementById('descripcion').value
-        };
-        
-        console.log('Datos de la convocatoria:', formData);
-        
-        // Simular llamada al backend
-        setTimeout(() => {
-          // Remover loading
+          const payload = decodeJWT(token);
+          if(!payload) {
+            alert('Token inválido');
+            return;
+          }
+
+          const idUsuario = payload.id;
+
+          submitBtn.classList.add('btn-loading');
+          submitBtn.textContent = 'Creando...';
+          submitBtn.disabled = true;
+
+          const formData = {
+            nombreConv: document.getElementById('convocatoria-name').value,
+            FechaCierre: document.getElementById('fecha-cierre').value,
+            sitio_web: document.getElementById('sitio-web').value,
+            region: document.getElementById('region').value,
+            organizacion: document.getElementById('organizacion').value,
+            pais: document.getElementById('pais').value,
+            descripcion: document.getElementById('descripcion').value
+          };
+          
+          const response = await fetch(`/Consultas/api/insertConvocatorias/${idUsuario}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData)
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            closeModal();
+            alert('Convocatoria creada exitosamente');
+            
+            if(window.convocatoriasManager) {
+              await window.convocatoriasManager.reloadConvocatorias();
+            } else {
+              location.reload();
+            }
+          } else {
+            const errorData = await response.json();
+            alert(`Error al crear convocatoria: ${errorData.message || 'Error desconocido'}`);
+          }
+        } catch(error) {
+          console.error('Error:', error);
+          alert('Error de conexión al servidor. Por favor, intenta de nuevo.');
+        } finally {
           submitBtn.classList.remove('btn-loading');
+          submitBtn.disabled = false;
           submitBtn.innerHTML = `
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             Crear Convocatoria
           `;
-          
-          // TODO: Aquí irá la llamada real al backend
-          alert('¡Convocatoria creada exitosamente!\n(Backend en desarrollo)');
-          closeModal();
-        }, 1500);
+        }
       }
 
-      function viewConvocatoria(id) {
-        console.log('Ver convocatoria:', id);
-        alert(`Ver detalles de convocatoria ${id} - Función en desarrollo`);
-      }
-
-      function applyConvocatoria(id) {
-        console.log('Aplicar a convocatoria:', id);
-        alert(`Aplicar a convocatoria ${id} - Función en desarrollo`);
-      }
-
-      // ✅ CORREGIR: Sistema de búsqueda y paginación que funciona con el HTML existente
+      // ===============================
+      // CLASE MANAGER DE CONVOCATORIAS
+      // ===============================
       class ConvocatoriasManager {
         constructor() {
           this.convocatorias = {
-            abiertas: [
-              {
-                id: 1,
-                nombre: "Investigación Biodiversidad Marina",
-                descripcion: "Proyecto de investigación para el estudio de ecosistemas marinos en el Pacífico.",
-                organizacion: "CONACYT",
-                region: "Pacífico Mexicano",
-                fechaCierre: "15 Enero 2025",
-                estado: "abierta"
-              },
-              {
-                id: 2,
-                nombre: "Conservación de Bosques Tropicales",
-                descripcion: "Iniciativa para la protección y restauración de bosques tropicales.",
-                organizacion: "WWF México",
-                region: "Chiapas, México",
-                fechaCierre: "28 Enero 2025",
-                estado: "abierta"
-              },
-              {
-                id: 3,
-                nombre: "Monitoreo de Aves Migratorias",
-                descripcion: "Programa de seguimiento de rutas migratorias y población de aves.",
-                organizacion: "NABCI México",
-                region: "Corredor Biológico Mesoamericano",
-                fechaCierre: "10 Febrero 2025",
-                estado: "abierta"
-              },
-              {
-                id: 4,
-                nombre: "Restauración de Arrecifes de Coral",
-                descripcion: "Proyecto de rehabilitación de ecosistemas coralinos afectados por el cambio climático.",
-                organizacion: "CONANP",
-                region: "Caribe Mexicano",
-                fechaCierre: "20 Febrero 2025",
-                estado: "abierta"
-              },
-              {
-                id: 5,
-                nombre: "Conservación de Especies Endémicas",
-                descripcion: "Programa de protección de flora y fauna endémica de México.",
-                organizacion: "SEMARNAT",
-                region: "Nacional",
-                fechaCierre: "05 Marzo 2025",
-                estado: "abierta"
-              }
-            ],
-            cerradas: [
-              {
-                id: 6,
-                nombre: "Estudio de Contaminación Acuática",
-                descripcion: "Análisis de calidad del agua en cuerpos lacustres urbanos.",
-                organizacion: "IMTA",
-                region: "Valle de México",
-                fechaCierre: "15 Diciembre 2024",
-                estado: "cerrada"
-              },
-              {
-                id: 7,
-                nombre: "Programa de Reforestación Urbana",
-                descripcion: "Iniciativa de plantación de árboles nativos en zonas metropolitanas.",
-                organizacion: "SEDEMA",
-                region: "Ciudad de México",
-                fechaCierre: "30 Noviembre 2024",
-                estado: "cerrada"
-              }
-            ]
+            abiertas: [],
+            cerradas: []
           };
           
           this.currentTab = 'abiertas';
@@ -548,19 +340,132 @@
           this.itemsPerPage = 4;
           this.searchTerm = '';
           this.filteredData = [];
+          this.loading = false;
           
           this.initializeComponents();
         }
 
-        initializeComponents() {
+        async initializeComponents() {
           this.addSearchBarToExistingHTML();
           this.addPaginationToExistingHTML();
           this.setupExistingTabs();
+          await this.loadConvocatorias();
+          this.updateDisplay();
+        }
+
+        async loadConvocatorias() {
+          try {
+            this.setLoading(true);
+            const token = localStorage.getItem('token');
+            if(!token) return;
+
+            const [abiertasResponse, cerradasResponse] = await Promise.all([
+              fetch('/Consultas/api/getConvocatoriasAbiertas', {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+                }
+              }),
+              fetch('/Consultas/api/getConvocatoriasCerradas', {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+                }
+              })
+            ]);
+
+            if(abiertasResponse.ok) {
+              const abiertasData = await abiertasResponse.json();
+              this.convocatorias.abiertas = this.formatConvocatorias(abiertasData.data || [], 'abierta');
+            } else {
+              console.log('Error al cargar convocatorias abiertas:', abiertasResponse.statusText);
+            }
+
+            if(cerradasResponse.ok) {
+              const cerradasData = await cerradasResponse.json();
+              this.convocatorias.cerradas = this.formatConvocatorias(cerradasData.data || [], 'cerrada');
+            } else {
+              console.log('Error al cargar convocatorias cerradas:', cerradasResponse.statusText);
+            }
+          } catch(error) {
+            console.error('Error al cargar convocatorias:', error);
+            this.showError('Error al cargar convocatorias. Por favor, inténtalo de nuevo más tarde');
+          } finally {
+            this.setLoading(false);
+          }
+        }
+
+        formatConvocatorias(data, estado) {
+          return data.map(conv => ({
+            id: conv.idConvocatoria,
+            nombre: conv.nombreConv,
+            descripcion: conv.descripcion,
+            organizacion: conv.organizacion,
+            region: conv.region,
+            pais: conv.pais,
+            sitioWeb: conv.sitio_web,
+            fechaCierre: this.formatDate(conv.FechaCierre),
+            estado: estado,
+            fechaCreacion: this.formatDate(conv.fechaCreacion)
+          }));
+        }
+
+        formatDate(dateString) {
+          if(!dateString) return 'Sin fecha';
+          try {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', {
+              day: '2-digit',
+              month: 'long',
+              year: 'numeric'
+            });
+          } catch(error) {
+            return 'Fecha inválida';
+          }
+        }
+
+        setLoading(isLoading) {
+          this.loading = isLoading;
+          const activeTabContent = document.querySelector('.tab-content.active');
+          const grid = activeTabContent?.querySelector('.convocatorias-grid');
+          
+          if (grid && isLoading) {
+            grid.innerHTML = `
+              <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <p>Cargando convocatorias...</p>
+              </div>
+            `;
+          }
+        }
+
+        showError(message) {
+          const activeTabContent = document.querySelector('.tab-content.active');
+          const grid = activeTabContent?.querySelector('.convocatorias-grid');
+          
+          if (grid) {
+            grid.innerHTML = `
+              <div class="error-state">
+                <div class="error-icon">⚠️</div>
+                <h3>Error al cargar</h3>
+                <p>${message}</p>
+                <button class="btn-primary" onclick="window.convocatoriasManager.loadConvocatorias(); window.convocatoriasManager.updateDisplay();">
+                  Reintentar
+                </button>
+              </div>
+            `;
+          }
+        }
+
+        async reloadConvocatorias() {
+          await this.loadConvocatorias();
+          this.currentPage = 1;
           this.updateDisplay();
         }
 
         addSearchBarToExistingHTML() {
-          // Agregar barra de búsqueda después del header
           const header = document.querySelector('.convocatorias-header');
           const searchHTML = `
             <div class="convocatorias-controls">
@@ -583,7 +488,6 @@
                 </button>
               </div>
             </div>
-            
             <div class="results-count" id="results-count"></div>
           `;
           
@@ -592,7 +496,6 @@
         }
 
         addPaginationToExistingHTML() {
-          // Agregar paginación después de cada tab-content
           const tabContents = document.querySelectorAll('.tab-content');
           tabContents.forEach(tabContent => {
             const paginationHTML = `
@@ -603,7 +506,6 @@
         }
 
         setupExistingTabs() {
-          // Usar los tabs existentes del HTML
           const tabButtons = document.querySelectorAll('.tab-button');
           tabButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -669,7 +571,8 @@
         }
 
         renderConvocatorias() {
-          // Actualizar el grid existente en lugar de crear uno nuevo
+          if (this.loading) return;
+          
           const activeTabContent = document.querySelector('.tab-content.active');
           const grid = activeTabContent.querySelector('.convocatorias-grid');
           
@@ -694,29 +597,33 @@
           grid.innerHTML = pageData.map(convocatoria => `
             <div class="convocatoria-card ${convocatoria.estado}">
               <div class="card-header">
-                <h3>${this.highlightSearchTerm(convocatoria.nombre)}</h3>
-                <span class="status-badge ${convocatoria.estado}">${convocatoria.estado}</span>
+                <h3>${this.highlightSearchTerm(convocatoria.nombre || 'Sin título')}</h3>
+                <span class="status-badge ${convocatoria.estado}">
+                  ${convocatoria.estado === 'abierta' ? 'Abierta' : 'Cerrada'}
+                </span>
               </div>
               <div class="card-body">
-                <p class="descripcion">${convocatoria.descripcion}</p>
+                <p class="descripcion">${convocatoria.descripcion || 'Sin descripción'}</p>
                 <div class="card-meta">
                   <div class="meta-item">
-                    <strong>Organización:</strong> ${convocatoria.organizacion}
+                    <strong>Organización:</strong> ${this.highlightSearchTerm(convocatoria.organizacion || 'Sin organización')}
                   </div>
                   <div class="meta-item">
-                    <strong>Región:</strong> ${convocatoria.region}
+                    <strong>Región:</strong> ${convocatoria.region || 'Sin región'}
                   </div>
                   <div class="meta-item">
-                    <strong>Cierra:</strong> ${convocatoria.fechaCierre}
+                    <strong>País:</strong> ${convocatoria.pais || 'Sin país'}
+                  </div>
+                  <div class="meta-item">
+                    <strong>${convocatoria.estado === 'abierta' ? 'Cierra' : 'Cerró'}:</strong> ${convocatoria.fechaCierre || 'Sin fecha'}
                   </div>
                 </div>
               </div>
               <div class="card-actions">
-                ${convocatoria.estado === 'abierta' ? 
-                  `<button class="btn-primary" onclick="applyConvocatoria(${convocatoria.id})">Aplicar</button>` : 
-                  '<span class="status-text">Cerrada</span>'
+                ${convocatoria.sitioWeb && convocatoria.sitioWeb !== 'null' && convocatoria.sitioWeb !== 'undefined' ? 
+                  `<button class="btn-primary" onclick="viewConvocatoria('${convocatoria.sitioWeb}')">Ver detalles</button>` : 
+                  `<button class="btn-secondary" disabled>Sin sitio web</button>`
                 }
-                <button class="btn-secondary" onclick="viewConvocatoria(${convocatoria.id})">Ver detalles</button>
               </div>
             </div>
           `).join('');
@@ -840,23 +747,14 @@
         }
       }
 
-      // ✅ Inicializar el sistema cuando cargue la página
-      document.addEventListener('DOMContentLoaded', function() {
-        // Solo inicializar si estamos en la página de convocatorias
-        if (document.body.dataset.page === 'convocatorias') {
-          new ConvocatoriasManager();
-        }
-        
-        // ... resto del código existente ...
-        loadUserName();
-      });
-      
-      // Funciones existentes...
+      // ===============================
+      // FUNCIONES AUXILIARES
+      // ===============================
       function decodeJWT(token) {
         try {
           const parts = token.split('.');
           if (parts.length !== 3) {
-            throw new Error('Token invalido');
+            throw new Error('Token inválido');
           }
 
           const payload = parts[1];
@@ -873,22 +771,20 @@
         try {
           const token = localStorage.getItem('token');
           if(!token) {
-            console.log('No se encontro token');
+            console.log('No se encontró token');
             window.location.href = 'login.html';
             return;
           }
 
           const payload = decodeJWT(token);
           if(!payload) {
-            console.error('No se pudo deocidificar el token');
+            console.error('No se pudo decodificar el token');
             localStorage.removeItem('token');
             window.location.href = 'login.html';
             return;
           }
 
-          console.log('Payload del token:', payload);
-
-          let username = 'us';
+          let username = 'Usuario';
 
           if(payload.nombre) {
             username = `${payload.nombre}`;
@@ -899,10 +795,6 @@
           const userMenuSpan = document.querySelector('.user-menu span');
           if(userMenuSpan) {
             userMenuSpan.textContent = username;
-            console.log('Nombre de usuario actualizado')
-          }
-          else {
-            console.error('No se encontro el elemento');
           }
 
           if(payload.exp) {
@@ -923,12 +815,9 @@
 
       async function loadUserProfileImage(userId, token, username) {
         try {
-          if(!userId) {
-            console.log('No se encontro ID de usuario');
-            return;
-          }
+          if(!userId) return;
 
-          const response =  await fetch(`/Consultas/api/getUserProfileImage/${userId}`, {
+          const response = await fetch(`/Consultas/api/getUserProfileImage/${userId}`, {
             method: 'GET',
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -937,7 +826,7 @@
           });
 
           if(!response.ok) {
-            console.log('No se encontro imagen de perfil')
+            console.log('No se encontró imagen de perfil');
             return;
           }
 
@@ -945,18 +834,11 @@
 
           if(data.status === 'success' && data.imageName) {
             const imageUrl = `/uploads/usuarios/${data.imageName}`;
-
             const avatarImg = document.querySelector('.avatar-circle img');
             if(avatarImg) {
               avatarImg.src = imageUrl;
               avatarImg.alt = `${username} - Perfil`; 
-            } else
-            {
-              console.error('Usuario no tiene imagen');
             }
-            
-          } else {
-            console.error('Error al obtener imagen de perfil');
           }
         } catch (error) {
           console.log('Error al cargar imagen de perfil:', error);
@@ -967,6 +849,41 @@
         localStorage.removeItem('token');
         window.location.href = 'login.html';
       }
+
+      // ===============================
+      // INICIALIZACIÓN
+      // ===============================
+      document.addEventListener('DOMContentLoaded', function() {
+        // Manejar tabs
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            const tabName = button.dataset.tab;
+            
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            button.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+          });
+        });
+
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            closeModal();
+          }
+        });
+
+        // Inicializar manager de convocatorias
+        if (document.body.dataset.page === 'convocatorias') {
+          window.convocatoriasManager = new ConvocatoriasManager();
+        }
+        
+        loadUserName();
+      });
     </script>
   </body>
 </html>

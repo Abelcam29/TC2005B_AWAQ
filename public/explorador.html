@@ -38,56 +38,23 @@
         <main class="main-content">
           <div class="biomo-header">
             <h1>Asistente Explorador de Anteproyectos</h1>
-          </div>
-
-          <div class="explorador-tabs">
+          </div>          <div class="explorador-tabs">
             <div class="tabs">
               <button class="tab-btn active">Abiertos</button>
               <button class="tab-btn">Cerrados</button>
             </div>
           </div>
 
-          <div class="projects-container">
-            <!-- Proyecto 1 -->
-            <div class="project-card">
-              <div class="project-content">
-                <h3 class="project-title">Título</h3>
-                <p class="project-description">Descripción</p>
-                <div class="project-dates">
-                  <span class="date-label">Fecha de creación: </span>
-                  <span class="date">00/00/0000</span>
-                  <span class="date-label">Fecha límite: </span>
-                  <span class="date">00/00/0000</span>
-                </div>
-              </div>
-              <div class="project-action">
-                <button class="circle-btn">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 5V19M5 12H19" stroke="#30a046" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
+          <div class="split-view">
+            <div class="projects-side" id="projects-side">
+              <div class="projects-container">
+                <!-- Los proyectos se renderizan dinámicamente aquí -->
               </div>
             </div>
-
-            <!-- Proyecto 2 -->
-            <div class="project-card">
-              <div class="project-content">
-                <h3 class="project-title">Título</h3>
-                <p class="project-description">Descripción</p>
-                <div class="project-dates">
-                  <span class="date-label">Fecha de creación: </span>
-                  <span class="date">00/00/0000</span>
-                  <span class="date-label">Fecha límite: </span>
-                  <span class="date">00/00/0000</span>
-                </div>
-              </div>
-              <div class="project-action">
-                <button class="circle-btn">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 5V19M5 12H19" stroke="#30a046" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-              </div>
+            <div class="side-resizer" id="side-resizer"></div>
+            <div class="pdf-side">
+              <button class="toggle-pdf-btn" id="toggle-pdf-btn">Mostrar PDF</button>
+              <iframe id="pdfViewer" src="mock-pdfs/demo.pdf" width="100%" height="100%" style="border:none;"></iframe>
             </div>
           </div>
 
@@ -227,6 +194,7 @@
 
       document.addEventListener('DOMContentLoaded', function() {
         loadUserName();
+
       });
 
       loadUserName();

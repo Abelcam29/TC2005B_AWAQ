@@ -325,13 +325,13 @@ async function insertConvocatorias(req, res)
             "message" : error.message
         };
         console.log(error);
-        return res.status(500).json(jsonErrror);
+        return res.status(500).json(jsonError);
     }
 }
 /**
  * @param {*} res
  */
-async function getConvocatoriasAbiertas(res)
+async function getConvocatoriasAbiertas(req, res)
 {
     try
     {
@@ -339,7 +339,7 @@ async function getConvocatoriasAbiertas(res)
         return res.status(200).json({
             "status" : "success",
             "total" : result.rows.length,
-            "records" : result.rows
+            "data" : result.rows
         });
     }
     catch(error)
@@ -355,7 +355,7 @@ async function getConvocatoriasAbiertas(res)
 /**
  * @param {*} res 
  */
-async function getConvocatoriasCerradas(res)
+async function getConvocatoriasCerradas(req, res)
 {
     try
     {
@@ -363,7 +363,7 @@ async function getConvocatoriasCerradas(res)
         return res.status(200).json({
             "status" : "success",
             "total" : result.rows.length,
-            "records" : result.rows
+            "data" : result.rows
         });
     }
     catch(error)
