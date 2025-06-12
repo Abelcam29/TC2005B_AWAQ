@@ -1,367 +1,147 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administrador - Mawi</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* Estilos específicos para páginas de administrador */
-        .admin-container {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: white;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Mawi</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #1a1a1a;
+      color: white;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-        .admin-header {
-            background: #1a1a1a;
-            padding: 16px 24px;
-            border-bottom: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .sidebar {
+      width: 240px;
+      background: #111;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-        .admin-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .sidebar h2 {
+      color: #30a046;
+      margin-bottom: 32px;
+    }
 
-        .admin-logo h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: #30a046;
-        }
+    .sidebar nav a {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      transition: 0.2s;
+    }
 
-        .admin-nav {
-            display: flex;
-            gap: 24px;
-        }
+    .sidebar nav a:hover,
+    .sidebar nav a.active {
+      background: #30a046;
+      color: white;
+    }
 
-        .admin-nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            gap: 24px;
-        }
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .admin-nav a {
-            color: #ccc;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-        }
+    .top-bar {
+      background: #1a1a1a;
+      padding: 16px 24px;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
 
-        .admin-nav a:hover {
-            background: rgba(48, 160, 70, 0.1);
-            color: #30a046;
-        }
+    .top-bar span {
+      margin-right: 12px;
+    }
 
-        .admin-nav a.active {
-            background: #30a046;
-            color: white;
-        }
+    .avatar {
+      background: #30a046;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
 
-        .admin-content {
-            padding: 32px 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-        .admin-page-title {
-            margin-bottom: 32px;
-            text-align: center;
-        }
+    .content-area {
+      flex: 1;
+      padding: 24px;
+      overflow: auto;
+    }
 
-        .admin-page-title h2 {
-            margin: 0 0 8px 0;
-            font-size: 2rem;
-            color: #30a046;
-        }
+    iframe {
+      width: 100%;
+      height: calc(100vh - 100px);
+      border: none;
+      border-radius: 12px;
+    }
 
-        .admin-page-title p {
-            margin: 0;
-            color: #aaa;
-            font-size: 1.1rem;
-        }
-
-        .admin-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-top: 32px;
-        }
-
-        .admin-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 24px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .admin-card:hover {
-            background: rgba(48, 160, 70, 0.1);
-            border-color: #30a046;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(48, 160, 70, 0.2);
-        }
-
-        .admin-card h3 {
-            margin: 0 0 12px 0;
-            color: #30a046;
-            font-size: 1.25rem;
-        }
-
-        .admin-card p {
-            margin: 0;
-            color: #ccc;
-            line-height: 1.5;
-        }
-
-        .admin-card .icon {
-            font-size: 2rem;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .avatar-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #30a046;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .avatar-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .logout-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: background 0.2s ease;
-        }
-
-        .logout-btn:hover {
-            background: #c82333;
-        }
-
-        .back-button {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid #555;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 24px;
-            transition: all 0.2s ease;
-        }
-
-        .back-button:hover {
-            background: rgba(48, 160, 70, 0.1);
-            border-color: #30a046;
-            color: #30a046;
-        }
-
-        @media (max-width: 768px) {
-            .admin-header {
-                flex-direction: column;
-                gap: 16px;
-                padding: 16px;
-            }
-
-            .admin-nav {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .admin-nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .admin-content {
-                padding: 24px 16px;
-            }
-
-            .admin-cards-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    .logout-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 16px;
+    }
+  </style>
 </head>
 <body>
-    <div class="admin-container">
-        <header class="admin-header">
-            <div class="admin-logo">
-                <img src="eye-icon.svg" alt="Mawi" style="width: 32px; height: 32px;" />
-                <h1>Panel de Administrador</h1>
-            </div>
-            
-            <nav class="admin-nav">
-                <ul>
-                    <li><a href="#" class="active">Dashboard</a></li>
-                    <li><a href="AdmUpReguser.html">Gestión de Usuarios</a></li>
-                </ul>
-            </nav>
+  <aside class="sidebar">
+    <div>
+      <h2>Mawi</h2>
+      <nav>
+        <a href="#" class="active">Inicio</a>
+        <a href="#">Número de Biomos</a>
+        <a href="#">Número de EcoRangers</a>
+        <a href="#">Número de Anteproyectos</a>
+        <a href="#">Conexión SFDC</a>
+        <a href="#">Informes, Métricas y Análisis</a>
+        <a href="#">Crear EcoRanger</a>
+        <a href="#">Ver EcoRanger</a>
+      </nav>
+    </div>
+    <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+  </aside>
 
-            <div class="user-menu">
-                <span>Administrador</span>
-                <div class="avatar-circle">
-                    <img src="avatar-placeholder.svg" alt="Admin" />
-                </div>
-                <a href="#" class="logout-btn" onclick="logout()">Cerrar Sesión</a>
-            </div>
-        </header>
-
-        <div class="admin-content">
-            <a href="dashboard.html" class="back-button">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Volver al Dashboard Principal
-            </a>
-
-            <div class="admin-page-title">
-                <h2>Panel de Administración</h2>
-                <p>Gestiona usuarios y supervisa la actividad de la plataforma</p>
-            </div>
-
-            <div class="admin-cards-grid">
-                <a href="AdmUpReguser.html" class="admin-card">
-                    <span class="icon">👥</span>
-                    <h3>Gestión de Usuarios</h3>
-                    <p>Administra usuarios registrados, revisa perfiles y gestiona permisos de acceso a la plataforma.</p>
-                </a>
-
-                <a href="#" class="admin-card" onclick="showUsersReport()">
-                    <span class="icon">📊</span>
-                    <h3>Reportes de Actividad</h3>
-                    <p>Consulta estadísticas de uso, registros de actividad y métricas de la plataforma.</p>
-                </a>
-
-                <a href="#" class="admin-card" onclick="showSystemSettings()">
-                    <span class="icon">⚙️</span>
-                    <h3>Configuración del Sistema</h3>
-                    <p>Ajusta configuraciones generales, parámetros de seguridad y opciones de la aplicación.</p>
-                </a>
-
-                <a href="#" class="admin-card" onclick="showDataBackup()">
-                    <span class="icon">💾</span>
-                    <h3>Respaldo de Datos</h3>
-                    <p>Genera respaldos de la base de datos y gestiona la recuperación de información.</p>
-                </a>
-
-                <a href="#" class="admin-card" onclick="showLogs()">
-                    <span class="icon">📋</span>
-                    <h3>Logs del Sistema</h3>
-                    <p>Revisa registros de errores, accesos y eventos importantes del sistema.</p>
-                </a>
-
-                <a href="#" class="admin-card" onclick="showSupport()">
-                    <span class="icon">🎧</span>
-                    <h3>Soporte Técnico</h3>
-                    <p>Gestiona tickets de soporte, consultas de usuarios y solicitudes de asistencia.</p>
-                </a>
-            </div>
-        </div>
+  <div class="main-content">
+    <div class="top-bar">
+      <span>Administrador</span>
+      <div class="avatar">
+        <img src="avatar-placeholder.svg" alt="Admin" />
+      </div>
     </div>
 
-    <script>
-        // Verificar autenticación y permisos de administrador
-        function checkAdminAuth() {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    window.location.href = 'login.html';
-                    return false;
-                }
+    <div class="content-area">
+      <iframe src="https://lookerstudio.google.com/embed/reporting/03b8ef41-0aef-4a2c-a959-af7d7b9085fd/page/nnoNF"
+              allowfullscreen
+              sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+      </iframe>
+    </div>
+  </div>
 
-                const payload = JSON.parse(atob(token.split('.')[1]));
-                const userRole = payload.rol;
-                
-                // Verificar expiración del token
-                const currentTime = Date.now() / 1000;
-                if (payload.exp && payload.exp < currentTime) {
-                    localStorage.removeItem('token');
-                    window.location.href = 'login.html';
-                    return false;
-                }
-
-                // Verificar que sea administrador (rol 3 o superior)
-                if (userRole < 3) {
-                    alert('No tienes permisos de administrador');
-                    window.location.href = 'dashboard.html';
-                    return false;
-                }
-
-                return true;
-            } catch (error) {
-                console.error('Error verificando autenticación:', error);
-                window.location.href = 'login.html';
-                return false;
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('userRole');
-            localStorage.removeItem('sidebar-collapsed');
-            window.location.href = 'login.html';
-        }
-
-        function showUsersReport() {
-            alert('Función de reportes en desarrollo');
-        }
-
-        function showSystemSettings() {
-            alert('Función de configuración en desarrollo');
-        }
-
-        function showDataBackup() {
-            alert('Función de respaldo en desarrollo');
-        }
-
-        function showLogs() {
-            alert('Función de logs en desarrollo');
-        }
-
-        function showSupport() {
-            alert('Función de soporte en desarrollo');
-        }
-
-        // Inicializar cuando la página cargue
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAdminAuth();
-        });
-    </script>
+  <script>
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userRole');
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
 </html>
