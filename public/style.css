@@ -696,6 +696,48 @@ svg {
     margin-top: 16px;
     align-self: flex-end;
   }
+  
+  .modal-content {
+    width: 95%;
+    margin: 1rem;
+    max-height: 90vh;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .convocatorias-form .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+  
+  .modal-footer .btn-primary,
+  .modal-footer .btn-secondary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .card-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn-primary, .btn-secondary {
+    text-align: center;
+  }
 }
 
 /* Convocatorias Form Styles */
@@ -854,4 +896,1025 @@ svg {
 
 .country-select:hover {
   border-color: #d1d5db;
+}
+/* ✅ MEJORADO: Estilos del modal más elegantes */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal content con flexbox */
+.modal-content {
+  background: #2d2d2d;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transform: scale(0.9) translateY(-20px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  display: flex; /* ✅ IMPORTANTE: Flexbox layout */
+  flex-direction: column; /* ✅ IMPORTANTE: Columna vertical */
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 2.5rem 1.5rem;
+  border-bottom: 1px solid #404040; /* ✅ Cambio: borde gris más oscuro */
+  background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%); /* ✅ Gradiente oscuro */
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #ffffff; /* ✅ Cambio: texto blanco */
+  font-size: 1.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modal-header h2:before {
+  content: "📋";
+  font-size: 1.5rem;
+}
+
+/* Modal close button */
+.modal-close {
+  background: #404040; /* ✅ Cambio: fondo gris más oscuro */
+  border: none;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #cccccc; /* ✅ Ícono gris claro */
+}
+
+.modal-close:hover {
+  background: #ff4757;
+  color: white;
+  transform: rotate(90deg);
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Modal body con flex */
+.modal-body {
+  padding: 2rem 2.5rem;
+  overflow-y: auto;
+  background: #2d2d2d;
+  flex: 1; /* ✅ IMPORTANTE: Toma el espacio disponible */
+}
+
+/* Modal footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2.5rem 2rem;
+  border-top: 1px solid #404040;
+  background: #333333;
+  flex-shrink: 0; /* ✅ IMPORTANTE: No se encoge */
+}
+
+/* Convocatorias Form Styles */
+.convocatorias-form {
+  margin-bottom: 24px;
+}
+
+.form-input {
+  background-color: #444;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(48, 160, 70, 0.5);
+}
+
+.action-buttons {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.helper-text {
+  color: #999;
+  font-size: 0.9rem;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background-color: #333;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* Explorador de Anteproyectos Styles */
+.explorador-tabs {
+  margin-bottom: 24px;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #444;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.tab-btn.active {
+  color: white;
+  border-bottom: 2px solid #30a046;
+}
+
+.projects-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.project-card {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.project-content {
+  flex: 1;
+}
+
+.project-title {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+}
+
+.project-description {
+  color: #ccc;
+  margin: 0 0 12px 0;
+  font-size: 0.9rem;
+}
+
+.project-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.date-label {
+  color: #888;
+}
+
+.project-action {
+  margin-left: 16px;
+}
+
+.circle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #222;
+  border: 1px solid #30a046;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.circle-btn:hover {
+  background-color: rgba(48, 160, 70, 0.1);
+}
+
+.create-project {
+  display: flex;
+  justify-content: flex-end;
+  margin: 24px 0;
+}
+
+/* Perfil Form Styles */
+.perfil-form {
+  max-width: 600px;
+}
+.country-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  background-color: #444;
+  color: white;
+}
+
+.country-select:focus {
+  outline: none;
+  border-color: #565561;
+}
+
+.country-select:hover {
+  border-color: #d1d5db;
+}
+/* ✅ MEJORADO: Estilos del modal más elegantes */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal content con flexbox */
+.modal-content {
+  background: #2d2d2d;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transform: scale(0.9) translateY(-20px);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  display: flex; /* ✅ IMPORTANTE: Flexbox layout */
+  flex-direction: column; /* ✅ IMPORTANTE: Columna vertical */
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 2.5rem 1.5rem;
+  border-bottom: 1px solid #404040; /* ✅ Cambio: borde gris más oscuro */
+  background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%); /* ✅ Gradiente oscuro */
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #ffffff; /* ✅ Cambio: texto blanco */
+  font-size: 1.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modal-header h2:before {
+  content: "📋";
+  font-size: 1.5rem;
+}
+
+/* Modal close button */
+.modal-close {
+  background: #404040; /* ✅ Cambio: fondo gris más oscuro */
+  border: none;
+  cursor: pointer;
+  padding: 0.75rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #cccccc; /* ✅ Ícono gris claro */
+}
+
+.modal-close:hover {
+  background: #ff4757;
+  color: white;
+  transform: rotate(90deg);
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Modal body con flex */
+.modal-body {
+  padding: 2rem 2.5rem;
+  overflow-y: auto;
+  background: #2d2d2d;
+  flex: 1; /* ✅ IMPORTANTE: Toma el espacio disponible */
+}
+
+/* Modal footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2.5rem 2rem;
+  border-top: 1px solid #404040;
+  background: #333333;
+  flex-shrink: 0; /* ✅ IMPORTANTE: No se encoge */
+}
+
+/* Convocatorias como tarjetas compactas */
+.convocatorias-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-right: 0.5rem;
+}
+
+/* Cards de convocatorias más compactas */
+.convocatoria-card {
+  background: #2a2a2a;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.convocatoria-card:hover {
+  background: #333333;
+  border-color: #555555;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.convocatoria-card.cerrada {
+  opacity: 0.7;
+  background: #252525;
+}
+
+/* Layout de la tarjeta */
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.status-badge.abierta {
+  background: #1a4a1a;
+  color: #4ade80;
+  border: 1px solid #4ade80;
+}
+
+.status-badge.cerrada {
+  background: #4a1a1a;
+  color: #f87171;
+  border: 1px solid #f87171;
+}
+
+/* Descripción y metadatos */
+.card-body {
+  margin-bottom: 1rem;
+}
+
+.card-body .descripcion {
+  color: #cccccc;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 0;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #999999;
+}
+
+.meta-item strong {
+  color: #ffffff;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+/* Botones de acción mejorados */
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: #2c5530;
+  color: white;
+  border: 1px solid #2c5530;
+}
+
+.btn-primary:hover {
+  background: #1e3b21;
+  border-color: #1e3b21;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #cccccc;
+  border: 1px solid #555555;
+}
+
+.btn-secondary:hover {
+  background: #404040;
+  border-color: #666666;
+  color: #ffffff;
+}
+
+.status-text {
+  color: #888888;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Separador visual entre convocatorias */
+.convocatoria-card + .convocatoria-card {
+  border-top: 1px solid #1a1a1a;
+}
+
+/* Tabs con mejor diseño */
+.convocatorias-tabs {
+  display: flex;
+  background: #1a1a1a;
+  border-radius: 6px;
+  padding: 3px;
+  width: fit-content;
+  margin-bottom: 1.5rem;
+}
+
+.tab-button {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  color: #888888;
+  font-size: 0.9rem;
+  min-width: 100px;
+}
+
+.tab-button:hover {
+  color: #cccccc;
+}
+
+.tab-button.active {
+  background: #2c5530;
+  color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Header de convocatorias */
+.convocatorias-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #404040;
+}
+
+.convocatorias-header h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.75rem;
+}
+
+/* Botón crear convocatoria */
+.crear-convocatoria-btn {
+  background: linear-gradient(135deg, #2c5530 0%, #1e3b21 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(44, 85, 48, 0.3);
+}
+
+.crear-convocatoria-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(44, 85, 48, 0.4);
+}
+
+.crear-convocatoria-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Container de display mejorado */
+.convocatorias-display-section {
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  height: calc(100vh - 220px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-content {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.tab-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tab-content::-webkit-scrollbar-track {
+  background: #0f0f0f;
+  border-radius: 4px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background: #404040;
+  border-radius: 4px;
+}
+
+.tab-content::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
+
+/* RESPONSIVE: Adaptación para móviles */
+@media (max-width: 768px) {
+  .convocatorias-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .crear-convocatoria-btn {
+    justify-content: center;
+  }
+  
+  .convocatoria-card {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .card-actions {
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+  
+  .card-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .convocatorias-tabs {
+    width: 100%;
+  }
+  
+  .tab-button {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .convocatorias-display-section {
+    padding: 1rem;
+    height: calc(100vh - 180px);
+  }
+}
+
+/* ✅ NUEVO: Barra de búsqueda */
+.search-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+  max-width: 400px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  background: #2a2a2a;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #2c5530;
+  background: #333333;
+  box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.2);
+}
+
+.search-input::placeholder {
+  color: #888888;
+  font-style: italic;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888888;
+  pointer-events: none;
+  width: 18px;
+  height: 18px;
+}
+
+.search-clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #888888;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.search-container.has-text .search-clear {
+  opacity: 1;
+}
+
+.search-clear:hover {
+  background: #404040;
+  color: #ffffff;
+}
+
+/* ✅ NUEVO: Paginación */
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333333;
+}
+
+.pagination-info {
+  color: #888888;
+  font-size: 0.9rem;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pagination-btn {
+  background: #2a2a2a;
+  border: 1px solid #404040;
+  color: #cccccc;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #333333;
+  border-color: #555555;
+  color: #ffffff;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn.active {
+  background: #2c5530;
+  border-color: #2c5530;
+  color: white;
+}
+
+.pagination-btn.prev,
+.pagination-btn.next {
+  padding: 0.5rem;
+}
+
+.pagination-pages {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* ✅ NUEVO: Estados de carga y vacío */
+.convocatorias-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  color: #888888;
+  font-style: italic;
+}
+
+.convocatorias-empty {
+  text-align: center;
+  padding: 3rem;
+  color: #888888;
+}
+
+.convocatorias-empty h3 {
+  color: #cccccc;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.convocatorias-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.convocatorias-empty .empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* ✅ MEJORADO: Header con búsqueda y tabs */
+.convocatorias-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.convocatorias-tabs {
+  display: flex;
+  background: #1a1a1a;
+  border-radius: 6px;
+  padding: 3px;
+  width: fit-content;
+  margin: 0;
+}
+
+/* ✅ NUEVO: Contador de resultados */
+.results-count {
+  color: #888888;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  padding-left: 0.25rem;
+}
+
+.results-count strong {
+  color: #ffffff;
+}
+
+/* ✅ NUEVO: Animación de búsqueda */
+.search-container.searching .search-icon {
+  animation: searchPulse 1.5s infinite;
+}
+
+@keyframes searchPulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ✅ NUEVO: Highlight de texto buscado */
+.highlight {
+  background: rgba(44, 85, 48, 0.3);
+  color: #4ade80;
+  padding: 0.1em 0.2em;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+/* ✅ RESPONSIVE: Búsqueda y paginación */
+@media (max-width: 768px) {
+  .convocatorias-controls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .search-container {
+    max-width: none;
+  }
+  
+  .convocatorias-tabs {
+    width: 100%;
+  }
+  
+  .pagination-container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .pagination-controls {
+    justify-content: center;
+  }
+  
+  .pagination-info {
+    order: 2;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-controls {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  
+  .pagination-pages {
+    flex-wrap: wrap;
+  }
+  
+  .pagination-btn {
+    min-width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+}
+
+/* ✅ NUEVO: Mejoras visuales para las tarjetas paginadas */
+.convocatorias-grid {
+  min-height: 400px; /* Altura mínima para evitar saltos */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-right: 0.5rem;
+}
+
+.convocatoria-card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ NUEVO: Indicador de página activa más visible */
+.pagination-btn.active {
+  background: linear-gradient(135deg, #2c5530 0%, #1e3b21 100%);
+  border-color: #2c5530;
+  color: white;
+  box-shadow: 0 2px 4px rgba(44, 85, 48, 0.3);
+  font-weight: 600;
+}
+
+/* ✅ NUEVO: Botones de navegación con iconos */
+.pagination-btn.prev svg,
+.pagination-btn.next svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ✅ NUEVO: Separador entre secciones */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #404040 50%, transparent 100%);
+  margin: 2rem 0;
 }

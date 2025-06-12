@@ -1,4 +1,6 @@
 const dataSource = require('../Datasource/MySQLMngr');
+const hashService = require('./hashPassword');
+const imageService = require('./imageUploadService');
 /**
  * @param {*} user
  * returns
@@ -249,7 +251,59 @@ async function usuariosInactivos() {
     }
     return qResult;
 }
-
+/**
+ * @returns
+ * @param {*} user 
+ */
+async function registrarUsuario(user)
+{
+    let qResult;
+    try
+    {
+        let query = "INSERT INTO usuario (Nombre, Apellidos, email, password, pais, nuemrotel, region, ciudad, nombreOrganizacion, descOrganizacion, rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const salt = hashService.getsalt();
+        const hash = hashService.encryptPassword(user.password, salt);
+        const hash_password = salt + hash;
+        let params = [
+            user.Nombre,
+            user.Apellidos,
+            user.email,
+            hash_password,
+            user.pais,
+            user.numerotel,
+            user.region,
+            user.ciudad,
+            user.nombreOrganizacion,
+            user.descOrganizacion,
+            user.rol
+        ];
+        qResult = await dataSource.insertData(query, params);
+        const idUser = qResult.getGenId();
+        let idImagen = 1;
+        if(user.imagen)
+        {
+            let imageObj = {...user.imagen, usuario_carga: idUser};
+            let qResultImg = await imageService.uploadedImageLog(imageObj);
+            if(qResultImg && qResultImg.getStatus()) {
+                idImagen = qResultImg.getGenId();
+            }
+        }
+        else
+        {
+            let imageObj = {
+                base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+                name: "default.jpg",
+                usuario_carga: idUser
+            };
+            let qResultImg = await imageService.uploadedImageLog(imageObj);
+        }
+    }
+    catch(err)
+    {
+        qResult = new dataSource.QueryResult(false, [], 0, 0, err.message);
+    }
+    return qResult;
+}
 
 module.exports = {getRegistros,
      getRegistrosPorUsuario, 

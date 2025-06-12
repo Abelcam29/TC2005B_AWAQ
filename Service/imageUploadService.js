@@ -121,9 +121,27 @@ async function getUserProfileImage(userId) {
     }
 }
 
+async function defaultprofileImage(userId) {
+    let qResult;
+    try
+    {
+        const query = "INSERT INTO imagenes (nombreImagen, usuario_carga) VALUES (?, ?)";
+        const defaultImage = "default.jpg";
+        const params = [defaultImage, userId];
+        qResult = await dataSource.insertData(query, params);
+    }
+    catch(err)
+    {
+        console.error('Error al insertar imagen por defecto:', err.message);
+        qResult =  new dataSource.QueryResult(false, [], 0, 0, err.message);
+    }
+    return qResult;
+}
+
 
 module.exports = {
     uploadedImagesLog,
     uploadedImageLog,
-    getUserProfileImage
+    getUserProfileImage,
+    defaultprofileImage
 };
