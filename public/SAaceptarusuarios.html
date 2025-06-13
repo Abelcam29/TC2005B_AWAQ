@@ -6,13 +6,12 @@
     <title>Usuarios Pendientes - MAWI Super Admin</title>
     <link rel="stylesheet" href="css/admin-dashboard-stats.css">
     <link rel="stylesheet" href="css/notification.css">
-    <link rel="stylesheet" href="css/loading.css">
     <style>
         /* ✅ ESTILOS PARA BOTÓN QUE SE MUEVE CON LA SIDEBAR */
         .sidebar-toggle {
             position: fixed;
             top: 20px;
-            left: 20px; /* ✅ POSICIÓN INICIAL CUANDO SIDEBAR ESTÁ CERRADA */
+            left: 20px;
             z-index: 1000;
             background: var(--admin-primary, #48cc6c);
             border: none;
@@ -25,7 +24,7 @@
             color: white;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease; /* ✅ TRANSICIÓN SUAVE PARA EL MOVIMIENTO */
+            transition: all 0.3s ease;
         }
 
         .sidebar-toggle:hover {
@@ -33,15 +32,13 @@
             transform: scale(1.05);
         }
 
-        /* ✅ CLASE PARA CUANDO LA SIDEBAR ESTÁ ABIERTA */
         .sidebar-toggle.sidebar-open {
-            left: 300px; /* ✅ SE MUEVE A LA DERECHA CUANDO SIDEBAR ESTÁ ABIERTA (280px + 20px margin) */
+            left: 300px;
         }
 
-        /* ✅ RESPONSIVE - EN MÓVIL EL BOTÓN SE COMPORTA DIFERENTE */
         @media (max-width: 1023px) {
             .sidebar-toggle {
-                left: 20px !important; /* ✅ EN MÓVIL SIEMPRE SE QUEDA EN LA MISMA POSICIÓN */
+                left: 20px !important;
             }
         }
     </style>
@@ -81,7 +78,7 @@
 
             <!-- Main Content -->
             <main class="admin-main-content">
-                <!-- ✅ PAGE HEADER -->
+                <!-- Page Header -->
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">⏳ Usuarios Pendientes de Aprobación</h1>
@@ -98,26 +95,20 @@
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 2rem;">
-                    <div class="stat-card">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-content">
-                            <h3 class="stat-title">Usuarios Pendientes</h3>
-                            <p class="stat-value" id="pendingCount">0</p>
-                            <p class="stat-change">Esperando aprobación</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">📋</div>
-                        <div class="stat-content">
-                            <h3 class="stat-title">Procesados Hoy</h3>
-                            <p class="stat-value" id="processedToday">0</p>
-                            <p class="stat-change">Aprobados/Rechazados</p>
+                <div class="stats-grid" style="grid-template-columns: 1fr; margin-bottom: 2rem;">
+                    <div class="stat-card" style="display: flex; align-items: center; padding: 1.5rem; min-height: auto;">
+                        <div class="stat-icon" style="margin-right: 1.5rem; margin-bottom: 0; font-size: 2.5rem;">⏳</div>
+                        <div class="stat-content" style="flex: 1;">
+                            <h3 class="stat-title" style="margin: 0 0 0.5rem 0; font-size: 1rem; font-weight: 600;">Usuarios Pendientes</h3>
+                            <div style="display: flex; align-items: baseline; gap: 1rem;">
+                                <p class="stat-value" id="pendingCount" style="margin: 0; font-size: 2.5rem; font-weight: 800; color: var(--admin-primary, #48cc6c);">0</p>
+                                <p class="stat-change" style="margin: 0; color: var(--admin-text-secondary); font-size: 0.875rem;">Esperando aprobación</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Users Table -->
+                <!-- ✅ TABLA CORREGIDA - 4 COLUMNAS -->
                 <div class="admin-card">
                     <div class="admin-card-header">
                         <h3>Lista de Usuarios Pendientes</h3>
@@ -128,15 +119,13 @@
                                 <tr>
                                     <th>Usuario</th>
                                     <th>Email</th>
-                                    <th>Rol</th>
-                                    <th>Fecha Registro</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="usersTableBody">
                                 <tr>
-                                    <td colspan="6" class="admin-loading">
+                                    <td colspan="4" class="admin-loading">
                                         <div class="admin-spinner"></div>
                                         Cargando usuarios pendientes...
                                     </td>
@@ -157,12 +146,11 @@
     </div>
 
     <script src="js/notification.js"></script>
-    <script src="js/loading.js"></script>
     <script>
         // ✅ VARIABLE GLOBAL PARA ESTADO DE SIDEBAR
         let sidebarIsOpen = false;
 
-        // ✅ FUNCIÓN SIMPLE PARA TOGGLE SIDEBAR CON MOVIMIENTO DE BOTÓN
+        // ✅ FUNCIÓN SIMPLE PARA TOGGLE SIDEBAR
         function toggleSidebar() {
             const sidebar = document.querySelector('.admin-sidebar');
             const toggleBtn = document.querySelector('.sidebar-toggle');
@@ -170,29 +158,23 @@
             if (!sidebar) return;
             
             if (sidebarIsOpen) {
-                // ✅ CERRAR SIDEBAR
                 sidebar.style.transform = 'translateX(-100%)';
                 toggleBtn.querySelector('polyline').setAttribute('points', '9,18 15,12 9,6');
                 
-                // ✅ MOVER BOTÓN A LA IZQUIERDA (SOLO EN DESKTOP)
                 if (window.innerWidth >= 1024) {
                     toggleBtn.classList.remove('sidebar-open');
                 }
                 
                 sidebarIsOpen = false;
-                console.log('🔒 Sidebar cerrada, botón movido a la izquierda');
             } else {
-                // ✅ ABRIR SIDEBAR
                 sidebar.style.transform = 'translateX(0)';
                 toggleBtn.querySelector('polyline').setAttribute('points', '15,18 9,12 15,6');
                 
-                // ✅ MOVER BOTÓN A LA DERECHA (SOLO EN DESKTOP)
                 if (window.innerWidth >= 1024) {
                     toggleBtn.classList.add('sidebar-open');
                 }
                 
                 sidebarIsOpen = true;
-                console.log('🔓 Sidebar abierta, botón movido a la derecha');
             }
         }
 
@@ -205,17 +187,9 @@
                 
                 setTimeout(() => {
                     const sidebar = document.querySelector('.admin-sidebar');
-                    const toggleBtn = document.querySelector('.sidebar-toggle');
-                    
                     if (sidebar) {
                         sidebar.style.transform = 'translateX(-100%)';
                         sidebarIsOpen = false;
-                        console.log('✅ Sidebar cargada y cerrada');
-                    }
-                    
-                    if (toggleBtn) {
-                        toggleBtn.classList.remove('sidebar-open');
-                        console.log('✅ Botón posicionado para sidebar cerrada');
                     }
                 }, 100);
                 
@@ -238,13 +212,12 @@
             return true;
         }
 
-        // ✅ FUNCIÓN CORREGIDA - SIN USAR showLoading PROBLEMÁTICO
+        // ✅ FUNCIÓN CORREGIDA PARA CARGAR USUARIOS
         async function loadPendingUsers() {
             console.log('📋 Cargando usuarios pendientes...');
             
             if (!checkAuth()) return;
 
-            // ✅ USAR NOTIFICACIÓN SIMPLE EN LUGAR DE showLoading
             const loadingNotification = showInfo('Cargando usuarios pendientes...', 10000);
 
             try {
@@ -257,10 +230,10 @@
                     return;
                 }
                 
-                // Mostrar loading
+                // ✅ LOADING CON 4 COLUMNAS
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="6" class="admin-loading">
+                        <td colspan="4" class="admin-loading">
                             <div class="admin-spinner"></div>
                             Cargando usuarios pendientes...
                         </td>
@@ -269,7 +242,6 @@
                 
                 if (emptyState) emptyState.style.display = 'none';
 
-                console.log('🌐 Realizando petición a /Consultas/api/getUsersNA');
                 const response = await fetch('/Consultas/api/getUsersNA', {
                     headers: {
                         'Authorization': `Bearer ${userToken}`,
@@ -277,15 +249,11 @@
                     }
                 });
 
-                console.log('📡 Respuesta recibida:', response.status);
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
-                console.log('📊 Datos recibidos:', data);
-                
                 pendingUsers = data.records || [];
                 
                 const countElement = document.getElementById('pendingCount');
@@ -297,8 +265,7 @@
                     tbody.innerHTML = '';
                     if (emptyState) emptyState.style.display = 'block';
                     if (approveAllBtn) approveAllBtn.style.display = 'none';
-                    console.log('ℹ️ No hay usuarios pendientes');
-                    // ✅ CERRAR NOTIFICACIÓN
+                    
                     if (loadingNotification && typeof hideNotification === 'function') {
                         hideNotification(loadingNotification);
                     }
@@ -306,7 +273,7 @@
                     return;
                 }
 
-                // Mostrar usuarios
+                // ✅ MOSTRAR USUARIOS - 4 COLUMNAS SIN FECHA
                 tbody.innerHTML = pendingUsers.map(user => `
                     <tr id="user-${user.idUsuario}">
                         <td>
@@ -321,16 +288,6 @@
                             </div>
                         </td>
                         <td>${user.email || 'Sin email'}</td>
-                        <td>
-                            <span class="admin-badge admin-badge-info">
-                                ${getRoleText(user.rol)}
-                            </span>
-                        </td>
-                        <td>
-                            <div style="font-size: 0.875rem;">
-                                ${user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleDateString('es-ES') : 'Sin fecha'}
-                            </div>
-                        </td>
                         <td>
                             <span class="admin-badge admin-badge-warning">
                                 ${getStatusText(user.estado)}
@@ -350,9 +307,7 @@
                 `).join('');
 
                 if (approveAllBtn) approveAllBtn.style.display = 'inline-flex';
-                console.log(`✅ ${pendingUsers.length} usuarios cargados exitosamente`);
                 
-                // ✅ CERRAR NOTIFICACIÓN
                 if (loadingNotification && typeof hideNotification === 'function') {
                     hideNotification(loadingNotification);
                 }
@@ -364,13 +319,13 @@
                 if (tbody) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="6" style="text-align: center; color: var(--admin-danger); padding: 2rem;">
+                            <td colspan="4" style="text-align: center; color: var(--admin-danger); padding: 2rem;">
                                 Error al cargar usuarios: ${error.message}
                             </td>
                         </tr>
                     `;
                 }
-                // ✅ CERRAR NOTIFICACIÓN
+                
                 if (loadingNotification && typeof hideNotification === 'function') {
                     hideNotification(loadingNotification);
                 }
@@ -378,15 +333,12 @@
             }
         }
 
-        // ✅ FUNCIÓN CORREGIDA PARA APROBAR USUARIO
+        // ✅ FUNCIÓN PARA APROBAR USUARIO
         async function approveUser(userId) {
-            console.log(`👍 Aprobando usuario ${userId}`);
-            
             if (!confirm('¿Estás seguro de que quieres aprobar este usuario?')) {
                 return;
             }
 
-            // ✅ USAR NOTIFICACIÓN SIMPLE
             const loadingNotification = showInfo('Aprobando usuario...', 10000);
 
             try {
@@ -398,16 +350,13 @@
                     }
                 });
 
-                console.log('📡 Respuesta de aprobación:', response.status);
-
                 if (response.ok) {
-                    // Remover usuario de la tabla
                     const userRow = document.getElementById(`user-${userId}`);
                     if (userRow) {
                         userRow.style.background = 'rgba(16, 185, 129, 0.1)';
                         setTimeout(() => {
                             userRow.remove();
-                            // Actualizar contador
+                            
                             const remaining = document.querySelectorAll('#usersTableBody tr[id^="user-"]').length;
                             const countElement = document.getElementById('pendingCount');
                             if (countElement) {
@@ -423,8 +372,6 @@
                         }, 500);
                     }
                     
-                    console.log(`✅ Usuario ${userId} aprobado exitosamente`);
-                    // ✅ CERRAR NOTIFICACIÓN
                     if (loadingNotification && typeof hideNotification === 'function') {
                         hideNotification(loadingNotification);
                     }
@@ -434,7 +381,6 @@
                 }
             } catch (error) {
                 console.error('❌ Error approving user:', error);
-                // ✅ CERRAR NOTIFICACIÓN
                 if (loadingNotification && typeof hideNotification === 'function') {
                     hideNotification(loadingNotification);
                 }
@@ -442,15 +388,12 @@
             }
         }
 
-        // ✅ FUNCIÓN CORREGIDA PARA RECHAZAR USUARIO
+        // ✅ FUNCIÓN PARA RECHAZAR USUARIO
         async function rejectUser(userId) {
-            console.log(`👎 Rechazando usuario ${userId}`);
-            
             if (!confirm('¿Estás seguro de que quieres rechazar este usuario?')) {
                 return;
             }
 
-            // ✅ USAR NOTIFICACIÓN SIMPLE
             const loadingNotification = showInfo('Rechazando usuario...', 10000);
 
             try {
@@ -462,16 +405,13 @@
                     }
                 });
 
-                console.log('📡 Respuesta de rechazo:', response.status);
-
                 if (response.ok) {
-                    // Remover usuario de la tabla
                     const userRow = document.getElementById(`user-${userId}`);
                     if (userRow) {
                         userRow.style.background = 'rgba(239, 68, 68, 0.1)';
                         setTimeout(() => {
                             userRow.remove();
-                            // Actualizar contador
+                            
                             const remaining = document.querySelectorAll('#usersTableBody tr[id^="user-"]').length;
                             const countElement = document.getElementById('pendingCount');
                             if (countElement) {
@@ -487,8 +427,6 @@
                         }, 500);
                     }
                     
-                    console.log(`✅ Usuario ${userId} rechazado exitosamente`);
-                    // ✅ CERRAR NOTIFICACIÓN
                     if (loadingNotification && typeof hideNotification === 'function') {
                         hideNotification(loadingNotification);
                     }
@@ -498,7 +436,6 @@
                 }
             } catch (error) {
                 console.error('❌ Error rejecting user:', error);
-                // ✅ CERRAR NOTIFICACIÓN
                 if (loadingNotification && typeof hideNotification === 'function') {
                     hideNotification(loadingNotification);
                 }
@@ -506,7 +443,7 @@
             }
         }
 
-        // ✅ FUNCIÓN CORREGIDA PARA APROBAR TODOS
+        // ✅ FUNCIÓN PARA APROBAR TODOS
         async function approveAllVisible() {
             if (!confirm('¿Estás seguro de que quieres aprobar todos los usuarios pendientes?')) {
                 return;
@@ -519,9 +456,6 @@
                 return;
             }
 
-            console.log(`📦 Aprobando ${userRows.length} usuarios en lote`);
-
-            // ✅ USAR NOTIFICACIÓN SIMPLE
             const loadingNotification = showInfo('Aprobando todos los usuarios...', 20000);
             const approveAllBtn = document.getElementById('approveAllBtn');
             const originalText = approveAllBtn.innerHTML;
@@ -538,7 +472,6 @@
                 });
 
                 if (response.ok) {
-                    // Animar la remoción de todos los usuarios
                     userRows.forEach((row, index) => {
                         setTimeout(() => {
                             row.style.background = 'rgba(16, 185, 129, 0.1)';
@@ -546,7 +479,6 @@
                         }, index * 50);
                     });
 
-                    // Actualizar UI después de las animaciones
                     setTimeout(() => {
                         const countElement = document.getElementById('pendingCount');
                         if (countElement) countElement.textContent = '0';
@@ -557,18 +489,15 @@
                         approveAllBtn.style.display = 'none';
                     }, userRows.length * 50 + 500);
 
-                    // ✅ CERRAR NOTIFICACIÓN
                     if (loadingNotification && typeof hideNotification === 'function') {
                         hideNotification(loadingNotification);
                     }
                     showSuccess(`Todos los usuarios (${userRows.length}) fueron aprobados exitosamente`);
-                    console.log(`✅ ${userRows.length} usuarios aprobados masivamente`);
                 } else {
                     throw new Error(`Error HTTP: ${response.status}`);
                 }
             } catch (error) {
                 console.error('❌ Error en aprobación masiva:', error);
-                // ✅ CERRAR NOTIFICACIÓN
                 if (loadingNotification && typeof hideNotification === 'function') {
                     hideNotification(loadingNotification);
                 }
@@ -580,16 +509,6 @@
         }
 
         // Funciones auxiliares
-        function getRoleText(role) {
-            switch (parseInt(role)) {
-                case 1: return 'Usuario';
-                case 2: return 'Biomonitor';
-                case 3: return 'Administrador';
-                case 4: return 'Super Admin';
-                default: return 'Sin rol';
-            }
-        }
-
         function getStatusText(status) {
             switch (status) {
                 case 'A': return 'Activo';
@@ -599,7 +518,6 @@
             }
         }
 
-        // Función para cerrar sesión
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('userData');
@@ -611,21 +529,16 @@
 
         // ✅ INICIALIZACIÓN
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎯 Inicializando página SAaceptarusuarios...');
-            
             if (!checkAuth()) {
                 return;
             }
 
-            // Cargar sidebar
             loadSidebar();
 
-            // Cargar usuarios pendientes automáticamente
             setTimeout(() => {
                 loadPendingUsers();
             }, 1000);
 
-            // Actualizar información del usuario si está disponible
             const userData = localStorage.getItem('userData');
             if (userData) {
                 try {
@@ -643,14 +556,9 @@
                     console.warn('⚠️ Error parsing user data:', e);
                 }
             }
-
-            // Mensaje de bienvenida
-            setTimeout(() => {
-                showSuccess('Página de usuarios pendientes cargada correctamente', 2000);
-            }, 1500);
         });
 
-        // ✅ CERRAR SIDEBAR AL HACER CLIC FUERA (MÓVIL)
+        // ✅ CERRAR SIDEBAR AL HACER CLIC FUERA
         document.addEventListener('click', function(e) {
             if (window.innerWidth < 1024 && sidebarIsOpen) {
                 const sidebar = document.querySelector('.admin-sidebar');
@@ -664,7 +572,6 @@
             }
         });
 
-        // ✅ AJUSTAR POSICIÓN DEL BOTÓN AL REDIMENSIONAR VENTANA
         window.addEventListener('resize', function() {
             const toggleBtn = document.querySelector('.sidebar-toggle');
             if (toggleBtn) {

@@ -2344,3 +2344,399 @@ svg {
     margin-bottom: 8px;
     font-weight: 600;
 }
+
+.logout-btn-modern {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+        border: 2px solid #dc3545;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+    }
+
+    .logout-btn-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #dc3545;
+        border-radius: 50px;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+        z-index: -1;
+    }
+
+    .logout-btn-modern:hover::before {
+        transform: scaleX(1);
+    }
+
+    .logout-btn-modern:hover {
+        color: white;
+        border-color: #dc3545;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+    /* ✅ VARIANTE MINIMALISTA */
+    .logout-btn-minimal {
+        background: transparent;
+        color: #dc3545;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+    }
+
+    .logout-btn-minimal::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: #dc3545;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .logout-btn-minimal:hover::after {
+        width: 100%;
+    }
+
+    .logout-btn-minimal:hover {
+        background: rgba(220, 53, 69, 0.1);
+        color: #c82333;
+    }
+
+    /* ✅ VARIANTE CON ICONO ANIMADO */
+    .logout-btn-animated {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .logout-btn-animated .logout-icon {
+        transition: transform 0.3s ease;
+    }
+
+    .logout-btn-animated:hover .logout-icon {
+        transform: translateX(4px);
+    }
+
+    .logout-btn-animated:hover {
+        background: linear-gradient(135deg, #c82333 0%, #a02129 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    }
+
+    /* ✅ RESPONSIVE */
+    @media (max-width: 1023px) {
+        .sidebar-toggle {
+            left: 20px !important;
+        }
+        
+        .admin-btn.admin-btn-secondary {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .logout-btn-modern,
+        .logout-btn-animated {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+    }
+/* ✅ ESTILOS PARA EL BOTÓN DE CERRAR SESIÓN - DASHBOARD */
+
+/* Opción 1: Estilo moderno con hover suave */
+.logout-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.logout-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.logout-btn:hover::before {
+    left: 100%;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(135deg, #c82333 0%, #a02129 100%);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+}
+
+.logout-btn:active {
+    transform: translateY(0) scale(0.95);
+    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
+}
+
+/* Opción 2: Estilo minimalista con borde */
+.logout-btn-minimal {
+    background: transparent;
+    color: #dc3545;
+    border: 2px solid #dc3545;
+    padding: 6px 10px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.logout-btn-minimal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #dc3545;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: transform 0.3s ease;
+    z-index: -1;
+}
+
+.logout-btn-minimal:hover::before {
+    transform: scale(1);
+}
+
+.logout-btn-minimal:hover {
+    color: white;
+    border-color: #dc3545;
+    transform: rotate(15deg);
+}
+
+/* Opción 3: Estilo con efecto glassmorphism */
+.logout-btn-glass {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logout-btn-glass:hover {
+    background: rgba(220, 53, 69, 0.2);
+    border-color: rgba(220, 53, 69, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(220, 53, 69, 0.2);
+}
+
+/* Opción 4: Estilo con animación de pulso */
+.logout-btn-pulse {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    position: relative;
+}
+
+.logout-btn-pulse::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #dc3545;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(1);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+.logout-btn-pulse:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.logout-btn-pulse:hover::after {
+    animation-duration: 1s;
+}
+
+/* Opción 5: Estilo elegante con sombra suave */
+.logout-btn-elegant {
+    background: white;
+    color: #dc3545;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.logout-btn-elegant:hover {
+    background: #dc3545;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 12px 24px rgba(220, 53, 69, 0.3);
+}
+
+/* ✅ INTEGRACIÓN CON EL HEADER EXISTENTE */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-menu span {
+    font-weight: 500;
+    color: var(--text-primary, #333);
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--primary-color, #48cc6c);
+    transition: transform 0.3s ease;
+}
+
+.avatar-circle:hover {
+    transform: scale(1.05);
+}
+
+.avatar-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ✅ RESPONSIVE PARA MÓVIL */
+@media (max-width: 768px) {
+    .user-menu {
+        gap: 0.5rem;
+    }
+    
+    .user-menu span {
+        display: none; /* Ocultar texto en móvil */
+    }
+    
+    .logout-btn,
+    .logout-btn-minimal,
+    .logout-btn-glass,
+    .logout-btn-pulse,
+    .logout-btn-elegant {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 1rem;
+    }
+    
+    .avatar-circle {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* ✅ TEMA OSCURO (OPCIONAL) */
+@media (prefers-color-scheme: dark) {
+    .logout-btn-elegant {
+        background: #2d3748;
+        color: #dc3545;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    .logout-btn-elegant:hover {
+        background: #dc3545;
+        color: white;
+    }
+}
