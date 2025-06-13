@@ -88,16 +88,7 @@ async function insertVClimaticas(form, idUsuario)
     console.log('ID del registro creado en formularioinicial:', consult.gen_id);
     const idRegistro = consult.gen_id;
     try{
-        let evidenciasIds = null;
-        if(form.evidencias && Array.isArray(form.evidencias) && form.evidencias.length > 0)
-        {
-            const imagesResult = await processEvidencias(form.evidencias, idUsuario, idRegistro);
-            if(imagesResult.getStatus())
-            {
-                evidenciasIds = imagesResult.getRows().map(row => row.idImagen).join(',');
-            }
-        }
-        let query = "INSERT INTO variables_climaticas (idRegistro, zona, pluviosidadMm, temperaturaMaxima, humedadMaxima, temperaturaMinima, evidencias, nivelQuebradaMt) VALUES(?,?,?,?,?,?,?,?)";
+        let query = "INSERT INTO variables_climaticas (idRegistro, zona, pluviosidadMm, temperaturaMaxima, humedadMaxima, temperaturaMinima, nivelQuebradaMt) VALUES(?,?,?,?,?,?,?)";
         let params = [
             idRegistro,
             form.zona, 
@@ -105,7 +96,6 @@ async function insertVClimaticas(form, idUsuario)
             form.temperaturaMaxima, 
             form.humedadMaxima, 
             form.temperaturaMinima,
-            evidenciasIds,
             form.nivelQuebradaMt
         ];
         qResult = await dataSource.insertData(query, params);

@@ -55,4 +55,11 @@ router.get(constants.contextURL + constants.apiURL + "/usuariosInactivos", users
 router.post(constants.contextURL + constants.apiURL + "/ai-chat", aiChatRest.aiChat);
 router.get(constants.contextURL + constants.apiURL + "/ai-config", aiChatRest.getAiConfig);
 
+//anteproyectos
+router.get(constants.contextURL + constants.apiURL + "/getUserBiomos/:idUsuario", usersRest.authenticateToken, usersRest.getUserBiomos);
+router.post(constants.contextURL + constants.apiURL + "/insertAnteproyecto/:idUsuario", usersRest.authenticateToken, usersRest.insertAnteproyecto);
+router.get(constants.contextURL + constants.apiURL + "/getAnteproyectosAbiertos", usersRest.authenticateToken, usersRest.getAnteproyectosAbiertos);
+router.get(constants.contextURL + constants.apiURL + "/getAnteproyectosCerrados", usersRest.authenticateToken, usersRest.getAnteproyectosCerrados);
+router.get(constants.contextURL + constants.apiURL + "/getAnteproyectoPDF/:idAnteproyecto", usersRest.getAnteproyectoPDF);
+
 module.exports = router;

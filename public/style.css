@@ -9,6 +9,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  scrollbar-color: #555555 #1a1a1a;
 }
 
 /* Authentication container */
@@ -2086,3 +2087,259 @@ svg {
   visibility: hidden;
 }
 
+/* ✅ ESTILOS MEJORADOS PARA CHECKBOXES - VERSION GRISESITA */
+/* ✅ CORREGIR: Contenedor principal del modal con fondo gris oscuro */
+#biomos-container {
+    background: #2a2a2a !important; /* ✅ Fondo gris oscuro para el modal */
+    border-radius: 8px;
+    padding: 0;
+    border: 1px solid #404040;
+}
+
+/* ✅ ESTILOS MEJORADOS PARA CHECKBOXES - VERSION GRIS OSCURO */
+.biomos-checkbox-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: #2a2a2a; /* ✅ Fondo gris oscuro */
+    border-radius: 8px;
+    border: 1px solid #404040; /* ✅ Borde gris más oscuro */
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #333333; /* ✅ Fondo gris medio-oscuro */
+    border: 1px solid #444444; /* ✅ Borde gris medio */
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox-item:hover {
+    background: #404040; /* ✅ Hover gris más claro */
+    border-color: #555555;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.checkbox-item:has(.biomo-checkbox:checked) {
+    background: #3a3a3a; /* ✅ Estado checked gris */
+    border-color: #666666;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ✅ CHECKBOX PERSONALIZADO - VERSIÓN GRIS OSCURO */
+.biomo-checkbox {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: 2px solid #666666; /* ✅ Borde gris medio */
+    border-radius: 4px;
+    background: #4a4a4a; /* ✅ Fondo gris medio */
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.biomo-checkbox:hover {
+    border-color: #777777;
+    background: #555555; /* ✅ Hover gris más claro */
+    box-shadow: 0 0 0 3px rgba(119, 119, 119, 0.2);
+}
+
+.biomo-checkbox:checked {
+    background: #666666; /* ✅ Checked gris medio */
+    border-color: #777777;
+    box-shadow: 0 0 0 3px rgba(119, 119, 119, 0.3);
+}
+
+.biomo-checkbox:checked::before {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.biomo-checkbox:focus {
+    outline: none;
+    border-color: #777777;
+    box-shadow: 0 0 0 3px rgba(119, 119, 119, 0.4);
+}
+
+/* ✅ ETIQUETAS DE CHECKBOX - ADAPTADAS PARA FONDO OSCURO */
+.checkbox-item label {
+    flex: 1;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #cccccc; /* ✅ Texto gris claro para fondo oscuro */
+    margin: 0;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.checkbox-item label strong {
+    color: #ffffff; /* ✅ Títulos blancos para contraste */
+    font-weight: 600;
+}
+
+.checkbox-item label .biomo-type {
+    font-size: 12px;
+    color: #aaaaaa; /* ✅ Subtexto gris claro */
+    font-weight: normal;
+}
+
+/* ✅ INDICADOR DE SELECCIÓN - VERSIÓN GRIS OSCURO */
+.biomos-selection-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #1a1a1a; /* ✅ Fondo más oscuro */
+    border-radius: 6px;
+    font-size: 12px;
+    color: #cccccc; /* ✅ Texto claro */
+    margin-bottom: 8px;
+    border: 1px solid #333333;
+}
+
+.selection-count {
+    font-weight: 600;
+    color: #ffffff; /* ✅ Contador blanco para destacar */
+}
+
+/* ✅ ESTADO VACÍO - VERSIÓN GRIS OSCURO */
+.no-biomos {
+    text-align: center;
+    padding: 24px;
+    color: #aaaaaa; /* ✅ Texto gris claro */
+    font-style: italic;
+    background: #333333; /* ✅ Fondo gris oscuro */
+    border-radius: 8px;
+    border: 1px dashed #555555; /* ✅ Borde gris medio */
+}
+
+.no-biomos a {
+    color: #dddddd; /* ✅ Enlaces claros */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.no-biomos a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* ✅ SCROLLBAR PERSONALIZADA - VERSIÓN GRIS OSCURO */
+.biomos-checkbox-container::-webkit-scrollbar {
+    width: 8px; /* ✅ Un poco más ancha */
+}
+
+.biomos-checkbox-container::-webkit-scrollbar-track {
+    background: #1a1a1a; /* ✅ Track gris muy oscuro */
+    border-radius: 4px;
+}
+
+.biomos-checkbox-container::-webkit-scrollbar-thumb {
+    background: #555555; /* ✅ Thumb gris medio */
+    border-radius: 4px;
+    border: 1px solid #333333; /* ✅ Borde para definir mejor */
+}
+
+.biomos-checkbox-container::-webkit-scrollbar-thumb:hover {
+    background: #666666; /* ✅ Hover más claro */
+}
+
+.biomos-checkbox-container::-webkit-scrollbar-thumb:active {
+    background: #777777; /* ✅ Active aún más claro */
+}
+
+/* ✅ SCROLLBAR PARA FIREFOX */
+.biomos-checkbox-container {
+    scrollbar-width: thin;
+    scrollbar-color: #555555 #1a1a1a; /* thumb track */
+}
+
+/* ✅ RESPONSIVE */
+@media (max-width: 768px) {
+    .checkbox-item {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+    
+    .biomo-checkbox {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .checkbox-item label {
+        font-size: 13px;
+    }
+    
+    .biomos-checkbox-container::-webkit-scrollbar {
+        width: 6px;
+    }
+}
+
+/* ✅ ANIMACIONES MEJORADAS */
+@keyframes checkboxSelect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.biomo-checkbox:checked {
+    animation: checkboxSelect 0.2s ease;
+}
+
+/* ✅ ESTADOS DE FOCUS MEJORADOS */
+.checkbox-item:focus-within {
+    background: #404040;
+    border-color: #777777;
+    box-shadow: 0 2px 8px rgba(119, 119, 119, 0.2);
+}
+
+/* ✅ CORRECCIÓN ESPECÍFICA PARA EL MODAL */
+.modal-body {
+  padding: 2rem 2.5rem;
+  overflow-y: auto;
+  background: #2d2d2d;
+  flex: 1;
+  /* ✅ AGREGAR: Scrollbar personalizada para todo el modal body */
+  scrollbar-width: thin;
+  scrollbar-color: #555555 #1a1a1a;
+}
+
+/* ✅ ASEGURAR QUE EL CONTENEDOR PADRE TAMBIÉN SEA OSCURO */
+.form-group:has(#biomos-container) {
+    background: transparent;
+}
+
+.form-group label[for="biomos-container"] {
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
