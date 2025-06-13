@@ -55,7 +55,6 @@ h1 {
   font-weight: 500;
   cursor: pointer;
   width: 100%;
-  max-width: 24px;
   transition: background-color 0.2s;
   text-decoration: none;
   display: inline-block;
@@ -81,7 +80,7 @@ h1 {
 .button-container {
   display: flex;
   flex-direction: column;
-  align-itemst: center;
+  align-items: center;
   gap: 12px;
   margin-top: 24px;
 }
