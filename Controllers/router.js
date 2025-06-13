@@ -6,7 +6,7 @@ const constants = require("../constants");
 const adminRest = require('./API/SAdminRestController');
 const formRest = require('./API/formRestController');
 const aiChatRest = require('./API/aiChatController');
-
+const authenticateToken = usersRest.authenticateToken;
 
 const router = express.Router();
 
