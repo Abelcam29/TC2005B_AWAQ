@@ -67,5 +67,7 @@ router.post(constants.contextURL + constants.apiURL + "/insertAnteproyecto/:idUs
 router.get(constants.contextURL + constants.apiURL + "/getAnteproyectosAbiertos", usersRest.authenticateToken, usersRest.getAnteproyectosAbiertos);
 router.get(constants.contextURL + constants.apiURL + "/getAnteproyectosCerrados", usersRest.authenticateToken, usersRest.getAnteproyectosCerrados);
 router.get(constants.contextURL + constants.apiURL + "/getAnteproyectoPDF/:idAnteproyecto", usersRest.getAnteproyectoPDF);
-
+router.put('/Consultas/api/update-password', authenticateToken, usersRest.updatePassword); // Requiere autenticación
+router.post('/Consultas/api/reset-password', usersRest.resetPassword); // No requiere autenticación (usa token JWT)
+router.post('/Consultas/api/send-recovery-email', usersRest.sendRecoveryEmail); // No requiere autenticación
 module.exports = router;

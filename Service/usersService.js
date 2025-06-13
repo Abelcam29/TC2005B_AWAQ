@@ -515,7 +515,7 @@ async function updatePassword(user)
     }
     catch(err)
     {
-        qResult = new DataSource = QueryResult(false, [], 0, 0, err.message);
+        qResult = new dataSource.QueryResult(false, [], 0, 0, err.message);
     }
     return qResult;
 }

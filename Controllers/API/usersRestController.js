@@ -723,6 +723,188 @@ async function resetPassword(req, res) {
     }
 }
 
+async function updatePassword(req, res) {
+    console.log('🔐 === INICIO updatePassword ===');
+    
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.id; // Viene del middleware de autenticación
+        
+        console.log('🆔 Usuario ID:', userId);
+        console.log('🔍 Datos recibidos:', { 
+            currentPassword: currentPassword ? '✅ Proporcionada' : '❌ No proporcionada',
+            newPassword: newPassword ? '✅ Proporcionada' : '❌ No proporcionada'
+        });
+
+        // Validar datos requeridos
+        if (!currentPassword || !newPassword) {
+            console.log('❌ Faltan datos requeridos');
+            return res.status(400).json({
+                status: 'error',
+                message: 'Contraseña actual y nueva contraseña son requeridas'
+            });
+        }
+
+        // Validar longitud de nueva contraseña
+        if (newPassword.length < 6) {
+            console.log('❌ Nueva contraseña muy corta');
+            return res.status(400).json({
+                status: 'error',
+                message: 'La nueva contraseña debe tener al menos 6 caracteres'
+            });
+        }
+
+        // Obtener usuario actual
+        console.log('🔍 Obteniendo datos del usuario...');
+        const userResult = await userService.findUser(userId);
+        
+        if (!userResult.status || userResult.rows.length === 0) {
+            console.log('❌ Usuario no encontrado');
+            return res.status(404).json({
+                status: 'error',
+                message: 'Usuario no encontrado'
+            });
+        }
+
+        const user = userResult.rows[0];
+        console.log('✅ Usuario encontrado:', user.email);
+
+        // Verificar contraseña actual
+        console.log('🔐 Verificando contraseña actual...');
+        const hashService = require('../../Service/hashPassword');
+        const storedPassword = user.password;
+        const salt = storedPassword.substring(0, 12); // Los primeros 12 caracteres son el salt
+        const storedHash = storedPassword.substring(12); // El resto es el hash
+        
+        const currentHash = await hashService.encryptPassword(currentPassword, salt);
+        
+        if (currentHash !== storedHash) {
+            console.log('❌ Contraseña actual incorrecta');
+            return res.status(400).json({
+                status: 'error',
+                message: 'La contraseña actual es incorrecta'
+            });
+        }
+
+        console.log('✅ Contraseña actual verificada');
+
+        // Actualizar contraseña
+        console.log('🔄 Actualizando contraseña...');
+        const updateResult = await userService.updatePassword({
+            idUsuario: userId,
+            password: newPassword
+        });
+
+        if (!updateResult.status) {
+            console.log('❌ Error al actualizar contraseña:', updateResult.message);
+            return res.status(500).json({
+                status: 'error',
+                message: 'Error al actualizar la contraseña'
+            });
+        }
+
+        console.log('✅ Contraseña actualizada exitosamente');
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'Contraseña actualizada correctamente'
+        });
+
+    } catch (error) {
+        console.error('💥 Error en updatePassword:', error);
+        return res.status(500).json({
+            status: 'error',
+            message: 'Error interno del servidor'
+        });
+    }
+}
+
+// ✅ FUNCIÓN PARA RESTABLECER CONTRASEÑA (CON TOKEN JWT)
+async function resetPassword(req, res) {
+    console.log('🔄 === INICIO resetPassword ===');
+    
+    try {
+        const { token, newPassword } = req.body;
+        
+        console.log('🔍 Datos recibidos:', { 
+            token: token ? '✅ Proporcionado' : '❌ No proporcionado',
+            newPassword: newPassword ? '✅ Proporcionada' : '❌ No proporcionada'
+        });
+
+        // Validar datos requeridos
+        if (!token || !newPassword) {
+            console.log('❌ Faltan datos requeridos');
+            return res.status(400).json({
+                status: 'error',
+                message: 'Token y nueva contraseña son requeridos'
+            });
+        }
+
+        // Validar longitud de nueva contraseña
+        if (newPassword.length < 6) {
+            console.log('❌ Nueva contraseña muy corta');
+            return res.status(400).json({
+                status: 'error',
+                message: 'La nueva contraseña debe tener al menos 6 caracteres'
+            });
+        }
+
+        // Verificar y decodificar token JWT
+        console.log('🔐 Verificando token JWT...');
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.SECRET);
+            console.log('✅ Token válido para email:', decoded.email);
+        } catch (tokenError) {
+            console.log('❌ Token inválido o expirado:', tokenError.message);
+            return res.status(400).json({
+                status: 'error',
+                message: 'Token inválido o expirado. Solicita un nuevo enlace de recuperación.'
+            });
+        }
+
+        // Verificar que el usuario existe
+        console.log('🔍 Verificando que el usuario existe...');
+        const userResult = await userService.getValores(decoded.email);
+        
+        if (!userResult.status || userResult.rows.length === 0) {
+            console.log('❌ Usuario no encontrado para email:', decoded.email);
+            return res.status(404).json({
+                status: 'error',
+                message: 'Usuario no encontrado'
+            });
+        }
+
+        console.log('✅ Usuario encontrado');
+
+        // Actualizar contraseña por email
+        console.log('🔄 Actualizando contraseña...');
+        const updateResult = await userService.updatePasswordByEmail(decoded.email, newPassword);
+
+        if (!updateResult.status) {
+            console.log('❌ Error al actualizar contraseña:', updateResult.message);
+            return res.status(500).json({
+                status: 'error',
+                message: 'Error al actualizar la contraseña'
+            });
+        }
+
+        console.log('✅ Contraseña restablecida exitosamente para:', decoded.email);
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'Contraseña restablecida correctamente. Puedes iniciar sesión con tu nueva contraseña.'
+        });
+
+    } catch (error) {
+        console.error('💥 Error en resetPassword:', error);
+        return res.status(500).json({
+            status: 'error',
+            message: 'Error interno del servidor'
+        });
+    }
+}
+
 
 module.exports = {
     execLogin, 
@@ -743,6 +925,8 @@ module.exports = {
     getAnteproyectosCerrados,
     getAnteproyectoPDF,
     resetPassword,
-    sendRecoveryEmail
+    sendRecoveryEmail,
+    updatePassword,
+    resetPassword
 
 }
