@@ -24,41 +24,58 @@ async function getRegistros(idUsuario) {
  * @returns 
 */
 async function getRegistrosPorUsuario(idUsuario) {
-    const allowedT = [
-        'variables_climaticas',
-        'camaras_trampa',
-        'validacion_cobertura',
-        'parcela_vegetacion',
-        'fauna_transecto',
-        'fauna_punto_conteo',
-        'fauna_busqueda_libre'];
     let qResult;
-    try
-    {
-        let query1 = "SELECT tipoRegistro FROM formularioInicial WHERE idCreador = ?";
+    try {
+        // ✅ CAMBIO: En lugar de obtener un solo tipo, obtener TODOS los formularios del usuario
+        let query1 = "SELECT * FROM formularioInicial WHERE idCreador = ?";
         let params1 = [idUsuario];
         let result1 = await dataSource.getDataWithParams(query1, params1);
+        
         if (result1.getRows().length === 0) {
-            throw new Error('No se encontró el formulario inicial para el usuario especificado');
-        }
-        const tipoRegistro = result1.getRows()[0].tipoRegistro;
-        if(!allowedT.includes(tipoRegistro))
-        {
-            throw new Error('Tipo de registro no permitido');
+            // ✅ Devolver array vacío en lugar de error
+            qResult = new dataSource.QueryResult(true, [], 0, 0, '');
+            return qResult;
         }
 
-        let query = `
-        SELECT fi.*, R.*, u.*
-        FROM usuario u
-        JOIN formularioInicial fi ON u.idUsuario = fi.idCreador
-        JOIN ${tipoRegistro} R ON fi.idFormIn = R.idRegistro
-        WHERE u.idUsuario = ?
-        `;
-        let params = [idUsuario];
-        qResult = await dataSource.getDataWithParams(query, params);
-    }
-    catch(err)
-    {
+        // ✅ OBTENER TODOS LOS REGISTROS DE TODOS LOS TIPOS
+        const formularios = result1.getRows();
+        let allRegistros = [];
+
+        // ✅ ITERAR SOBRE CADA FORMULARIO Y OBTENER SUS DATOS ESPECÍFICOS
+        for (const formulario of formularios) {
+            const tipoRegistro = formulario.tipoRegistro;
+            
+            try {
+                // ✅ JOIN ESPECÍFICO PARA CADA TIPO
+                let querySpecific = `
+                    SELECT fi.*, R.*, u.Nombre, u.email, u.rol
+                    FROM usuario u
+                    JOIN formularioInicial fi ON u.idUsuario = fi.idCreador
+                    JOIN ${tipoRegistro} R ON fi.idFormIn = R.idRegistro
+                    WHERE fi.idFormIn = ?
+                `;
+                let paramsSpecific = [formulario.idFormIn];
+                let resultSpecific = await dataSource.getDataWithParams(querySpecific, paramsSpecific);
+                
+                // ✅ Agregar los registros encontrados al array total
+                if (resultSpecific.getStatus() && resultSpecific.getRows().length > 0) {
+                    allRegistros = allRegistros.concat(resultSpecific.getRows());
+                }
+            } catch (joinError) {
+                // ✅ Si falla el JOIN para un tipo específico, agregar solo el formulario base
+                console.log(`⚠️ No se pudo hacer JOIN para tipo ${tipoRegistro}:`, joinError.message);
+                allRegistros.push({
+                    ...formulario,
+                    error_join: `No se encontraron datos específicos para ${tipoRegistro}`
+                });
+            }
+        }
+
+        // ✅ CREAR RESULTADO CON TODOS LOS REGISTROS
+        qResult = new dataSource.QueryResult(true, allRegistros, allRegistros.length, 0, '');
+        
+    } catch(err) {
+        console.error('❌ Error en getRegistrosPorUsuario:', err);
         qResult = new dataSource.QueryResult(false, [], 0, 0, err.message);
     }
     return qResult;
