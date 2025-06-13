@@ -1,10 +1,13 @@
-<!-- Sidebar Component para Administradores - Tema Naranja -->
-<aside class="sidebar admin-sidebar" id="sidebar">  <div class="sidebar-header">
+<!-- Sidebar Component para Administradores - Tema Verde -->
+<aside class="admin-sidebar" style="transform: translateX(-100%); transition: transform 0.3s ease;">
+  <div class="sidebar-header">
     <div class="sidebar-logo">
       <div class="sidebar-logo-icon">M</div>
       <span class="sidebar-text">MAWI Super Admin</span>
     </div>
-  </div>    <nav class="sidebar-nav">
+  </div>
+  
+  <nav class="sidebar-nav">
     <!-- Dashboard Principal -->
     <div class="sidebar-section">
       <h4 class="sidebar-section-title">Dashboard</h4>
@@ -15,10 +18,6 @@
       <a href="dashboard.html" class="sidebar-item" data-page="dashboard">
         <span class="sidebar-icon">🏠</span>
         <span class="sidebar-text">Dashboard MAWI</span>
-      </a>
-      <a href="dashboard-stats.html" class="sidebar-item" data-page="dashboard-stats">
-        <span class="sidebar-icon">📊</span>
-        <span class="sidebar-text">Estadísticas</span>
       </a>
     </div>
 
@@ -40,34 +39,9 @@
         <span class="sidebar-badge" id="rejectedUsersCount">0</span>
       </a>
     </div>
-
-    <!-- Administración del Sistema -->
-    <div class="sidebar-section">
-      <h4 class="sidebar-section-title">Sistema</h4>
-      <a href="#" class="sidebar-item" data-page="configuracion" onclick="showSystemSettings()">
-        <span class="sidebar-icon">⚙️</span>
-        <span class="sidebar-text">Configuración</span>
-      </a>
-      <a href="#" class="sidebar-item" data-page="logs" onclick="showSystemLogs()">
-        <span class="sidebar-icon">📄</span>
-        <span class="sidebar-text">Logs del Sistema</span>
-      </a>
-      <a href="#" class="sidebar-item" data-page="backups" onclick="showBackups()">
-        <span class="sidebar-icon">💾</span>
-        <span class="sidebar-text">Respaldos</span>
-      </a>
-    </div>  </nav>
+  </nav>
   
   <div class="sidebar-footer">
-    <a href="#" class="support-link" onclick="showSupport()">
-      <span class="sidebar-icon">💬</span>
-      <span class="sidebar-text">Soporte Técnico</span>
-    </a>
-    
-    <div class="sidebar-version">
-      <span class="sidebar-text">MAWI v2.0.0</span>
-    </div>
-    
     <div class="sidebar-divider"></div>
     
     <a href="#" class="sidebar-logout" onclick="logout()">
@@ -78,19 +52,36 @@
 </aside>
 
 <style>
-/* Estilos específicos para sidebar de admin */
+/* ✅ Estilos específicos para sidebar de admin - TEMA VERDE */
 .admin-sidebar {
-  background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: linear-gradient(180deg, #1a1f26 0%, #242b36 100%);
   width: 280px;
-  border-right: 1px solid #444;
-  --sidebar-primary: #FF6B35;
-  --sidebar-primary-dark: #E55A2B;
-  --sidebar-accent: #FFB84D;
+  border-right: 1px solid #374151;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 999;
+  overflow-y: auto;
+  /* ✅ COLORES VERDES CONSISTENTES */
+  --sidebar-primary: #48cc6c;
+  --sidebar-primary-dark: #3da458;
+  --sidebar-accent: #5dd673;
+}
+
+/* ✅ ESTADOS DE LA SIDEBAR */
+.admin-sidebar.sidebar-collapsed {
+  transform: translateX(-100%);
+}
+
+.admin-sidebar.sidebar-expanded {
+  transform: translateX(0);
 }
 
 .sidebar-header {
   padding: 1.5rem;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid #374151;
+  /* ✅ HEADER VERDE */
   background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-primary-dark) 100%);
 }
 
@@ -127,11 +118,11 @@
   padding: 0.75rem 1.5rem 0.5rem 1.5rem;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #888;
+  color: #9ca3af;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #374151;
   margin-bottom: 0.5rem;
 }
 
@@ -140,21 +131,23 @@
   align-items: center;
   gap: 12px;
   padding: 0.75rem 1.5rem;
-  color: #ccc;
+  color: #d1d5db;
   text-decoration: none;
   transition: all 0.2s ease;
   border-left: 3px solid transparent;
   position: relative;
 }
 
+/* ✅ HOVER VERDE */
 .sidebar-item:hover {
-  background: rgba(255, 107, 53, 0.1);
+  background: rgba(72, 204, 108, 0.1);
   color: var(--sidebar-primary);
   border-left-color: var(--sidebar-primary);
 }
 
+/* ✅ ACTIVO VERDE */
 .sidebar-item.active {
-  background: rgba(255, 107, 53, 0.15);
+  background: rgba(72, 204, 108, 0.15);
   color: var(--sidebar-primary);
   border-left-color: var(--sidebar-primary);
   font-weight: 500;
@@ -172,6 +165,7 @@
   flex: 1;
 }
 
+/* ✅ BADGE VERDE */
 .sidebar-badge {
   background: var(--sidebar-primary);
   color: white;
@@ -186,69 +180,12 @@
 .sidebar-footer {
   margin-top: auto;
   padding: 1rem;
-  border-top: 1px solid #444;
-}
-
-.sidebar-user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0.75rem;
-  background: rgba(255, 107, 53, 0.1);
-  border-radius: 8px;
-  margin-bottom: 1rem;
-}
-
-.sidebar-user-avatar {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, var(--sidebar-primary) 0%, var(--sidebar-primary-dark) 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-  font-size: 0.875rem;
-}
-
-.sidebar-username {
-  color: white;
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
-.sidebar-user-role {
-  color: #888;
-  font-size: 0.75rem;
-}
-
-.support-link {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0.5rem;
-  color: #888;
-  text-decoration: none;
-  font-size: 0.875rem;
-  transition: color 0.2s ease;
-  margin-bottom: 0.5rem;
-}
-
-.support-link:hover {
-  color: var(--sidebar-primary);
-}
-
-.sidebar-version {
-  text-align: center;
-  color: #666;
-  font-size: 0.75rem;
-  padding: 0.5rem;
+  border-top: 1px solid #374151;
 }
 
 .sidebar-divider {
   height: 1px;
-  background: #444;
+  background: #374151;
   margin: 0.5rem 0;
 }
 
@@ -257,7 +194,7 @@
   align-items: center;
   gap: 8px;
   padding: 0.5rem;
-  color: #ff6b6b;
+  color: #ef4444;
   text-decoration: none;
   font-size: 0.875rem;
   transition: all 0.2s ease;
@@ -265,9 +202,25 @@
 }
 
 .sidebar-logout:hover {
-  background: rgba(255, 107, 107, 0.1);
-  color: #ff5252;
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
   transform: translateX(2px);
+}
+
+/* ✅ RESPONSIVE - MÓVIL */
+@media (max-width: 1023px) {
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    transform: translateX(-100%);
+  }
+  
+  .admin-sidebar.sidebar-expanded {
+    transform: translateX(0);
+  }
 }
 </style>
 
@@ -275,6 +228,10 @@
 // Script para manejar la sidebar de administrador
 (function() {
   'use strict';
+
+  // ✅ VARIABLES PARA FORZAR ESTADO CERRADO
+  let sidebarInitialized = false;
+  let forcedClosed = false;
 
   // Función para marcar el elemento activo en la sidebar
   function setActiveMenuItem() {
@@ -328,6 +285,7 @@
       }
     }
   }
+
   // Cargar contador de usuarios pendientes
   async function loadPendingUsersCount() {
     try {
@@ -384,25 +342,110 @@
     }
   }
 
-  // Función de soporte
-  window.showSupport = function() {
-    alert('Contacte al administrador del sistema para soporte técnico.\nEmail: admin@mawi.com\nTeléfono: +1 (555) 123-4567');
-  };
-  // Inicializar cuando el DOM esté listo
-  document.addEventListener('DOMContentLoaded', function() {
+  // ✅ FUNCIÓN PARA FORZAR SIDEBAR CERRADA
+  function forceSidebarClosed() {
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (sidebar && !forcedClosed) {
+      // Forzar estado colapsado
+      sidebar.classList.add('sidebar-collapsed');
+      sidebar.classList.remove('sidebar-expanded');
+      
+      // Agregar estilos inline para asegurar que se mantenga cerrada
+      sidebar.style.transform = 'translateX(-100%)';
+      
+      // Actualizar localStorage
+      localStorage.setItem('mawi_sidebar_state', 'collapsed');
+      
+      // Marcar como forzada
+      forcedClosed = true;
+      
+      console.log('✅ Sidebar FORZADA como cerrada');
+    }
+  }
+
+  // ✅ FUNCIÓN PARA INTERCEPTAR CUALQUIER INTENTO DE ABRIR LA SIDEBAR
+  function interceptSidebarOpen() {
+    // Interceptar eventos que puedan abrir la sidebar
+    document.addEventListener('sidebarOpened', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('🚫 Intento de abrir sidebar interceptado');
+      forceSidebarClosed();
+    });
+
+    // Observar cambios en las clases de la sidebar
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (sidebar) {
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const target = mutation.target;
+            if (target.classList.contains('sidebar-expanded') && !sidebarInitialized) {
+              console.log('🚫 Sidebar se intentó abrir automáticamente, forzando cierre');
+              forceSidebarClosed();
+            }
+          }
+        });
+      });
+
+      observer.observe(sidebar, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+  }
+
+  // ✅ INICIALIZACIÓN INMEDIATA
+  function initializeSidebar() {
+    console.log('🔧 Inicializando sidebar cerrada...');
+    
+    // Forzar cerrada inmediatamente
+    forceSidebarClosed();
+    
+    // Interceptar intentos de apertura
+    interceptSidebarOpen();
+    
+    // Cargar datos
     setActiveMenuItem();
     loadUserInfo();
     loadPendingUsersCount();
     loadRejectedUsersCount();
+    
+    // Marcar como inicializada después de un delay
+    setTimeout(() => {
+      sidebarInitialized = true;
+      console.log('✅ Sidebar inicializada completamente');
+    }, 2000);
+  }
+
+  // ✅ EJECUTAR INMEDIATAMENTE CUANDO SE CARGA EL SCRIPT
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSidebar);
+  } else {
+    initializeSidebar();
+  }
+
+  // ✅ TAMBIÉN EJECUTAR EN EVENTOS PERSONALIZADOS
+  document.addEventListener('sidebarLoaded', function() {
+    console.log('📢 Evento sidebarLoaded recibido, forzando cierre');
+    setTimeout(() => {
+      forceSidebarClosed();
+      interceptSidebarOpen();
+    }, 100);
   });
 
-  // Escuchar evento personalizado de carga de sidebar
-  document.addEventListener('sidebarLoaded', function() {
-    setActiveMenuItem();
-    loadUserInfo();
-    loadPendingUsersCount();
-    loadRejectedUsersCount();
-  });
+  // ✅ FORZAR CIERRE CADA 500ms DURANTE LOS PRIMEROS 5 SEGUNDOS
+  let attempts = 0;
+  const maxAttempts = 10;
+  const forceCloseInterval = setInterval(() => {
+    attempts++;
+    forceSidebarClosed();
+    
+    if (attempts >= maxAttempts) {
+      clearInterval(forceCloseInterval);
+      console.log('✅ Finalizado forzado de cierre de sidebar');
+    }
+  }, 500);
 
 })();
 </script>

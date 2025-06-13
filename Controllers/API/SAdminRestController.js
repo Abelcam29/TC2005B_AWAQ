@@ -250,7 +250,7 @@ async function totalRegistros(req, res) {
     }
 }
 
-async function usuariosInactivos(res) {
+async function usuariosInactivos(req, res) {
     try {
         const result = await SAService.usuariosInactivos();
         const count = result.getRows()[0]?.total || 0;

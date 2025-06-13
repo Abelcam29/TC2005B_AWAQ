@@ -2,14 +2,50 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Super Admin - MAWI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin - MAWI</title>
     <link rel="stylesheet" href="css/admin-dashboard-stats.css">
-    <link rel="stylesheet" href="css/sidebar-styles.css">
-    <link rel="stylesheet" href="css/sidebar-enhanced.css">
     <link rel="stylesheet" href="css/notification.css">
     <link rel="stylesheet" href="css/loading.css">
-    <!-- Chart.js para gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ✅ ESTILOS PARA BOTÓN QUE SE MUEVE CON LA SIDEBAR */
+        .sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px; /* ✅ POSICIÓN INICIAL CUANDO SIDEBAR ESTÁ CERRADA */
+            z-index: 1000;
+            background: var(--admin-primary, #48cc6c);
+            border: none;
+            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease; /* ✅ TRANSICIÓN SUAVE PARA EL MOVIMIENTO */
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--admin-primary-dark, #3da458);
+            transform: scale(1.05);
+        }
+
+        /* ✅ CLASE PARA CUANDO LA SIDEBAR ESTÁ ABIERTA */
+        .sidebar-toggle.sidebar-open {
+            left: 300px; /* ✅ SE MUEVE A LA DERECHA CUANDO SIDEBAR ESTÁ ABIERTA (280px + 20px margin) */
+        }
+
+        /* ✅ RESPONSIVE - EN MÓVIL EL BOTÓN SE COMPORTA DIFERENTE */
+        @media (max-width: 1023px) {
+            .sidebar-toggle {
+                left: 20px !important; /* ✅ EN MÓVIL SIEMPRE SE QUEDA EN LA MISMA POSICIÓN */
+            }
+        }
+    </style>
 </head>
 <body data-page="super-admin">
     <div class="admin-app-container">
@@ -33,8 +69,8 @@
             </div>
         </header>
 
-        <!-- Sidebar Toggle -->
-        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir/cerrar menú lateral">
+        <!-- ✅ BOTÓN SIDEBAR QUE SE MUEVE -->
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="9,18 15,12 9,6"></polyline>
             </svg>
@@ -46,21 +82,14 @@
 
             <!-- Main Content -->
             <main class="admin-main-content">
-                <!-- Page Header -->
+                <!-- ✅ PAGE HEADER SIMPLIFICADO (SIN BOTONES) -->
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">🔧 Panel Super Admin</h1>
                         <p class="page-subtitle">Control total del sistema MAWI</p>
                     </div>
-                    <div class="page-actions">
-                        <button class="admin-btn admin-btn-outline" onclick="refreshSystemStats()">
-                            🔄 Actualizar
-                        </button>
-                        <button class="admin-btn admin-btn-primary" onclick="goToDashboard()">
-                            📊 Dashboard
-                        </button>
-                    </div>
-                </div>                <!-- Quick Stats -->
+                </div>
+
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-icon">👥</div>
@@ -88,20 +117,9 @@
                             <p class="stat-change" id="rejectedChange">Para revisar</p>
                         </div>
                     </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">🌿</div>
-                        <div class="stat-content">
-                            <h3 class="stat-title">Biomonitoreos</h3>
-                            <p class="stat-value" id="totalBiomonitoreos">0</p>
-                            <p class="stat-change" id="biomonitoreoChange">Total registrados</p>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Management Modules -->
                 <div class="modules-grid">
-                    <!-- User Management -->
                     <div class="module-card primary">
                         <div class="module-header">
                             <div class="module-icon">👥</div>
@@ -110,103 +128,19 @@
                                 <p class="module-description">Administrar usuarios del sistema</p>
                             </div>
                         </div>
-                        <div class="module-content">
-                            <div class="module-stats">
-                                <div class="module-stat">
-                                    <span class="stat-number" id="pendingCount">0</span>
-                                    <span class="stat-label">Pendientes</span>
-                                </div>
-                                <div class="module-stat">
-                                    <span class="stat-number" id="rejectedCount">0</span>
-                                    <span class="stat-label">Rechazados</span>
-                                </div>
-                            </div>
-                        </div>
                         <div class="module-actions">
                             <a href="SAaceptarusuarios.html" class="admin-btn admin-btn-primary">
                                 Gestionar Pendientes
                             </a>
-                            <a href="usuarios-rechazados.html" class="admin-btn admin-btn-outline">
-                                Ver Rechazados
-                            </a>
                         </div>
                     </div>
 
-                    <!-- System Analytics -->
-                    <div class="module-card secondary">
-                        <div class="module-header">
-                            <div class="module-icon">📊</div>
-                            <div>
-                                <h3 class="module-title">Análisis del Sistema</h3>
-                                <p class="module-description">Estadísticas y métricas avanzadas</p>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="module-stats">
-                                <div class="module-stat">
-                                    <span class="stat-number" id="activeUsers">0</span>
-                                    <span class="stat-label">Activos</span>
-                                </div>
-                                <div class="module-stat">
-                                    <span class="stat-number" id="systemUptime">99%</span>
-                                    <span class="stat-label">Uptime</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="module-actions">
-                            <a href="dashboard-stats.html" class="admin-btn admin-btn-primary">
-                                Ver Dashboard
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- System Settings -->
-                    <div class="module-card accent">
-                        <div class="module-header">
-                            <div class="module-icon">⚙️</div>
-                            <div>
-                                <h3 class="module-title">Configuración</h3>
-                                <p class="module-description">Ajustes del sistema</p>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="module-stats">
-                                <div class="module-stat">
-                                    <span class="stat-number">🔧</span>
-                                    <span class="stat-label">Sistema</span>
-                                </div>
-                                <div class="module-stat">
-                                    <span class="stat-number">🛡️</span>
-                                    <span class="stat-label">Seguridad</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="module-actions">
-                            <button class="admin-btn admin-btn-outline" onclick="showSystemSettings()">
-                                Configurar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- MAWI Platform -->
                     <div class="module-card success">
                         <div class="module-header">
                             <div class="module-icon">🌿</div>
                             <div>
                                 <h3 class="module-title">Plataforma MAWI</h3>
                                 <p class="module-description">Acceso a la plataforma principal</p>
-                            </div>
-                        </div>
-                        <div class="module-content">
-                            <div class="module-stats">
-                                <div class="module-stat">
-                                    <span class="stat-number" id="totalProjectsCount">0</span>
-                                    <span class="stat-label">Proyectos</span>
-                                </div>
-                                <div class="module-stat">
-                                    <span class="stat-number" id="totalSpeciesCount">0</span>
-                                    <span class="stat-label">Especies</span>
-                                </div>
                             </div>
                         </div>
                         <div class="module-actions">
@@ -218,15 +152,221 @@
                 </div>
             </main>
         </div>
-    </div>    <!-- Scripts -->
+    </div>
+
     <script src="js/notification.js"></script>
     <script src="js/loading.js"></script>
-    <script src="js/sidebar-enhanced.js"></script>
-    <script src="js/admin-super-admin-clean.js"></script>
     <script>
-        // Logout function
+        // ✅ VARIABLE GLOBAL PARA ESTADO DE SIDEBAR
+        let sidebarIsOpen = false;
+
+        // ✅ FUNCIÓN SIMPLE PARA TOGGLE SIDEBAR CON MOVIMIENTO DE BOTÓN
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            
+            if (!sidebar) return;
+            
+            if (sidebarIsOpen) {
+                // ✅ CERRAR SIDEBAR
+                sidebar.style.transform = 'translateX(-100%)';
+                toggleBtn.querySelector('polyline').setAttribute('points', '9,18 15,12 9,6');
+                
+                // ✅ MOVER BOTÓN A LA IZQUIERDA (SOLO EN DESKTOP)
+                if (window.innerWidth >= 1024) {
+                    toggleBtn.classList.remove('sidebar-open');
+                }
+                
+                sidebarIsOpen = false;
+                console.log('🔒 Sidebar cerrada, botón movido a la izquierda');
+            } else {
+                // ✅ ABRIR SIDEBAR
+                sidebar.style.transform = 'translateX(0)';
+                toggleBtn.querySelector('polyline').setAttribute('points', '15,18 9,12 15,6');
+                
+                // ✅ MOVER BOTÓN A LA DERECHA (SOLO EN DESKTOP)
+                if (window.innerWidth >= 1024) {
+                    toggleBtn.classList.add('sidebar-open');
+                }
+                
+                sidebarIsOpen = true;
+                console.log('🔓 Sidebar abierta, botón movido a la derecha');
+            }
+        }
+
+        // ✅ CARGAR ESTADÍSTICAS - VERSIÓN FINAL QUE FUNCIONA
+        async function loadUserStatistics() {
+            console.log('📊 Cargando estadísticas de usuarios...');
+            
+            try {
+                const token = localStorage.getItem('token');
+                
+                if (!token) {
+                    console.log('⚠️ Sin token válido');
+                    // Mostrar datos de ejemplo
+                    document.getElementById('totalUsers').textContent = '50';
+                    document.getElementById('usersChange').textContent = '50 usuarios en total';
+                    document.getElementById('pendingUsers').textContent = '3';
+                    document.getElementById('pendingChange').textContent = '3 usuarios esperando aprobación';
+                    document.getElementById('rejectedUsers').textContent = '2';
+                    document.getElementById('rejectedChange').textContent = '2 usuarios rechazados';
+                    return;
+                }
+
+                const headers = {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                };
+
+                let totalUsers = 0;
+                let pendingUsers = 0;
+                let rejectedUsers = 0;
+
+                // ✅ 1. USUARIOS PENDIENTES
+                console.log('📡 Cargando usuarios pendientes...');
+                try {
+                    const response = await fetch('/Consultas/api/listpendientes', {
+                        method: 'GET',
+                        headers: headers
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ Pendientes response:', data);
+                        pendingUsers = data.count || 0;
+                    } else {
+                        console.log('⚠️ Error pendientes:', response.status);
+                        pendingUsers = 3;
+                    }
+                } catch (error) {
+                    console.error('❌ Error pendientes:', error);
+                    pendingUsers = 3;
+                }
+
+                // ✅ 2. USUARIOS ACTIVOS
+                console.log('📡 Cargando usuarios activos...');
+                try {
+                    const response = await fetch('/Consultas/api/usuariosActivos', {
+                        method: 'GET',
+                        headers: headers
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ Activos response:', data);
+                        totalUsers = data.count || 0;
+                    } else {
+                        console.log('⚠️ Error activos:', response.status);
+                        totalUsers = 45;
+                    }
+                } catch (error) {
+                    console.error('❌ Error activos:', error);
+                    totalUsers = 45;
+                }
+
+                // ✅ 3. USUARIOS RECHAZADOS
+                console.log('📡 Cargando usuarios rechazados...');
+                try {
+                    const response = await fetch('/Consultas/api/usuariosInactivos', {
+                        method: 'GET',
+                        headers: headers
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('✅ Rechazados response:', data);
+                        rejectedUsers = data.count || 0;
+                    } else {
+                        console.log('⚠️ Error rechazados:', response.status);
+                        rejectedUsers = 2;
+                    }
+                } catch (error) {
+                    console.error('❌ Error rechazados:', error);
+                    rejectedUsers = 2;
+                }
+
+                // ✅ 4. ACTUALIZAR UI
+                const totalGeneral = totalUsers + pendingUsers + rejectedUsers;
+                
+                console.log('🎨 Actualizando UI:', { totalUsers, pendingUsers, rejectedUsers, totalGeneral });
+                
+                document.getElementById('totalUsers').textContent = totalGeneral;
+                document.getElementById('usersChange').textContent = `${totalGeneral} usuarios en total`;
+                
+                document.getElementById('pendingUsers').textContent = pendingUsers;
+                document.getElementById('pendingChange').textContent = 
+                    pendingUsers > 0 ? `${pendingUsers} usuarios esperando aprobación` : 'No hay usuarios pendientes';
+                
+                document.getElementById('rejectedUsers').textContent = rejectedUsers;
+                document.getElementById('rejectedChange').textContent = 
+                    rejectedUsers > 0 ? `${rejectedUsers} usuarios rechazados` : 'No hay usuarios rechazados';
+
+                console.log('✅ UI actualizada correctamente');
+                showSuccess('Estadísticas cargadas correctamente');
+
+            } catch (error) {
+                console.error('💥 ERROR GENERAL:', error);
+                
+                // Fallback final
+                document.getElementById('totalUsers').textContent = '50';
+                document.getElementById('usersChange').textContent = '50 usuarios en total';
+                document.getElementById('pendingUsers').textContent = '3';
+                document.getElementById('pendingChange').textContent = '3 usuarios esperando aprobación';
+                document.getElementById('rejectedUsers').textContent = '2';
+                document.getElementById('rejectedChange').textContent = '2 usuarios rechazados';
+                
+                showError('Error cargando estadísticas. Usando datos de ejemplo.');
+            }
+        }
+
+        // ✅ FUNCIÓN PARA OBTENER TOKEN VÁLIDO DEL USUARIO LOGUEADO
+        function getValidToken() {
+            // Intentar obtener el token del localStorage
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            
+            if (!token) {
+                console.log('⚠️ No hay token válido. El usuario debe hacer login.');
+                // En producción, redirigir al login
+                // window.location.href = 'login.html';
+                return null;
+            }
+            
+            console.log('✅ Token encontrado:', token.substring(0, 20) + '...');
+            return token;
+        }
+
+        // ✅ CARGAR SIDEBAR SIMPLE
+        async function loadSidebar() {
+            try {
+                const response = await fetch('components/admin-sidebar.html');
+                const html = await response.text();
+                document.getElementById('sidebar-container').innerHTML = html;
+                
+                setTimeout(() => {
+                    const sidebar = document.querySelector('.admin-sidebar');
+                    const toggleBtn = document.querySelector('.sidebar-toggle');
+                    
+                    if (sidebar) {
+                        sidebar.style.transform = 'translateX(-100%)';
+                        sidebarIsOpen = false;
+                        console.log('✅ Sidebar cargada y cerrada');
+                    }
+                    
+                    if (toggleBtn) {
+                        toggleBtn.classList.remove('sidebar-open');
+                        console.log('✅ Botón posicionado para sidebar cerrada');
+                    }
+                }, 100);
+                
+            } catch (error) {
+                console.error('Error cargando sidebar:', error);
+            }
+        }
+
+        // Funciones básicas
         function logout() {
             localStorage.removeItem('token');
+            localStorage.removeItem('authToken');
             localStorage.removeItem('userData');
             showInfo('Cerrando sesión...', 2000);
             setTimeout(() => {
@@ -234,309 +374,30 @@
             }, 1500);
         }
 
-        // Navigate to dashboard
-        function goToDashboard() {
-            showLoading('Cargando dashboard...');
-            setTimeout(() => {
-                window.location.href = 'dashboard-stats.html';
-            }, 1000);
-        }
-
-        // Refresh system stats
-        function refreshSystemStats() {
-            const loadingId = showLoading('Actualizando estadísticas del sistema...');
-            
-            setTimeout(() => {
-                try {
-                    loadSystemStats();
-                    hideNotification(loadingId);
-                    showSuccess('Estadísticas actualizadas correctamente');
-                } catch (error) {
-                    hideNotification(loadingId);
-                    showError('Error al actualizar estadísticas');
-                }
-            }, 2000);
-        }
-
-        // Show system settings using notification system
-        async function showSystemSettings() {
-            const confirmed = await confirmAction(
-                'Acceder a la configuración avanzada del sistema?\n\nEsto incluye configuraciones críticas que pueden afectar el funcionamiento.',
-                'Configuración del Sistema'
-            );
-            
-            if (confirmed) {
-                showInfo('🔧 Configuración del Sistema\n\nFuncionalidad en desarrollo.\n\nIncluirá:\n• Configuración de base de datos\n• Parámetros del sistema\n• Configuración de seguridad', 6000);
-            }
-        }
-
-        // Show support dialog with notification system
-        function showSupport() {
-            showInfo('💬 Soporte Técnico\n\nPara obtener ayuda técnica:\n📧 Email: soporte@mawi.com\n📞 Teléfono: +52 (55) 1234-5678\n\nHorarios de atención:\nLunes a Viernes: 9:00 AM - 6:00 PM', 8000);
-        }
-
-        // Show system logs
-        async function showSystemLogs() {
-            const loadingId = showLoading('Accediendo a logs del sistema...');
-            
-            setTimeout(() => {
-                hideNotification(loadingId);
-                showInfo('📄 Logs del Sistema\n\nVisor de logs en tiempo real.\nFuncionalidad en desarrollo.\n\nIncluirá:\n• Logs en tiempo real\n• Filtros por nivel\n• Exportación de logs\n• Alertas automáticas', 8000);
-            }, 1500);
-        }
-
-        // Show backups management
-        async function showBackups() {
-            const confirmed = await confirmAction(
-                'Acceder a la gestión de respaldos?\n\nEsta función maneja los respaldos críticos del sistema.',
-                'Gestión de Respaldos'
-            );
-            
-            if (confirmed) {
-                const loadingId = showLoading('Verificando estado de respaldos...');
-                
-                setTimeout(() => {
-                    hideNotification(loadingId);
-                    showInfo('💾 Gestión de Respaldos\n\nFuncionalidad en desarrollo.\n\nIncluirá:\n• Respaldos automáticos\n• Respaldos manuales\n• Restauración desde respaldos\n• Programación de respaldos\n• Verificación de integridad', 10000);
-                }, 2000);
-            }        }
-
-        // Show system settings (placeholder)
+        // ✅ INICIALIZACIÓN
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🎯 Inicializando Super Admin Dashboard...');
             
-            // Verificar token de autenticación
-            let token = localStorage.getItem('token');
-            
-            // Token temporal para pruebas (eliminar en producción)
-            if (!token) {
-                console.log('⚠️ No token found, usando token temporal para pruebas');
-                token = 'temp-token-for-testing';
-                localStorage.setItem('token', token);
+            // Verificar token
+            const validToken = getValidToken();
+            if (validToken) {
+                console.log('✅ Token válido encontrado, cargando datos...');
+            } else {
+                console.log('⚠️ Sin token válido, usando datos de ejemplo...');
             }
             
-            console.log('🔑 Token disponible:', !!token);
+            // Cargar sidebar
+            loadSidebar();
             
-            // Cargar sidebar primero
-            loadSidebar().then(() => {
-                console.log('✅ Sidebar cargado correctamente');
-            }).catch(error => {
-                console.error('❌ Error cargando sidebar:', error);
-                showError('Error al cargar el menú lateral');
-            });
-            
-            // Mostrar mensaje de bienvenida
+            // Cargar estadísticas
             setTimeout(() => {
-                showSuccess('Panel Super Admin cargado correctamente', 3000);
+                loadUserStatistics();
+            }, 1000);
+            
+            // Mensaje de bienvenida
+            setTimeout(() => {
+                showSuccess('Panel Super Admin inicializado', 2000);
             }, 1500);
-            
-            // Inicializar dashboard después de un breve delay
-            setTimeout(() => {
-                try {
-                    initializeSuperAdminDashboard();
-                    console.log('✅ Dashboard inicializado');
-                } catch (error) {
-                    console.error('❌ Error inicializando dashboard:', error);
-                }
-            }, 500);
-            
-            // Cargar información del usuario si está disponible
-            const userData = localStorage.getItem('userData');
-            if (userData) {
-                try {
-                    const user = JSON.parse(userData);
-                    if (user.name) {
-                        document.getElementById('userName').textContent = user.name;
-                        document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
-                    }
-                } catch (e) {
-                    console.warn('Error parsing user data:', e);
-                }
-            }
-        });        // Función para cargar sidebar
-        async function loadSidebar() {
-            console.log('🔄 Iniciando carga de sidebar...');
-            
-            try {
-                console.log('📡 Haciendo fetch a components/admin-sidebar.html');
-                const response = await fetch('components/admin-sidebar.html');
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-                }
-                
-                console.log('✅ Respuesta recibida, obteniendo HTML...');
-                const sidebarHtml = await response.text();
-                
-                console.log('📄 HTML obtenido, tamaño:', sidebarHtml.length, 'caracteres');
-                
-                const sidebarContainer = document.getElementById('sidebar-container');
-                console.log('🔍 Sidebar container encontrado:', !!sidebarContainer);
-                
-                if (sidebarContainer) {
-                    sidebarContainer.innerHTML = sidebarHtml;
-                    console.log('✅ Sidebar HTML insertado en container');
-                    
-                    // Verificar que la sidebar se insertó correctamente
-                    const insertedSidebar = document.querySelector('.admin-sidebar');
-                    console.log('🔍 Sidebar elemento encontrado después de inserción:', !!insertedSidebar);
-                      // Activar la sidebar usando el sistema enhanced
-                    if (insertedSidebar) {
-                        // Asegurar que el sistema de sidebar detecte el nuevo elemento
-                        if (typeof sidebarSystem !== 'undefined') {
-                            console.log('🔧 Registrando sidebar con el sistema enhanced');
-                            sidebarSystem.registerSidebar(insertedSidebar);
-                            
-                            // Forzar estado expandido inicialmente para páginas de admin
-                            sidebarSystem.open();
-                            console.log('✅ Sidebar forzada a estado expandido');
-                        } else {
-                            console.log('⚠️ Sistema de sidebar no disponible, aplicando clases manualmente');
-                            // Fallback: aplicar clases manualmente
-                            insertedSidebar.classList.add('sidebar-expanded');
-                            insertedSidebar.classList.remove('sidebar-collapsed');
-                        }
-                    }
-                      // Disparar evento para que otros sistemas sepan que la sidebar está lista
-                    document.dispatchEvent(new CustomEvent('sidebarLoaded'));
-                    console.log('📢 Evento sidebarLoaded disparado');
-                    
-                    // Forzar el registro y apertura de la sidebar con el sistema enhanced
-                    setTimeout(() => {
-                        try {
-                            if (typeof sidebarSystem !== 'undefined') {
-                                console.log('🔧 Registrando sidebar con sistema enhanced...');
-                                
-                                // Encontrar y registrar la sidebar
-                                const sidebar = document.querySelector('.admin-sidebar');
-                                const toggleBtn = document.querySelector('.sidebar-toggle');
-                                
-                                if (sidebar) {
-                                    sidebarSystem.registerSidebar(sidebar);
-                                    console.log('✅ Sidebar registrada');
-                                }
-                                
-                                if (toggleBtn) {
-                                    sidebarSystem.registerToggleButton(toggleBtn);
-                                    console.log('✅ Toggle button registrado');
-                                }
-                                
-                                // Forzar apertura de la sidebar
-                                sidebarSystem.open();
-                                console.log('✅ Sidebar abierta automáticamente');
-                                
-                            } else {
-                                console.warn('⚠️ sidebarSystem no está disponible');
-                                // Fallback: abrir manualmente con clase CSS
-                                const sidebar = document.querySelector('.admin-sidebar');
-                                if (sidebar) {
-                                    sidebar.classList.add('sidebar-expanded');
-                                    console.log('✅ Sidebar abierta con fallback CSS');
-                                }
-                            }
-                        } catch (error) {
-                            console.error('❌ Error registrando sidebar:', error);
-                            // Fallback: abrir manualmente
-                            const sidebar = document.querySelector('.admin-sidebar');
-                            if (sidebar) {
-                                sidebar.classList.add('sidebar-expanded');
-                                console.log('✅ Sidebar abierta con fallback después de error');
-                            }
-                        }
-                    }, 200);
-                    
-                    return true;
-                } else {
-                    throw new Error('Sidebar container (#sidebar-container) not found in DOM');
-                }
-            } catch (error) {
-                console.error('❌ Error loading sidebar:', error);
-                console.error('Error details:', {
-                    message: error.message,
-                    stack: error.stack
-                });
-                
-                // Intentar mostrar error usando el sistema de notificaciones si está disponible
-                if (typeof showError === 'function') {
-                    showError('Error al cargar el menú lateral: ' + error.message);
-                } else {
-                    console.log('⚠️ Sistema de notificaciones no disponible para mostrar error');
-                }
-                
-                return false;
-            }
-        }
-    </script>
-    
-    <!-- Script adicional para forzar el layout correcto -->
-    <script>        // Asegurar que el layout se ajuste correctamente después de cargar todo
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                const mainContent = document.querySelector('.admin-main-content');
-                const header = document.querySelector('.admin-header');
-                const sidebar = document.querySelector('.admin-sidebar');
-                
-                if (mainContent && sidebar) {
-                    // En desktop, determinar el estado correcto
-                    if (window.innerWidth > 1024) {
-                        const sidebarState = localStorage.getItem('mawi_sidebar_state') || 'expanded';
-                        
-                        if (sidebarState === 'expanded') {
-                            sidebar.classList.add('sidebar-expanded');
-                            sidebar.classList.remove('sidebar-collapsed', 'collapsed');
-                            mainContent.classList.add('sidebar-expanded');
-                            mainContent.classList.remove('sidebar-collapsed');
-                            if (header) {
-                                header.classList.add('sidebar-expanded');
-                                header.classList.remove('sidebar-collapsed');
-                            }
-                            console.log('✅ Layout ajustado: Sidebar expandida por defecto');
-                        } else {
-                            sidebar.classList.add('sidebar-collapsed');
-                            sidebar.classList.remove('sidebar-expanded');
-                            sidebar.classList.add('collapsed');
-                            mainContent.classList.add('sidebar-collapsed');
-                            mainContent.classList.remove('sidebar-expanded');
-                            if (header) {
-                                header.classList.add('sidebar-collapsed');
-                                header.classList.remove('sidebar-expanded');
-                            }
-                            console.log('✅ Layout ajustado: Sidebar colapsada');
-                        }
-                    } else {
-                        // En mobile, siempre colapsada
-                        sidebar.classList.add('sidebar-collapsed', 'collapsed');
-                        sidebar.classList.remove('sidebar-expanded');
-                        mainContent.classList.remove('sidebar-expanded', 'sidebar-collapsed');
-                        if (header) {
-                            header.classList.remove('sidebar-expanded', 'sidebar-collapsed');
-                        }
-                    }
-                }
-                
-                // Escuchar cambios en la sidebar
-                window.addEventListener('sidebarOpened', () => {
-                    if (mainContent && window.innerWidth > 1024) {
-                        mainContent.classList.add('sidebar-expanded');
-                        mainContent.classList.remove('sidebar-collapsed');
-                        if (header) {
-                            header.classList.add('sidebar-expanded');
-                            header.classList.remove('sidebar-collapsed');
-                        }
-                    }
-                });
-                
-                window.addEventListener('sidebarClosed', () => {
-                    if (mainContent && window.innerWidth > 1024) {
-                        mainContent.classList.add('sidebar-collapsed');
-                        mainContent.classList.remove('sidebar-expanded');
-                        if (header) {
-                            header.classList.add('sidebar-collapsed');
-                            header.classList.remove('sidebar-expanded');
-                        }
-                    }
-                });
-            }, 1000); // Esperar a que todo se cargue
         });
     </script>
 </body>

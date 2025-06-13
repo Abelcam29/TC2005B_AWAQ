@@ -4,10 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios Pendientes - MAWI Super Admin</title>
-    <link rel="stylesheet" href="css/admin-styles.css">
+    <link rel="stylesheet" href="css/admin-dashboard-stats.css">
+    <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style>
+        /* ✅ ESTILOS PARA BOTÓN QUE SE MUEVE CON LA SIDEBAR */
+        .sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px; /* ✅ POSICIÓN INICIAL CUANDO SIDEBAR ESTÁ CERRADA */
+            z-index: 1000;
+            background: var(--admin-primary, #48cc6c);
+            border: none;
+            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease; /* ✅ TRANSICIÓN SUAVE PARA EL MOVIMIENTO */
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--admin-primary-dark, #3da458);
+            transform: scale(1.05);
+        }
+
+        /* ✅ CLASE PARA CUANDO LA SIDEBAR ESTÁ ABIERTA */
+        .sidebar-toggle.sidebar-open {
+            left: 300px; /* ✅ SE MUEVE A LA DERECHA CUANDO SIDEBAR ESTÁ ABIERTA (280px + 20px margin) */
+        }
+
+        /* ✅ RESPONSIVE - EN MÓVIL EL BOTÓN SE COMPORTA DIFERENTE */
+        @media (max-width: 1023px) {
+            .sidebar-toggle {
+                left: 20px !important; /* ✅ EN MÓVIL SIEMPRE SE QUEDA EN LA MISMA POSICIÓN */
+            }
+        }
+    </style>
 </head>
-<body>
-    <div class="admin-container">
+<body data-page="usuarios-pendientes">
+    <div class="admin-app-container">
         <!-- Header -->
         <header class="admin-header">
             <div class="admin-logo">
@@ -18,90 +58,172 @@
                 <div class="admin-user-info">
                     <div class="admin-avatar" id="userAvatar">SA</div>
                     <div>
-                        <div style="font-weight: 600;" id="userName">Super Admin</div>
-                        <div style="font-size: 0.875rem; color: var(--admin-text-secondary);" id="userEmail">admin@mawi.com</div>
+                        <div class="admin-username" id="userName">Super Admin</div>
+                        <div class="admin-user-role" id="userRole">Sistema</div>
                     </div>
                 </div>
-                <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="logout()">
+                <button class="admin-btn admin-btn-secondary" onclick="logout()">
                     <span>🚪</span> Cerrar Sesión
                 </button>
             </div>
-        </header>        <!-- Navigation -->
-        <nav class="admin-nav">
-            <ul>
-                <li><a href="indexSAdmin.html">
-                    <span>📊</span> Dashboard
-                </a></li>
-                <li><a href="dashboard.html">
-                    <span>🏠</span> Dashboard MAWI
-                </a></li>
-                <li><a href="SAaceptarusuarios.html" class="active">
-                    <span>👥</span> Usuarios Pendientes
-                </a></li>
-                <li><a href="AdmUpReguser.html">
-                    <span>⚙️</span> Gestión de Usuarios
-                </a></li>
-            </ul>
-        </nav>
+        </header>
 
-        <!-- Main Content -->
-        <main class="admin-content">
-            <div class="admin-page-header">
-                <h1 class="admin-page-title">Usuarios Pendientes de Aprobación</h1>
-                <p class="admin-page-subtitle">Revisa y aprueba nuevos usuarios registrados en el sistema</p>
-            </div>
+        <!-- ✅ BOTÓN SIDEBAR QUE SE MUEVE -->
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+        </button>
 
-            <!-- Actions Bar -->
-            <div class="admin-flex admin-items-center admin-justify-between admin-mb-2">
-                <div class="admin-flex admin-items-center admin-gap-2">
-                    <button class="admin-btn admin-btn-primary" onclick="loadPendingUsers()">
-                        <span>🔄</span> Actualizar Lista
-                    </button>
-                    <button class="admin-btn admin-btn-success" onclick="approveAllVisible()" id="approveAllBtn" style="display: none;">
-                        <span>✅</span> Aprobar Todos Visibles
-                    </button>
+        <div class="admin-content-wrapper">
+            <!-- Sidebar Container -->
+            <div id="sidebar-container"></div>
+
+            <!-- Main Content -->
+            <main class="admin-main-content">
+                <!-- ✅ PAGE HEADER -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">⏳ Usuarios Pendientes de Aprobación</h1>
+                        <p class="page-subtitle">Revisa y aprueba nuevos usuarios registrados en el sistema</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="admin-btn admin-btn-primary" onclick="loadPendingUsers()">
+                            <span>🔄</span> Actualizar Lista
+                        </button>
+                        <button class="admin-btn admin-btn-success" onclick="approveAllVisible()" id="approveAllBtn" style="display: none;">
+                            <span>✅</span> Aprobar Todos Visibles
+                        </button>
+                    </div>
                 </div>
-                <div class="admin-badge admin-badge-info">
-                    <span id="pendingCount">0</span> usuarios pendientes
+
+                <!-- Stats Cards -->
+                <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Usuarios Pendientes</h3>
+                            <p class="stat-value" id="pendingCount">0</p>
+                            <p class="stat-change">Esperando aprobación</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Procesados Hoy</h3>
+                            <p class="stat-value" id="processedToday">0</p>
+                            <p class="stat-change">Aprobados/Rechazados</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Users Table -->
-            <div class="admin-table-container">
-                <table class="admin-table" id="usersTable">
-                    <thead>
-                        <tr>
-                            <th>Usuario</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Fecha Registro</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        <tr>
-                            <td colspan="6" class="admin-loading">
-                                <div class="admin-spinner"></div>
-                                Cargando usuarios pendientes...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <!-- Users Table -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3>Lista de Usuarios Pendientes</h3>
+                    </div>
+                    <div class="admin-table-container">
+                        <table class="admin-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Fecha Registro</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="6" class="admin-loading">
+                                        <div class="admin-spinner"></div>
+                                        Cargando usuarios pendientes...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-            <!-- Empty State -->
-            <div id="emptyState" class="admin-card" style="display: none; text-align: center; padding: 3rem;">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
-                <h3 style="margin: 0 0 0.5rem 0; color: var(--admin-text-primary);">No hay usuarios pendientes</h3>
-                <p style="color: var(--admin-text-secondary); margin: 0;">Todos los usuarios han sido procesados</p>
-            </div>
-        </main>
+                <!-- Empty State -->
+                <div id="emptyState" class="admin-card" style="display: none; text-align: center; padding: 3rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                    <h3 style="margin: 0 0 0.5rem 0; color: var(--admin-text-primary);">No hay usuarios pendientes</h3>
+                    <p style="color: var(--admin-text-secondary); margin: 0;">Todos los usuarios han sido procesados</p>
+                </div>
+            </main>
+        </div>
     </div>
 
+    <script src="js/notification.js"></script>
+    <script src="js/loading.js"></script>
     <script>
-        console.log('🚀 Iniciando página SAaceptarusuarios.html');
-        
+        // ✅ VARIABLE GLOBAL PARA ESTADO DE SIDEBAR
+        let sidebarIsOpen = false;
+
+        // ✅ FUNCIÓN SIMPLE PARA TOGGLE SIDEBAR CON MOVIMIENTO DE BOTÓN
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            
+            if (!sidebar) return;
+            
+            if (sidebarIsOpen) {
+                // ✅ CERRAR SIDEBAR
+                sidebar.style.transform = 'translateX(-100%)';
+                toggleBtn.querySelector('polyline').setAttribute('points', '9,18 15,12 9,6');
+                
+                // ✅ MOVER BOTÓN A LA IZQUIERDA (SOLO EN DESKTOP)
+                if (window.innerWidth >= 1024) {
+                    toggleBtn.classList.remove('sidebar-open');
+                }
+                
+                sidebarIsOpen = false;
+                console.log('🔒 Sidebar cerrada, botón movido a la izquierda');
+            } else {
+                // ✅ ABRIR SIDEBAR
+                sidebar.style.transform = 'translateX(0)';
+                toggleBtn.querySelector('polyline').setAttribute('points', '15,18 9,12 15,6');
+                
+                // ✅ MOVER BOTÓN A LA DERECHA (SOLO EN DESKTOP)
+                if (window.innerWidth >= 1024) {
+                    toggleBtn.classList.add('sidebar-open');
+                }
+                
+                sidebarIsOpen = true;
+                console.log('🔓 Sidebar abierta, botón movido a la derecha');
+            }
+        }
+
+        // ✅ CARGAR SIDEBAR
+        async function loadSidebar() {
+            try {
+                const response = await fetch('components/admin-sidebar.html');
+                const html = await response.text();
+                document.getElementById('sidebar-container').innerHTML = html;
+                
+                setTimeout(() => {
+                    const sidebar = document.querySelector('.admin-sidebar');
+                    const toggleBtn = document.querySelector('.sidebar-toggle');
+                    
+                    if (sidebar) {
+                        sidebar.style.transform = 'translateX(-100%)';
+                        sidebarIsOpen = false;
+                        console.log('✅ Sidebar cargada y cerrada');
+                    }
+                    
+                    if (toggleBtn) {
+                        toggleBtn.classList.remove('sidebar-open');
+                        console.log('✅ Botón posicionado para sidebar cerrada');
+                    }
+                }, 100);
+                
+            } catch (error) {
+                console.error('Error cargando sidebar:', error);
+            }
+        }
+
         // Variables globales
         let userToken = localStorage.getItem('token');
         let pendingUsers = [];
@@ -121,6 +243,8 @@
             console.log('📋 Cargando usuarios pendientes...');
             
             if (!checkAuth()) return;
+
+            const loadingId = showLoading('Cargando usuarios pendientes...');
 
             try {
                 const tbody = document.getElementById('usersTableBody');
@@ -173,6 +297,8 @@
                     if (emptyState) emptyState.style.display = 'block';
                     if (approveAllBtn) approveAllBtn.style.display = 'none';
                     console.log('ℹ️ No hay usuarios pendientes');
+                    hideNotification(loadingId);
+                    showInfo('No hay usuarios pendientes por aprobar');
                     return;
                 }
 
@@ -221,6 +347,9 @@
 
                 if (approveAllBtn) approveAllBtn.style.display = 'inline-flex';
                 console.log(`✅ ${pendingUsers.length} usuarios cargados exitosamente`);
+                
+                hideNotification(loadingId);
+                showSuccess(`${pendingUsers.length} usuarios pendientes cargados`);
 
             } catch (error) {
                 console.error('❌ Error loading pending users:', error);
@@ -234,6 +363,8 @@
                         </tr>
                     `;
                 }
+                hideNotification(loadingId);
+                showError(`Error al cargar usuarios: ${error.message}`);
             }
         }
 
@@ -244,6 +375,8 @@
             if (!confirm('¿Estás seguro de que quieres aprobar este usuario?')) {
                 return;
             }
+
+            const loadingId = showLoading('Aprobando usuario...');
 
             try {
                 const response = await fetch(`/Consultas/api/aceptarUsuario/${userId}`, {
@@ -280,21 +413,27 @@
                     }
                     
                     console.log(`✅ Usuario ${userId} aprobado exitosamente`);
-                    alert('Usuario aprobado exitosamente');
+                    hideNotification(loadingId);
+                    showSuccess('Usuario aprobado exitosamente');
                 } else {
                     throw new Error('Error en la respuesta del servidor');
                 }
             } catch (error) {
                 console.error('❌ Error approving user:', error);
-                alert('Error al aprobar usuario. Inténtalo de nuevo.');
+                hideNotification(loadingId);
+                showError('Error al aprobar usuario. Inténtalo de nuevo.');
             }
-        }        // Función para rechazar usuario
+        }
+
+        // Función para rechazar usuario
         async function rejectUser(userId) {
             console.log(`👎 Rechazando usuario ${userId}`);
             
             if (!confirm('¿Estás seguro de que quieres rechazar este usuario?')) {
                 return;
             }
+
+            const loadingId = showLoading('Rechazando usuario...');
 
             try {
                 const response = await fetch(`/Consultas/api/rechazarUsuario/${userId}`, {
@@ -331,13 +470,15 @@
                     }
                     
                     console.log(`✅ Usuario ${userId} rechazado exitosamente`);
-                    alert('Usuario rechazado exitosamente');
+                    hideNotification(loadingId);
+                    showSuccess('Usuario rechazado exitosamente');
                 } else {
                     throw new Error('Error en la respuesta del servidor');
                 }
             } catch (error) {
                 console.error('❌ Error rejecting user:', error);
-                alert('Error al rechazar usuario. Inténtalo de nuevo.');
+                hideNotification(loadingId);
+                showError('Error al rechazar usuario. Inténtalo de nuevo.');
             }
         }
 
@@ -350,18 +491,19 @@
             const userRows = document.querySelectorAll('#usersTableBody tr[id^="user-"]');
             
             if (userRows.length === 0) {
-                alert('No hay usuarios pendientes para aprobar');
+                showWarning('No hay usuarios pendientes para aprobar');
                 return;
             }
+
             console.log(`📦 Aprobando ${userRows.length} usuarios en lote`);
 
+            const loadingId = showLoading('Aprobando todos los usuarios...');
             const approveAllBtn = document.getElementById('approveAllBtn');
             const originalText = approveAllBtn.innerHTML;
             approveAllBtn.disabled = true;
             approveAllBtn.innerHTML = '⏳ Aprobando todos...';
 
-            try
-            {
+            try {
                 const response = await fetch('/Consultas/api/aceptarTodosUsuarios', {
                     method: 'POST',
                     headers: {
@@ -390,18 +532,20 @@
                         approveAllBtn.style.display = 'none';
                     }, userRows.length * 50 + 500);
 
-                    alert(`✅ Todos los usuarios (${userRows.length}) fueron aprobados exitosamente`);
+                    hideNotification(loadingId);
+                    showSuccess(`Todos los usuarios (${userRows.length}) fueron aprobados exitosamente`);
                     console.log(`✅ ${userRows.length} usuarios aprobados masivamente`);
-                    } else {
-                        throw new Error(`Error HTTP: ${response.status}`);
-                    }
-                } catch (error) {
-                    console.error('❌ Error en aprobación masiva:', error);
-                    alert(`❌ Error al aprobar usuarios: ${error.message}`);
-                } finally {
-                    approveAllBtn.disabled = false;
-                    approveAllBtn.innerHTML = originalText;
+                } else {
+                    throw new Error(`Error HTTP: ${response.status}`);
                 }
+            } catch (error) {
+                console.error('❌ Error en aprobación masiva:', error);
+                hideNotification(loadingId);
+                showError(`Error al aprobar usuarios: ${error.message}`);
+            } finally {
+                approveAllBtn.disabled = false;
+                approveAllBtn.innerHTML = originalText;
+            }
         }
 
         // Funciones auxiliares
@@ -426,22 +570,29 @@
 
         // Función para cerrar sesión
         function logout() {
-            console.log('🚪 Cerrando sesión');
             localStorage.removeItem('token');
             localStorage.removeItem('userData');
-            window.location.href = 'login.html';
+            showInfo('Cerrando sesión...', 2000);
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
         }
 
-        // Inicialización cuando el DOM está listo
+        // ✅ INICIALIZACIÓN
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎯 DOM cargado, inicializando página');
+            console.log('🎯 Inicializando página SAaceptarusuarios...');
             
             if (!checkAuth()) {
                 return;
             }
 
+            // Cargar sidebar
+            loadSidebar();
+
             // Cargar usuarios pendientes automáticamente
-            loadPendingUsers();
+            setTimeout(() => {
+                loadPendingUsers();
+            }, 1000);
 
             // Actualizar información del usuario si está disponible
             const userData = localStorage.getItem('userData');
@@ -450,7 +601,6 @@
                     const user = JSON.parse(userData);
                     const userNameElement = document.getElementById('userName');
                     const userAvatarElement = document.getElementById('userAvatar');
-                    const userEmailElement = document.getElementById('userEmail');
                     
                     if (user.name && userNameElement) {
                         userNameElement.textContent = user.name;
@@ -458,11 +608,43 @@
                     if (user.name && userAvatarElement) {
                         userAvatarElement.textContent = user.name.charAt(0).toUpperCase();
                     }
-                    if (user.email && userEmailElement) {
-                        userEmailElement.textContent = user.email;
-                    }
                 } catch (e) {
                     console.warn('⚠️ Error parsing user data:', e);
+                }
+            }
+
+            // Mensaje de bienvenida
+            setTimeout(() => {
+                showSuccess('Página de usuarios pendientes cargada correctamente', 2000);
+            }, 1500);
+        });
+
+        // ✅ CERRAR SIDEBAR AL HACER CLIC FUERA (MÓVIL)
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth < 1024 && sidebarIsOpen) {
+                const sidebar = document.querySelector('.admin-sidebar');
+                const toggleBtn = document.querySelector('.sidebar-toggle');
+                
+                if (sidebar && 
+                    !sidebar.contains(e.target) && 
+                    !toggleBtn.contains(e.target)) {
+                    toggleSidebar();
+                }
+            }
+        });
+
+        // ✅ AJUSTAR POSICIÓN DEL BOTÓN AL REDIMENSIONAR VENTANA
+        window.addEventListener('resize', function() {
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            if (toggleBtn) {
+                if (window.innerWidth < 1024) {
+                    toggleBtn.classList.remove('sidebar-open');
+                } else {
+                    if (sidebarIsOpen) {
+                        toggleBtn.classList.add('sidebar-open');
+                    } else {
+                        toggleBtn.classList.remove('sidebar-open');
+                    }
                 }
             }
         });
