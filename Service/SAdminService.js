@@ -27,7 +27,7 @@ async function getRegistrosPorUsuario(idUsuario) {
     let qResult;
     try {
         // ✅ CAMBIO: En lugar de obtener un solo tipo, obtener TODOS los formularios del usuario
-        let query1 = "SELECT * FROM formularioInicial WHERE idCreador = ?";
+        let query1 = "SELECT * FROM formularioinicial WHERE idCreador = ?";
         let params1 = [idUsuario];
         let result1 = await dataSource.getDataWithParams(query1, params1);
         
