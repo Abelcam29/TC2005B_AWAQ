@@ -79,8 +79,8 @@ h1 {
 /* Button container */
 .button-container {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
+  flex-direction: column;
+  align-itemst: center;
   gap: 12px;
   margin-top: 24px;
 }
