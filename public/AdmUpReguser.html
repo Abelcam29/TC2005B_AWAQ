@@ -4,10 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Usuarios - MAWI Super Admin</title>
-    <link rel="stylesheet" href="css/admin-styles.css">
+    <link rel="stylesheet" href="css/admin-dashboard-stats.css">
+    <link rel="stylesheet" href="css/notification.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style>
+        /* ✅ ESTILOS PARA BOTÓN QUE SE MUEVE CON LA SIDEBAR */
+        .sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px; /* ✅ POSICIÓN INICIAL CUANDO SIDEBAR ESTÁ CERRADA */
+            z-index: 1000;
+            background: var(--admin-primary, #48cc6c);
+            border: none;
+            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease; /* ✅ TRANSICIÓN SUAVE PARA EL MOVIMIENTO */
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--admin-primary-dark, #3da458);
+            transform: scale(1.05);
+        }
+
+        /* ✅ CLASE PARA CUANDO LA SIDEBAR ESTÁ ABIERTA */
+        .sidebar-toggle.sidebar-open {
+            left: 300px; /* ✅ SE MUEVE A LA DERECHA CUANDO SIDEBAR ESTÁ ABIERTA (280px + 20px margin) */
+        }
+
+        /* ✅ RESPONSIVE - EN MÓVIL EL BOTÓN SE COMPORTA DIFERENTE */
+        @media (max-width: 1023px) {
+            .sidebar-toggle {
+                left: 20px !important; /* ✅ EN MÓVIL SIEMPRE SE QUEDA EN LA MISMA POSICIÓN */
+            }
+        }
+
+        /* ✅ ESTILOS ADICIONALES PARA TABLAS EXPANDIBLES */
+        .expandable-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .expandable-row:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .admin-expandable-content {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .admin-expandable-content.show {
+            display: table-row;
+        }
+
+        .admin-expandable-inner {
+            padding: 1rem;
+            border-left: 3px solid var(--admin-primary);
+            background: rgba(72, 204, 108, 0.05);
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+
+        .admin-expandable-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .admin-expandable-title {
+            margin: 0;
+            color: var(--admin-text-primary);
+            font-size: 1.1rem;
+        }
+
+        .admin-collapse-btn {
+            background: var(--admin-primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .admin-collapse-btn:hover {
+            background: var(--admin-primary-dark, #3da458);
+        }
+    </style>
 </head>
-<body>
-    <div class="admin-container">
+<body data-page="gestion-usuarios">
+    <div class="admin-app-container">
         <!-- Header -->
         <header class="admin-header">
             <div class="admin-logo">
@@ -18,98 +112,225 @@
                 <div class="admin-user-info">
                     <div class="admin-avatar" id="userAvatar">SA</div>
                     <div>
-                        <div style="font-weight: 600;" id="userName">Super Admin</div>
-                        <div style="font-size: 0.875rem; color: var(--admin-text-secondary);" id="userEmail">admin@mawi.com</div>
+                        <div class="admin-username" id="userName">Super Admin</div>
+                        <div class="admin-user-role" id="userRole">Sistema</div>
                     </div>
                 </div>
-                <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="logout()">
+                <button class="admin-btn admin-btn-secondary" onclick="logout()">
                     <span>🚪</span> Cerrar Sesión
                 </button>
             </div>
-        </header>        <!-- Navigation -->
-        <nav class="admin-nav">
-            <ul>
-                <li><a href="indexSAdmin.html">
-                    <span>📊</span> Dashboard
-                </a></li>
-                <li><a href="dashboard.html">
-                    <span>🏠</span> Dashboard MAWI
-                </a></li>
-                <li><a href="SAaceptarusuarios.html">
-                    <span>👥</span> Usuarios Pendientes
-                </a></li>
-                <li><a href="AdmUpReguser.html" class="active">
-                    <span>⚙️</span> Gestión de Usuarios
-                </a></li>
-            </ul>
-        </nav>
+        </header>
 
-        <!-- Main Content -->
-        <main class="admin-content">
-            <div class="admin-page-header">
-                <h1 class="admin-page-title">Gestión de Usuarios</h1>
-                <p class="admin-page-subtitle">Administra usuarios activos y visualiza sus registros</p>
-            </div>
+        <!-- ✅ BOTÓN SIDEBAR QUE SE MUEVE -->
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+        </button>
 
-            <!-- Actions Bar -->
-            <div class="admin-flex admin-items-center admin-justify-between admin-mb-2">
-                <div class="admin-flex admin-items-center admin-gap-2">
-                    <button class="admin-btn admin-btn-primary" onclick="loadUsuarios()">
-                        <span>🔄</span> Actualizar Lista
-                    </button>
-                    <select class="admin-btn admin-btn-secondary" id="statusFilter" onchange="filterUsers()">
-                        <option value="">Todos los estados</option>
-                        <option value="activo">Activos</option>
-                        <option value="inactivo">Inactivos</option>
-                        <option value="suspendido">Suspendidos</option>
-                    </select>
+        <div class="admin-content-wrapper">
+            <!-- Sidebar Container -->
+            <div id="sidebar-container"></div>
+
+            <!-- Main Content -->
+            <main class="admin-main-content">
+                <!-- ✅ PAGE HEADER -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">⚙️ Gestión de Usuarios</h1>
+                        <p class="page-subtitle">Administra usuarios activos y visualiza sus registros</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="admin-btn admin-btn-primary" onclick="loadUsuarios()">
+                            <span>🔄</span> Actualizar Lista
+                        </button>
+                        <select class="admin-btn admin-btn-secondary" id="statusFilter" onchange="filterUsers()">
+                            <option value="">Todos los estados</option>
+                            <option value="A">Activos</option>
+                            <option value="I">Inactivos</option>
+                            <option value="S">Suspendidos</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="admin-badge admin-badge-info">
-                    <span id="userCount">0</span> usuarios totales
+
+                <!-- Stats Card -->
+                <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Total Usuarios</h3>
+                            <p class="stat-value" id="userCount">0</p>
+                            <p class="stat-change">Usuarios registrados</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Usuarios Activos</h3>
+                            <p class="stat-value" id="activeCount">0</p>
+                            <p class="stat-change">Con acceso al sistema</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <h3 class="stat-title">Total Registros</h3>
+                            <p class="stat-value" id="totalRecords">0</p>
+                            <p class="stat-change">Registros de biodiversidad</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Users Table -->
-            <div class="admin-table-container">
-                <table class="admin-table" id="usersTable">
-                    <thead onclick="loadUsuarios()">
-                        <tr>
-                            <th>Usuario</th>
-                            <th>Email</th>
-                            <th>Rol</th>
-                            <th>Estado</th>
-                            <th>Registros</th>
-                            <th>Última Actividad</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-table-body">
-                        <tr>
-                            <td colspan="7" class="admin-loading">
-                                <div class="admin-spinner"></div>
-                                Cargando usuarios...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <!-- Users Table -->
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <h3>Lista de Usuarios</h3>
+                    </div>
+                    <div class="admin-table-container">
+                        <table class="admin-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th>Registros</th>
+                                    <th>Última Actividad</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-table-body">
+                                <tr>
+                                    <td colspan="7" class="admin-loading">
+                                        <div class="admin-spinner"></div>
+                                        Cargando usuarios...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-            <!-- Empty State -->
-            <div id="emptyState" class="admin-card" style="display: none; text-align: center; padding: 3rem;">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
-                <h3 style="margin: 0 0 0.5rem 0; color: var(--admin-text-primary);">No se encontraron usuarios</h3>
-                <p style="color: var(--admin-text-secondary); margin: 0;">Ajusta los filtros para ver más resultados</p>
-            </div>
-        </main>
+                <!-- Empty State -->
+                <div id="emptyState" class="admin-card" style="display: none; text-align: center; padding: 3rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                    <h3 style="margin: 0 0 0.5rem 0; color: var(--admin-text-primary);">No se encontraron usuarios</h3>
+                    <p style="color: var(--admin-text-secondary); margin: 0;">Ajusta los filtros para ver más resultados</p>
+                </div>
+            </main>
+        </div>
     </div>
 
+    <script src="js/notification.js"></script>
+    <script src="js/loading.js"></script>
     <script>
+        // ✅ VARIABLE GLOBAL PARA ESTADO DE SIDEBAR
+        let sidebarIsOpen = false;
+
+        // ✅ FUNCIÓN SIMPLE PARA TOGGLE SIDEBAR CON MOVIMIENTO DE BOTÓN
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            
+            if (!sidebar || !toggleBtn) {
+                console.log('⚠️ Sidebar o botón no encontrado');
+                return;
+            }
+            
+            console.log('🔄 Toggle sidebar - Estado actual:', sidebarIsOpen);
+            
+            if (sidebarIsOpen) {
+                // ✅ CERRAR SIDEBAR
+                sidebar.style.transform = 'translateX(-100%)';
+                toggleBtn.querySelector('polyline').setAttribute('points', '9,18 15,12 9,6');
+                
+                // ✅ MOVER BOTÓN A LA IZQUIERDA (SOLO EN DESKTOP)
+                if (window.innerWidth >= 1024) {
+                    toggleBtn.style.left = '20px';
+                    toggleBtn.classList.remove('sidebar-open');
+                    console.log('🔄 Botón movido a la izquierda (desktop)');
+                }
+                
+                sidebarIsOpen = false;
+                console.log('🔒 Sidebar cerrada');
+            } else {
+                // ✅ ABRIR SIDEBAR
+                sidebar.style.transform = 'translateX(0)';
+                toggleBtn.querySelector('polyline').setAttribute('points', '15,18 9,12 15,6');
+                
+                // ✅ MOVER BOTÓN A LA DERECHA (SOLO EN DESKTOP)
+                if (window.innerWidth >= 1024) {
+                    toggleBtn.style.left = '300px';
+                    toggleBtn.classList.add('sidebar-open');
+                    console.log('🔄 Botón movido a la derecha (desktop)');
+                }
+                
+                sidebarIsOpen = true;
+                console.log('🔓 Sidebar abierta');
+            }
+        }
+
+        // ✅ FUNCIÓN MEJORADA PARA CARGAR SIDEBAR
+        async function loadSidebar() {
+            try {
+                console.log('📂 Cargando sidebar...');
+                const response = await fetch('components/admin-sidebar.html');
+                const html = await response.text();
+                document.getElementById('sidebar-container').innerHTML = html;
+                
+                // Esperar un poco más para que el DOM se actualice
+                setTimeout(() => {
+                    const sidebar = document.querySelector('.admin-sidebar');
+                    const toggleBtn = document.querySelector('.sidebar-toggle');
+                    
+                    if (sidebar) {
+                        sidebar.style.transform = 'translateX(-100%)';
+                        sidebarIsOpen = false;
+                        console.log('✅ Sidebar cargada y cerrada');
+                    } else {
+                        console.log('⚠️ No se encontró .admin-sidebar después de cargar');
+                    }
+                    
+                    if (toggleBtn) {
+                        toggleBtn.style.left = '20px';
+                        toggleBtn.classList.remove('sidebar-open');
+                        console.log('✅ Botón posicionado para sidebar cerrada');
+                    } else {
+                        console.log('⚠️ No se encontró .sidebar-toggle');
+                    }
+                }, 200);
+                
+            } catch (error) {
+                console.error('❌ Error cargando sidebar:', error);
+                showNotification('Error cargando el menú lateral', 'error', 3000);
+            }
+        }
+
+        // Variables globales
         let userToken = localStorage.getItem('token');
         let allUsers = [];
         let filteredUsers = [];
 
+        // Función para verificar autenticación
+        function checkAuth() {
+            if (!userToken) {
+                console.log('❌ No hay token, redirigiendo a login');
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
         // Función principal para cargar usuarios
         async function loadUsuarios() {
+            console.log('📋 Cargando usuarios...');
+            
+            if (!checkAuth()) return;
+
+            // ✅ ARREGLAR LLAMADA A showLoading - usar showNotification en su lugar
+            showNotification('Cargando usuarios...', 'info', 0);
+
             try {
                 const tbody = document.getElementById('user-table-body');
                 const emptyState = document.getElementById('emptyState');
@@ -123,11 +344,10 @@
                         </td>
                     </tr>
                 `;
-                emptyState.style.display = 'none';                if (!userToken) {
-                    console.error('No token found in localStorage');
-                    window.location.href = 'login.html';
-                    return;
-                }                const response = await fetch('/Consultas/api/getusers', {
+                emptyState.style.display = 'none';
+
+                console.log('🌐 Realizando petición a /Consultas/api/getusers');
+                const response = await fetch('/Consultas/api/getusers', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${userToken}`,
@@ -135,35 +355,57 @@
                     }
                 });
 
+                console.log('📡 Respuesta recibida:', response.status);
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const result = await response.json();
+                console.log('📊 Datos recibidos:', result);
+                
                 const users = result.records || [];
                 allUsers = users;
                 filteredUsers = users;
                 
-                document.getElementById('userCount').textContent = users.length;
+                // Actualizar estadísticas
+                updateStatistics(users);
 
                 if (users.length === 0) {
                     tbody.innerHTML = '';
                     emptyState.style.display = 'block';
+                    showNotification('No se encontraron usuarios', 'info', 3000);
                     return;
                 }
 
                 displayUsers(users);
+                console.log(`✅ ${users.length} usuarios cargados exitosamente`);
+                
+                showNotification(`${users.length} usuarios cargados correctamente`, 'success', 3000);
 
             } catch (error) {
-                console.error('Error loading users:', error);
-                document.getElementById('user-table-body').innerHTML = `
+                console.error('❌ Error loading users:', error);
+                const tbody = document.getElementById('user-table-body');
+                tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align: center; color: var(--admin-danger); padding: 2rem;">
                             Error al cargar usuarios: ${error.message}
                         </td>
                     </tr>
                 `;
+                showNotification(`Error al cargar usuarios: ${error.message}`, 'error', 5000);
             }
+        }
+
+        // ✅ FUNCIÓN PARA ACTUALIZAR ESTADÍSTICAS
+        function updateStatistics(users) {
+            const totalUsers = users.length;
+            const activeUsers = users.filter(user => user.estado === 'A').length;
+            const totalRecords = users.reduce((sum, user) => sum + (user.TotalRegistros || 0), 0);
+
+            document.getElementById('userCount').textContent = totalUsers;
+            document.getElementById('activeCount').textContent = activeUsers;
+            document.getElementById('totalRecords').textContent = totalRecords;
         }
 
         // Función para mostrar usuarios en la tabla
@@ -177,7 +419,7 @@
             }
 
             document.getElementById('emptyState').style.display = 'none';
-              tbody.innerHTML = users.map(user => `
+            tbody.innerHTML = users.map(user => `
                 <tr class="expandable-row" onclick="toggleUserDetails(${user.idUsuario})">
                     <td>
                         <div class="admin-flex admin-items-center admin-gap-2">
@@ -208,7 +450,7 @@
                     </td>
                     <td>
                         <div style="font-size: 0.875rem;">
-                            Sin actividad
+                            ${user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleDateString('es-ES') : 'Sin fecha'}
                         </div>
                     </td>
                     <td onclick="event.stopPropagation()">
@@ -251,17 +493,24 @@
             if (statusFilter === '') {
                 filteredUsers = allUsers;
             } else {
-                filteredUsers = allUsers.filter(user => user.status === statusFilter);
+                filteredUsers = allUsers.filter(user => user.estado === statusFilter);
             }
             
-            document.getElementById('userCount').textContent = filteredUsers.length;
+            updateStatistics(filteredUsers);
             displayUsers(filteredUsers);
+            
+            showNotification(`Filtro aplicado: ${filteredUsers.length} usuarios encontrados`, 'info', 2000);
         }
 
-        // Función para alternar detalles del usuario
+        // ✅ FUNCIÓN CORREGIDA PARA ALTERNAR DETALLES DEL USUARIO - USANDO ENDPOINT CORRECTO
         async function toggleUserDetails(userId) {
             const detailsRow = document.getElementById(`details-${userId}`);
             const registrosContainer = document.getElementById(`registros-${userId}`);
+            
+            if (!detailsRow || !registrosContainer) {
+                console.error(`❌ No se encontraron elementos para usuario ${userId}`);
+                return;
+            }
             
             if (detailsRow.classList.contains('show')) {
                 detailsRow.classList.remove('show');
@@ -272,84 +521,226 @@
             
             // Cargar registros si no se han cargado
             if (registrosContainer.innerHTML.includes('Cargando registros...')) {
+                console.log(`📋 Cargando registros para usuario ${userId}`);
+                
                 try {
-                    const response = await fetch(`/Consultas/api/getRegistros/${userId}`, {
+                    // ✅ USAR EL ENDPOINT CORRECTO QUE HACE JOIN CON LAS TABLAS DE REGISTROS
+                    const response = await fetch(`/Consultas/api/getRegistrosPorUsuario/${userId}`, {
+                        method: 'GET',
                         headers: {
                             'Authorization': `Bearer ${userToken}`,
                             'Content-Type': 'application/json'
                         }
                     });
 
+                    console.log('📡 Respuesta registros (endpoint correcto):', response.status);
+
                     if (response.ok) {
                         const results = await response.json();
-                        const registros = results.registros;
+                        console.log('📊 DATOS COMPLETOS recibidos:', JSON.stringify(results, null, 2));
+                        
+                        // ✅ VERIFICACIÓN DE ESTRUCTURA DE DATOS
+                        let registros = [];
+                        
+                        if (results.records && Array.isArray(results.records)) {
+                            registros = results.records;
+                            console.log('✅ Estructura encontrada: results.records');
+                        } else if (results.registros && Array.isArray(results.registros)) {
+                            registros = results.registros;
+                            console.log('✅ Estructura encontrada: results.registros');
+                        } else if (Array.isArray(results)) {
+                            registros = results;
+                            console.log('✅ Estructura encontrada: Array directo');
+                        } else if (results.data && Array.isArray(results.data)) {
+                            registros = results.data;
+                            console.log('✅ Estructura encontrada: results.data');
+                        }
+                        
+                        console.log(`📋 REGISTROS PROCESADOS: ${registros.length} registros encontrados`);
+                        console.log('📋 PRIMER REGISTRO:', registros[0]);
                         
                         if (registros.length === 0) {
                             registrosContainer.innerHTML = `
                                 <div style="text-align: center; color: var(--admin-text-secondary); padding: 1rem;">
-                                    No hay registros disponibles
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">📝</div>
+                                    <p style="margin: 0;">Este usuario no tiene registros de biodiversidad</p>
+                                    <div style="margin-top: 1rem; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: 4px; font-size: 0.875rem;">
+                                        <strong>📋 Respuesta del servidor:</strong><br>
+                                        <code style="background: rgba(0,0,0,0.1); padding: 0.25rem 0.5rem; border-radius: 3px; word-break: break-all;">
+                                            ${JSON.stringify(results)}
+                                        </code>
+                                    </div>
                                 </div>
                             `;
                         } else {
+                            // ✅ TABLA CON MAPEO ESPECÍFICO PARA LOS DATOS DEL JOIN
                             registrosContainer.innerHTML = `
-                                <table class="admin-table" style="margin-top: 0;">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Tipo</th>
-                                            <th>Fecha</th>
-                                            <th>Estado</th>
-                                            <th>Descripción</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${registros.map(registro => `
+                                <div style="margin-bottom: 1rem; padding: 0.5rem; background: rgba(72, 204, 108, 0.1); border-radius: 4px;">
+                                    <strong>📊 ${registros.length} registros encontrados</strong>
+                                    <div style="font-size: 0.875rem; color: var(--admin-text-secondary); margin-top: 0.25rem;">
+                                        Endpoint: <code>/getRegistrosPorUsuario/${userId}</code>
+                                    </div>
+                                </div>
+                                <div class="admin-table-container">
+                                    <table class="admin-table" style="margin-top: 0;">
+                                        <thead>
                                             <tr>
-                                                <td>${registro.id}</td>
-                                                <td>
-                                                    <span class="admin-badge admin-badge-info">
-                                                        ${registro.tipo || 'Sin tipo'}
-                                                    </span>
-                                                </td>
-                                                <td>${registro.fecha ? new Date(registro.fecha).toLocaleDateString('es-ES') : 'Sin fecha'}</td>
-                                                <td>
-                                                    <span class="admin-badge ${getStatusBadgeClass(registro.estado)}">
-                                                        ${registro.estado || 'Sin estado'}
-                                                    </span>
-                                                </td>
-                                                <td>${registro.descripcion || 'Sin descripción'}</td>
+                                                <th>ID Registro</th>
+                                                <th>Tipo</th>
+                                                <th>Especie/Datos</th>
+                                                <th>Fecha</th>
+                                                <th>Ubicación</th>
+                                                <th>Estado</th>
+                                                <th>Observaciones</th>
                                             </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            ${registros.map((registro, index) => {
+                                                // ✅ MAPEO ESPECÍFICO BASADO EN LA ESTRUCTURA DEL JOIN
+                                                const idFormulario = registro.idFormIn || registro.idFormulario || registro.id || (index + 1);
+                                                const idRegistro = registro.idRegistro || registro.registroId || '';
+                                                const tipoRegistro = registro.tipoRegistro || registro.tipo || 'No especificado';
+                                                
+                                                // Datos específicos del tipo de registro
+                                                let especieInfo = '';
+                                                let observaciones = registro.observaciones || registro.notas || registro.descripcion || '';
+                                                let ubicacion = '';
+                                                let fecha = registro.fechaRegistro || registro.fecha || registro.created_at || null;
+                                                
+                                                // ✅ MAPEO SEGÚN EL TIPO DE REGISTRO
+                                                if (tipoRegistro.includes('fauna') || tipoRegistro.includes('Fauna')) {
+                                                    especieInfo = `
+                                                        <div style="font-weight: 600;">${registro.nombreComun || registro.especie || 'Fauna no identificada'}</div>
+                                                        ${registro.nombreCientifico ? `<div style="font-size: 0.875rem; font-style: italic; color: var(--admin-text-secondary);">${registro.nombreCientifico}</div>` : ''}
+                                                        ${registro.familia ? `<div style="font-size: 0.875rem; color: var(--admin-text-secondary);">Familia: ${registro.familia}</div>` : ''}
+                                                    `;
+                                                } else if (tipoRegistro.includes('flora') || tipoRegistro.includes('Flora')) {
+                                                    especieInfo = `
+                                                        <div style="font-weight: 600;">${registro.nombreComun || registro.especie || 'Flora no identificada'}</div>
+                                                        ${registro.nombreCientifico ? `<div style="font-size: 0.875rem; font-style: italic; color: var(--admin-text-secondary);">${registro.nombreCientifico}</div>` : ''}
+                                                        ${registro.familia ? `<div style="font-size: 0.875rem; color: var(--admin-text-secondary);">Familia: ${registro.familia}</div>` : ''}
+                                                    `;
+                                                } else if (tipoRegistro.includes('climaticas') || tipoRegistro.includes('clima')) {
+                                                    especieInfo = `
+                                                        <div style="font-weight: 600;">Variables Climáticas</div>
+                                                        ${registro.temperatura ? `<div style="font-size: 0.875rem;">Temp: ${registro.temperatura}°C</div>` : ''}
+                                                        ${registro.humedad ? `<div style="font-size: 0.875rem;">Humedad: ${registro.humedad}%</div>` : ''}
+                                                        ${registro.precipitacion ? `<div style="font-size: 0.875rem;">Precipitación: ${registro.precipitacion}mm</div>` : ''}
+                                                    `;
+                                                } else {
+                                                    // Datos genéricos
+                                                    especieInfo = `
+                                                        <div style="font-weight: 600;">${registro.nombreComun || registro.especie || registro.descripcion || 'Registro de biodiversidad'}</div>
+                                                        ${registro.nombreCientifico ? `<div style="font-size: 0.875rem; font-style: italic; color: var(--admin-text-secondary);">${registro.nombreCientifico}</div>` : ''}
+                                                    `;
+                                                }
+                                                
+                                                // ✅ UBICACIÓN
+                                                if (registro.latitud && registro.longitud) {
+                                                    ubicacion = `${registro.latitud}, ${registro.longitud}`;
+                                                } else if (registro.ubicacion) {
+                                                    ubicacion = registro.ubicacion;
+                                                } else if (registro.localidad) {
+                                                    ubicacion = registro.localidad;
+                                                } else if (registro.lugar) {
+                                                    ubicacion = registro.lugar;
+                                                } else {
+                                                    ubicacion = 'Sin ubicación';
+                                                }
+                                                
+                                                // ✅ ESTADO
+                                                const estado = registro.estado || registro.status || registro.verificado || 'Sin verificar';
+                                                
+                                                return `
+                                                    <tr>
+                                                        <td>
+                                                            <div style="font-weight: 600;">#${idFormulario}</div>
+                                                            ${idRegistro ? `<div style="font-size: 0.875rem; color: var(--admin-text-secondary);">Reg: ${idRegistro}</div>` : ''}
+                                                        </td>
+                                                        <td>
+                                                            <span class="admin-badge admin-badge-info" style="font-size: 0.75rem;">
+                                                                ${tipoRegistro}
+                                                            </span>
+                                                        </td>
+                                                        <td style="max-width: 200px;">
+                                                            ${especieInfo}
+                                                        </td>
+                                                        <td>
+                                                            <div style="font-size: 0.875rem;">
+                                                                ${fecha ? new Date(fecha).toLocaleDateString('es-ES', { 
+                                                                    year: 'numeric', 
+                                                                    month: 'short', 
+                                                                    day: 'numeric',
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit'
+                                                                }) : 'Sin fecha'}
+                                                            </div>
+                                                        </td>
+                                                        <td style="max-width: 150px;">
+                                                            <div style="font-size: 0.875rem; word-wrap: break-word;">
+                                                                ${ubicacion}
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <span class="admin-badge ${getRecordStatusBadgeClass(estado)}">
+                                                                ${getRecordStatusText(estado)}
+                                                            </span>
+                                                        </td>
+                                                        <td style="max-width: 180px;">
+                                                            <div style="font-size: 0.875rem; word-wrap: break-word;">
+                                                                ${observaciones || 'Sin observaciones'}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- ✅ DEBUG INFO -->
+                                <details style="margin-top: 1rem;">
+                                    <summary style="cursor: pointer; padding: 0.5rem; background: rgba(0, 0, 0, 0.05); border-radius: 4px; font-size: 0.875rem;">
+                                        <strong>🔍 Ver estructura de datos (Debug)</strong>
+                                    </summary>
+                                    <div style="margin-top: 0.5rem; padding: 1rem; background: rgba(0, 0, 0, 0.05); border-radius: 4px; font-size: 0.875rem;">
+                                        <strong>📋 Campos disponibles en el primer registro:</strong><br>
+                                        <code style="background: rgba(0,0,0,0.1); padding: 0.5rem; border-radius: 3px; display: block; margin-top: 0.5rem; word-break: break-all; white-space: pre-wrap;">
+${registros.length > 0 ? JSON.stringify(registros[0], null, 2) : 'No hay registros'}
+                                        </code>
+                                    </div>
+                                </details>
                             `;
                         }
                     } else {
-                        throw new Error('Error al cargar registros');
+                        const errorText = await response.text();
+                        throw new Error(`Error HTTP ${response.status}: ${errorText}`);
                     }
                 } catch (error) {
-                    console.error('Error loading user records:', error);
+                    console.error('❌ Error loading user records:', error);
                     registrosContainer.innerHTML = `
                         <div style="text-align: center; color: var(--admin-danger); padding: 1rem;">
-                            Error al cargar registros: ${error.message}
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚠️</div>
+                            <p style="margin: 0; font-weight: 600;">Error al cargar registros</p>
+                            <p style="margin: 0.5rem 0; font-size: 0.875rem;">${error.message}</p>
+                            <p style="margin: 0.5rem 0; font-size: 0.875rem; color: var(--admin-text-secondary);">
+                                Endpoint usado: <code>/getRegistrosPorUsuario/${userId}</code>
+                            </p>
+                            <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="toggleUserDetails(${userId})" style="margin-top: 1rem;">
+                                🔄 Reintentar
+                            </button>
                         </div>
                     `;
+                    showNotification(`Error cargando registros del usuario ${userId}: ${error.message}`, 'error', 5000);
                 }
             }
         }
 
         // Funciones para obtener clases de badges
-        function getStatusBadgeClass(status) {
-            switch (status) {
-                case 'activo': return 'admin-badge-success';
-                case 'inactivo': return 'admin-badge-warning';
-                case 'suspendido': return 'admin-badge-danger';
-                default: return 'admin-badge-info';
-            }
-        }        function getRoleBadgeClass(role) {
+        function getRoleBadgeClass(role) {
             switch (parseInt(role)) {
                 case 1: return 'admin-badge-info';     // Usuario normal
-                case 2: return 'admin-badge-info';  // Moderador
+                case 2: return 'admin-badge-primary';  // EcoRanger
                 case 3: return 'admin-badge-success';  // Admin
                 case 4: return 'admin-badge-danger';   // Super Admin
                 default: return 'admin-badge-info';
@@ -370,6 +761,7 @@
             switch (status) {
                 case 'A': return 'admin-badge-success';  // Activo
                 case 'I': return 'admin-badge-warning';  // Inactivo
+                case 'P': return 'admin-badge-info';     // Pendiente
                 case 'S': return 'admin-badge-danger';   // Suspendido
                 default: return 'admin-badge-info';
             }
@@ -379,57 +771,222 @@
             switch (status) {
                 case 'A': return 'Activo';
                 case 'I': return 'Inactivo';
+                case 'P': return 'Pendiente';
                 case 'S': return 'Suspendido';
                 default: return 'Sin estado';
             }
         }
 
+        // ✅ FUNCIONES PARA BADGES DE REGISTROS
+        function getRecordStatusBadgeClass(status) {
+            const statusStr = String(status).toLowerCase();
+            switch (statusStr) {
+                case 'verificado':
+                case 'approved':
+                case 'activo':
+                case 'a':
+                case 'valid':
+                case 'true':
+                case '1': 
+                    return 'admin-badge-success';
+                case 'pendiente':
+                case 'pending':
+                case 'p':
+                case 'review':
+                case 'false':
+                case '0': 
+                    return 'admin-badge-warning';
+                case 'rechazado':
+                case 'rejected':
+                case 'inactivo':
+                case 'i':
+                case 'invalid': 
+                    return 'admin-badge-danger';
+                default: 
+                    return 'admin-badge-info';
+            }
+        }
+
+       function getRecordStatusText(status) {
+            const statusStr = String(status).toLowerCase();
+            switch (statusStr) {
+                case 'verificado':
+                case 'approved':
+                case 'activo':
+                case 'a':
+                case 'valid':
+                case 'true':
+                case '1': 
+                    return 'Verificado';
+                case 'pendiente':
+                case 'pending':
+                case 'p':
+                case 'review':
+                case 'false':
+                case '0': 
+                    return 'Pendiente';
+                case 'rechazado':
+                case 'rejected':
+                case 'inactivo':
+                case 'i':
+                case 'invalid': 
+                    return 'Rechazado';
+                default: 
+                    return status || 'Sin verificar';
+            }
+        }
+
         // Funciones de acciones (placeholder)
         function viewUserDetails(userId) {
-            alert(`Ver detalles del usuario ${userId} - Función en desarrollo`);
+            showNotification(`Ver detalles del usuario ${userId} - Función en desarrollo`, 'info', 3000);
         }
 
         function editUser(userId) {
-            alert(`Editar usuario ${userId} - Función en desarrollo`);
+            showNotification(`Editar usuario ${userId} - Función en desarrollo`, 'info', 3000);
         }
 
         function deleteUser(userId) {
             if (confirm(`¿Estás seguro de que quieres eliminar el usuario ${userId}?`)) {
-                alert(`Eliminar usuario ${userId} - Función en desarrollo`);
+                showNotification(`Eliminar usuario ${userId} - Función en desarrollo`, 'warning', 3000);
             }
         }
 
         // Función para cerrar sesión
         function logout() {
             localStorage.removeItem('token');
-            window.location.href = 'login.html';
+            localStorage.removeItem('userData');
+            showInfo('Cerrando sesión...', 2000);
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
         }
 
-        // Inicializar página
+        // ✅ INICIALIZACIÓN MEJORADA
         document.addEventListener('DOMContentLoaded', function() {
-            if (!userToken) {
-                window.location.href = 'login.html';
+            console.log('🎯 Inicializando página AdmUpReguser...');
+            
+            if (!checkAuth()) {
                 return;
             }
 
-            loadUsuarios();
+            // Cargar sidebar primero
+            loadSidebar();
+
+            // Cargar usuarios después de que la sidebar esté lista
+            setTimeout(() => {
+                loadUsuarios();
+            }, 1500);
 
             // Actualizar información del usuario si está disponible
             const userData = localStorage.getItem('userData');
             if (userData) {
                 try {
                     const user = JSON.parse(userData);
-                    if (user.name) {
-                        document.getElementById('userName').textContent = user.name;
-                        document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+                    const userNameElement = document.getElementById('userName');
+                    const userAvatarElement = document.getElementById('userAvatar');
+                    
+                    if (user.name && userNameElement) {
+                        userNameElement.textContent = user.name;
                     }
-                    if (user.email) {
-                        document.getElementById('userEmail').textContent = user.email;
+                    if (user.name && userAvatarElement) {
+                        userAvatarElement.textContent = user.name.charAt(0).toUpperCase();
                     }
                 } catch (e) {
-                    console.warn('Error parsing user data:', e);
+                    console.warn('⚠️ Error parsing user data:', e);
                 }
-            }        });
+            }
+
+            // Mensaje de bienvenida
+            setTimeout(() => {
+                showNotification('Gestión de usuarios cargada correctamente', 'success', 2000);
+            }, 2000);
+        });
+
+        // ✅ AJUSTAR POSICIÓN DEL BOTÓN AL REDIMENSIONAR VENTANA
+        window.addEventListener('resize', function() {
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            if (toggleBtn) {
+                if (window.innerWidth < 1024) {
+                    // En móvil, siempre a la izquierda
+                    toggleBtn.style.left = '20px';
+                    toggleBtn.classList.remove('sidebar-open');
+                    console.log('📱 Modo móvil: botón fijo a la izquierda');
+                } else {
+                    // En desktop, depende del estado de la sidebar
+                    if (sidebarIsOpen) {
+                        toggleBtn.style.left = '300px';
+                        toggleBtn.classList.add('sidebar-open');
+                        console.log('💻 Modo desktop: botón a la derecha (sidebar abierta)');
+                    } else {
+                        toggleBtn.style.left = '20px';
+                        toggleBtn.classList.remove('sidebar-open');
+                        console.log('💻 Modo desktop: botón a la izquierda (sidebar cerrada)');
+                    }
+                }
+            }
+        });
+
+        // ✅ CERRAR SIDEBAR AL HACER CLIC FUERA (MÓVIL)
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth < 1024 && sidebarIsOpen) {
+                const sidebar = document.querySelector('.admin-sidebar');
+                const toggleBtn = document.querySelector('.sidebar-toggle');
+                
+                if (sidebar && 
+                    !sidebar.contains(e.target) && 
+                    !toggleBtn.contains(e.target)) {
+                    toggleSidebar();
+                }
+            }
+        });
+
+        // ✅ FUNCIONES DE NOTIFICACIÓN SIMPLIFICADAS
+        function showNotification(message, type = 'info', duration = 3000) {
+            // Crear notificación si no existe el sistema
+            if (typeof showSuccess === 'undefined') {
+                console.log(`${type.toUpperCase()}: ${message}`);
+                
+                // Crear notificación visual simple
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 500;
+                    z-index: 10000;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                if (duration > 0) {
+                    setTimeout(() => {
+                        notification.remove();
+                    }, duration);
+                }
+                
+                return;
+            }
+            
+            // Usar sistema de notificaciones existente
+            switch (type) {
+                case 'success':
+                    showSuccess(message, duration);
+                    break;
+                case 'error':
+                    showError(message, duration);
+                    break;
+                case 'warning':
+                    showWarning(message, duration);
+                    break;
+                default:
+                    showInfo(message, duration);
+            }
+        }
     </script>
 </body>
 </html>
