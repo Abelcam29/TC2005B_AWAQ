@@ -264,6 +264,59 @@ async function usuariosInactivos(req, res) {
         return res.status(500).json(jsonError);
     }
 }
+
+async function getUsersRechazados(req, res) {
+    try {
+        const result = await SAService.getUsersRechazados();
+        return res.status(200).json({
+            "status": "success",
+            "total": result.getRows().length,
+            "records": result.getRows()
+        });
+    } catch(error) {
+        let jsonError = {
+            "status": "error",
+            "message": error.message
+        }
+        console.log(error);
+        return res.status(500).json(jsonError);
+    }
+}
+
+async function getRechazadosCount(req, res) {
+    try {
+        const result = await SAService.getRechazadosCount();
+        const count = result.getRows()[0]?.total || 0;
+        return res.status(200).json({ count: count });
+    } catch(error) {
+        let jsonError = {
+            "status": "error",
+            "message": error.message
+        }
+        console.log(error);
+        return res.status(500).json(jsonError);
+    }
+}
+
+async function reactivarUsuario(req, res) {
+    try {
+        const idUsuario = req.params.idUsuario;
+        const result = await SAService.reactivarUsuario(idUsuario);
+        return res.status(200).json({
+            "status": "success",
+            "total": result.changes,
+            "message": "Usuario reactivado exitosamente"
+        });
+    } catch(error) {
+        let jsonError = {
+            "status": "error",
+            "message": error.message
+        }
+        console.log(error);
+        return res.status(500).json(jsonError);
+    }
+}
+
 module.exports = {getRegistros, 
     getRegistrosPorUsuario, 
     updateRegistro, 
@@ -274,4 +327,7 @@ module.exports = {getRegistros,
     getPendientes,
     usuariosActivos,
     totalRegistros,
-    usuariosInactivos};
+    usuariosInactivos, 
+    getUsersRechazados,
+    getRechazadosCount,
+    reactivarUsuario};

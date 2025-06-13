@@ -238,13 +238,14 @@
             return true;
         }
 
-        // Función principal para cargar usuarios pendientes
+        // ✅ FUNCIÓN CORREGIDA - SIN USAR showLoading PROBLEMÁTICO
         async function loadPendingUsers() {
             console.log('📋 Cargando usuarios pendientes...');
             
             if (!checkAuth()) return;
 
-            const loadingId = showLoading('Cargando usuarios pendientes...');
+            // ✅ USAR NOTIFICACIÓN SIMPLE EN LUGAR DE showLoading
+            const loadingNotification = showInfo('Cargando usuarios pendientes...', 10000);
 
             try {
                 const tbody = document.getElementById('usersTableBody');
@@ -297,7 +298,10 @@
                     if (emptyState) emptyState.style.display = 'block';
                     if (approveAllBtn) approveAllBtn.style.display = 'none';
                     console.log('ℹ️ No hay usuarios pendientes');
-                    hideNotification(loadingId);
+                    // ✅ CERRAR NOTIFICACIÓN
+                    if (loadingNotification && typeof hideNotification === 'function') {
+                        hideNotification(loadingNotification);
+                    }
                     showInfo('No hay usuarios pendientes por aprobar');
                     return;
                 }
@@ -348,7 +352,10 @@
                 if (approveAllBtn) approveAllBtn.style.display = 'inline-flex';
                 console.log(`✅ ${pendingUsers.length} usuarios cargados exitosamente`);
                 
-                hideNotification(loadingId);
+                // ✅ CERRAR NOTIFICACIÓN
+                if (loadingNotification && typeof hideNotification === 'function') {
+                    hideNotification(loadingNotification);
+                }
                 showSuccess(`${pendingUsers.length} usuarios pendientes cargados`);
 
             } catch (error) {
@@ -363,12 +370,15 @@
                         </tr>
                     `;
                 }
-                hideNotification(loadingId);
+                // ✅ CERRAR NOTIFICACIÓN
+                if (loadingNotification && typeof hideNotification === 'function') {
+                    hideNotification(loadingNotification);
+                }
                 showError(`Error al cargar usuarios: ${error.message}`);
             }
         }
 
-        // Función para aprobar usuario
+        // ✅ FUNCIÓN CORREGIDA PARA APROBAR USUARIO
         async function approveUser(userId) {
             console.log(`👍 Aprobando usuario ${userId}`);
             
@@ -376,7 +386,8 @@
                 return;
             }
 
-            const loadingId = showLoading('Aprobando usuario...');
+            // ✅ USAR NOTIFICACIÓN SIMPLE
+            const loadingNotification = showInfo('Aprobando usuario...', 10000);
 
             try {
                 const response = await fetch(`/Consultas/api/aceptarUsuario/${userId}`, {
@@ -413,19 +424,25 @@
                     }
                     
                     console.log(`✅ Usuario ${userId} aprobado exitosamente`);
-                    hideNotification(loadingId);
+                    // ✅ CERRAR NOTIFICACIÓN
+                    if (loadingNotification && typeof hideNotification === 'function') {
+                        hideNotification(loadingNotification);
+                    }
                     showSuccess('Usuario aprobado exitosamente');
                 } else {
                     throw new Error('Error en la respuesta del servidor');
                 }
             } catch (error) {
                 console.error('❌ Error approving user:', error);
-                hideNotification(loadingId);
+                // ✅ CERRAR NOTIFICACIÓN
+                if (loadingNotification && typeof hideNotification === 'function') {
+                    hideNotification(loadingNotification);
+                }
                 showError('Error al aprobar usuario. Inténtalo de nuevo.');
             }
         }
 
-        // Función para rechazar usuario
+        // ✅ FUNCIÓN CORREGIDA PARA RECHAZAR USUARIO
         async function rejectUser(userId) {
             console.log(`👎 Rechazando usuario ${userId}`);
             
@@ -433,7 +450,8 @@
                 return;
             }
 
-            const loadingId = showLoading('Rechazando usuario...');
+            // ✅ USAR NOTIFICACIÓN SIMPLE
+            const loadingNotification = showInfo('Rechazando usuario...', 10000);
 
             try {
                 const response = await fetch(`/Consultas/api/rechazarUsuario/${userId}`, {
@@ -470,19 +488,25 @@
                     }
                     
                     console.log(`✅ Usuario ${userId} rechazado exitosamente`);
-                    hideNotification(loadingId);
+                    // ✅ CERRAR NOTIFICACIÓN
+                    if (loadingNotification && typeof hideNotification === 'function') {
+                        hideNotification(loadingNotification);
+                    }
                     showSuccess('Usuario rechazado exitosamente');
                 } else {
                     throw new Error('Error en la respuesta del servidor');
                 }
             } catch (error) {
                 console.error('❌ Error rejecting user:', error);
-                hideNotification(loadingId);
+                // ✅ CERRAR NOTIFICACIÓN
+                if (loadingNotification && typeof hideNotification === 'function') {
+                    hideNotification(loadingNotification);
+                }
                 showError('Error al rechazar usuario. Inténtalo de nuevo.');
             }
         }
 
-        // Función para aprobar todos los usuarios visibles
+        // ✅ FUNCIÓN CORREGIDA PARA APROBAR TODOS
         async function approveAllVisible() {
             if (!confirm('¿Estás seguro de que quieres aprobar todos los usuarios pendientes?')) {
                 return;
@@ -497,7 +521,8 @@
 
             console.log(`📦 Aprobando ${userRows.length} usuarios en lote`);
 
-            const loadingId = showLoading('Aprobando todos los usuarios...');
+            // ✅ USAR NOTIFICACIÓN SIMPLE
+            const loadingNotification = showInfo('Aprobando todos los usuarios...', 20000);
             const approveAllBtn = document.getElementById('approveAllBtn');
             const originalText = approveAllBtn.innerHTML;
             approveAllBtn.disabled = true;
@@ -532,7 +557,10 @@
                         approveAllBtn.style.display = 'none';
                     }, userRows.length * 50 + 500);
 
-                    hideNotification(loadingId);
+                    // ✅ CERRAR NOTIFICACIÓN
+                    if (loadingNotification && typeof hideNotification === 'function') {
+                        hideNotification(loadingNotification);
+                    }
                     showSuccess(`Todos los usuarios (${userRows.length}) fueron aprobados exitosamente`);
                     console.log(`✅ ${userRows.length} usuarios aprobados masivamente`);
                 } else {
@@ -540,7 +568,10 @@
                 }
             } catch (error) {
                 console.error('❌ Error en aprobación masiva:', error);
-                hideNotification(loadingId);
+                // ✅ CERRAR NOTIFICACIÓN
+                if (loadingNotification && typeof hideNotification === 'function') {
+                    hideNotification(loadingNotification);
+                }
                 showError(`Error al aprobar usuarios: ${error.message}`);
             } finally {
                 approveAllBtn.disabled = false;

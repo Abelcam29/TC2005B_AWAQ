@@ -50,6 +50,9 @@ router.get(constants.contextURL + constants.apiURL + "/listpendientes", usersRes
 router.get(constants.contextURL + constants.apiURL + "/usuariosActivos", usersRest.authenticateTokenSAdmin, adminRest.usuariosActivos);
 router.get(constants.contextURL + constants.apiURL + "/totalRegistros", usersRest.authenticateTokenSAdmin, adminRest.totalRegistros);
 router.get(constants.contextURL + constants.apiURL + "/usuariosInactivos", usersRest.authenticateTokenSAdmin, adminRest.usuariosInactivos);
+router.get(constants.contextURL + constants.apiURL + '/getUsersRechazados', adminRest.getUsersRechazados);
+router.get(constants.contextURL + constants.apiURL + '/getRechazadosCount', adminRest.getRechazadosCount);
+router.post(constants.contextURL + constants.apiURL + '/reactivarUsuario/:idUsuario', adminRest.reactivarUsuario);
 
 // AI Chat routes
 router.post(constants.contextURL + constants.apiURL + "/ai-chat", aiChatRest.aiChat);

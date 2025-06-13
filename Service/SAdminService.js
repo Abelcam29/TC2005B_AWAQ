@@ -322,6 +322,43 @@ async function registrarUsuario(user)
     return qResult;
 }
 
+async function getUsersRechazados() {
+    let qResult;
+    try {
+        let query = "SELECT * FROM usuario WHERE estado = ? ORDER BY fechaRegistro DESC";
+        let params = ['I']; // 'I' para usuarios inactivos/rechazados
+        qResult = await dataSource.getDataWithParams(query, params);
+    } catch(err) {
+        qResult = new dataSource.QueryResult(false, [], 0, 0, err.message);
+    }
+    return qResult;
+}
+
+async function getRechazadosCount() {
+    let qResult;
+    try {
+        let query = "SELECT count(*) as total FROM usuario WHERE estado = ?";
+        let params = ['I'];
+        qResult = await dataSource.getDataWithParams(query, params);
+    } catch(err) {
+        qResult = new dataSource.QueryResult(false, [], 0, 0, err.message);
+    }
+    return qResult;
+}
+
+async function reactivarUsuario(idUsuario) {
+    let qResult;
+    try {
+        // Cambiar de 'I' (inactivo) a 'P' (pendiente) para reactivar
+        let query = "UPDATE usuario SET estado = ? WHERE idUsuario = ?";
+        let params = ['P', idUsuario];
+        qResult = await dataSource.updateData(query, params);
+    } catch(err) {
+        qResult = new dataSource.QueryResult(false, [], 0, 0, err.message);
+    }
+    return qResult;
+}
+
 module.exports = {getRegistros,
      getRegistrosPorUsuario, 
      updateRegistro, 
@@ -332,4 +369,9 @@ module.exports = {getRegistros,
      getPendientes,
      usuariosActivos,
      totalRegistros,
-     usuariosInactivos};
+     usuariosInactivos, 
+    usuariosInactivos,
+    getUsersRechazados,
+    getRechazadosCount,
+    reactivarUsuario, 
+    registrarUsuario};

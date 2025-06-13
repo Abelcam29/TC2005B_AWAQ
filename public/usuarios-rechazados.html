@@ -2,11 +2,49 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Usuarios Rechazados - MAWI Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios Rechazados - MAWI Admin</title>
     <link rel="stylesheet" href="css/admin-dashboard-stats.css">
-    <link rel="stylesheet" href="css/sidebar-enhanced.css">
     <link rel="stylesheet" href="css/notification.css">
     <link rel="stylesheet" href="css/loading.css">
+    <style>
+        /* ✅ ESTILOS PARA BOTÓN QUE SE MUEVE CON LA SIDEBAR - COPIADO DE SAaceptarusuarios.html */
+        .sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px; /* ✅ POSICIÓN INICIAL CUANDO SIDEBAR ESTÁ CERRADA */
+            z-index: 1000;
+            background: var(--admin-primary, #48cc6c);
+            border: none;
+            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease; /* ✅ TRANSICIÓN SUAVE PARA EL MOVIMIENTO */
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--admin-primary-dark, #3da458);
+            transform: scale(1.05);
+        }
+
+        /* ✅ CLASE PARA CUANDO LA SIDEBAR ESTÁ ABIERTA */
+        .sidebar-toggle.sidebar-open {
+            left: 300px; /* ✅ SE MUEVE A LA DERECHA CUANDO SIDEBAR ESTÁ ABIERTA (280px + 20px margin) */
+        }
+
+        /* ✅ RESPONSIVE - EN MÓVIL EL BOTÓN SE COMPORTA DIFERENTE */
+        @media (max-width: 1023px) {
+            .sidebar-toggle {
+                left: 20px !important; /* ✅ EN MÓVIL SIEMPRE SE QUEDA EN LA MISMA POSICIÓN */
+            }
+        }
+    </style>
 </head>
 <body data-page="usuarios-rechazados">
     <div class="admin-app-container">
@@ -30,8 +68,8 @@
             </div>
         </header>
 
-        <!-- Sidebar Toggle -->
-        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Abrir/cerrar menú lateral">
+        <!-- ✅ BOTÓN SIDEBAR QUE SE MUEVE - COPIADO DE SAaceptarusuarios.html -->
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="9,18 15,12 9,6"></polyline>
             </svg>
@@ -42,7 +80,7 @@
             <div id="sidebar-container"></div>
 
             <!-- Main Content -->
-            <main class="admin-main-content with-sidebar">
+            <main class="admin-main-content">
                 <!-- Page Header -->
                 <div class="page-header">
                     <div>
@@ -106,12 +144,78 @@
                     </div>
                 </div>
             </main>
-        </div>    </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="js/notification.js"></script>
     <script src="js/loading.js"></script>
     <script>
+        // ✅ VARIABLE GLOBAL PARA ESTADO DE SIDEBAR - COPIADO DE SAaceptarusuarios.html
+        let sidebarIsOpen = false;
+
+        // ✅ FUNCIÓN SIMPLE PARA TOGGLE SIDEBAR CON MOVIMIENTO DE BOTÓN - COPIADO DE SAaceptarusuarios.html
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            
+            if (!sidebar) return;
+            
+            if (sidebarIsOpen) {
+                // ✅ CERRAR SIDEBAR
+                sidebar.style.transform = 'translateX(-100%)';
+                toggleBtn.querySelector('polyline').setAttribute('points', '9,18 15,12 9,6');
+                
+                // ✅ MOVER BOTÓN A LA IZQUIERDA (SOLO EN DESKTOP)
+                if (window.innerWidth >= 1024) {
+                    toggleBtn.classList.remove('sidebar-open');
+                }
+                
+                sidebarIsOpen = false;
+                console.log('🔒 Sidebar cerrada, botón movido a la izquierda');
+            } else {
+                // ✅ ABRIR SIDEBAR
+                sidebar.style.transform = 'translateX(0)';
+                toggleBtn.querySelector('polyline').setAttribute('points', '15,18 9,12 15,6');
+                
+                // ✅ MOVER BOTÓN A LA DERECHA (SOLO EN DESKTOP)
+                if (window.innerWidth >= 1024) {
+                    toggleBtn.classList.add('sidebar-open');
+                }
+                
+                sidebarIsOpen = true;
+                console.log('🔓 Sidebar abierta, botón movido a la derecha');
+            }
+        }
+
+        // ✅ CARGAR SIDEBAR - COPIADO DE SAaceptarusuarios.html
+        async function loadSidebar() {
+            try {
+                const response = await fetch('components/admin-sidebar.html');
+                const html = await response.text();
+                document.getElementById('sidebar-container').innerHTML = html;
+                
+                setTimeout(() => {
+                    const sidebar = document.querySelector('.admin-sidebar');
+                    const toggleBtn = document.querySelector('.sidebar-toggle');
+                    
+                    if (sidebar) {
+                        sidebar.style.transform = 'translateX(-100%)';
+                        sidebarIsOpen = false;
+                        console.log('✅ Sidebar cargada y cerrada');
+                    }
+                    
+                    if (toggleBtn) {
+                        toggleBtn.classList.remove('sidebar-open');
+                        console.log('✅ Botón posicionado para sidebar cerrada');
+                    }
+                }, 100);
+                
+            } catch (error) {
+                console.error('Error cargando sidebar:', error);
+            }
+        }
+
         // Variables globales
         let userToken = localStorage.getItem('token');
         let rejectedUsers = [];
@@ -124,87 +228,16 @@
                 return false;
             }
             return true;
-        }        // Cargar sidebar
-        async function loadSidebar() {
-            try {
-                const response = await fetch('components/admin-sidebar.html');
-                const sidebarHtml = await response.text();
-                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
-                
-                // Establecer elemento activo
-                const activeItem = document.querySelector('[data-page="usuarios-rechazados"]');
-                if (activeItem) {
-                    activeItem.classList.add('active');
-                }
-                
-                // Cargar contador de usuarios rechazados
-                loadRejectedUsersCount();
-                
-                // Inicializar sidebar enhanced después de cargar
-                if (window.SidebarManager) {
-                    const sidebarManager = new window.SidebarManager();
-                } else {
-                    // Fallback al sistema anterior
-                    setupSidebarToggle();
-                }
-            } catch (error) {
-                console.error('Error loading sidebar:', error);
-                // Fallback al sistema anterior
-                setupSidebarToggle();
-            }
         }
 
-        // Setup sidebar toggle
-        function setupSidebarToggle() {
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            const sidebar = document.querySelector('.admin-sidebar');
-            const mainContent = document.querySelector('.admin-main-content');
-
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', () => {
-                    const isExpanded = sidebar.classList.contains('expanded');
-                    
-                    if (isExpanded) {
-                        sidebar.classList.remove('expanded');
-                        mainContent.classList.remove('sidebar-expanded');
-                    } else {
-                        sidebar.classList.add('expanded');
-                        mainContent.classList.add('sidebar-expanded');
-                    }
-                });
-            }
-        }
-
-        // Cargar contador de usuarios rechazados
-        async function loadRejectedUsersCount() {
-            try {
-                const response = await fetch('/Consultas/api/getRechazadosCount', {
-                    headers: {
-                        'Authorization': `Bearer ${userToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const count = data.count || 0;
-                    
-                    const countElement = document.getElementById('rejectedUsersCount');
-                    if (countElement) {
-                        countElement.textContent = count;
-                        countElement.style.display = count > 0 ? 'block' : 'none';
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading rejected users count:', error);
-            }
-        }
-
-        // Función principal para cargar usuarios rechazados
+        // ✅ FUNCIÓN CORREGIDA - SIN USAR showLoading QUE TIENE PROBLEMAS
         async function loadRejectedUsers() {
             console.log('📋 Cargando usuarios rechazados...');
             
             if (!checkAuth()) return;
+
+            // ✅ USAR NOTIFICACIÓN SIMPLE EN LUGAR DE showLoading
+            const loadingNotification = showInfo('Cargando usuarios rechazados...', 10000);
 
             try {
                 const tbody = document.getElementById('rejectedUsersTableBody');
@@ -257,6 +290,11 @@
                     if (emptyState) emptyState.style.display = 'block';
                     if (reactivateAllBtn) reactivateAllBtn.style.display = 'none';
                     console.log('ℹ️ No hay usuarios rechazados');
+                    // ✅ CERRAR NOTIFICACIÓN
+                    if (loadingNotification && typeof hideNotification === 'function') {
+                        hideNotification(loadingNotification);
+                    }
+                    showInfo('No hay usuarios rechazados');
                     return;
                 }
 
@@ -264,13 +302,13 @@
                 tbody.innerHTML = rejectedUsers.map(user => `
                     <tr id="user-${user.idUsuario}">
                         <td>
-                            <div class="admin-user-cell">
-                                <div class="admin-avatar-sm">
+                            <div class="admin-flex admin-items-center admin-gap-2">
+                                <div class="admin-avatar" style="width: 32px; height: 32px; font-size: 0.875rem;">
                                     ${user.Nombre ? user.Nombre.charAt(0).toUpperCase() : 'U'}
                                 </div>
-                                <div class="admin-user-info">
-                                    <div class="admin-user-name">${user.Nombre || 'Sin nombre'} ${user.Apellidos || ''}</div>
-                                    <div class="admin-user-id">ID: ${user.idUsuario}</div>
+                                <div>
+                                    <div style="font-weight: 600;">${user.Nombre || 'Sin nombre'} ${user.Apellidos || ''}</div>
+                                    <div style="font-size: 0.875rem; color: var(--admin-text-secondary);">ID: ${user.idUsuario}</div>
                                 </div>
                             </div>
                         </td>
@@ -281,7 +319,7 @@
                             </span>
                         </td>
                         <td>
-                            <div class="admin-date">
+                            <div style="font-size: 0.875rem;">
                                 ${user.fechaRegistro ? new Date(user.fechaRegistro).toLocaleDateString('es-ES') : 'Sin fecha'}
                             </div>
                         </td>
@@ -291,9 +329,9 @@
                             </span>
                         </td>
                         <td>
-                            <div class="admin-actions">
+                            <div class="admin-flex admin-gap-2">
                                 <button class="admin-btn admin-btn-success admin-btn-sm" onclick="reactivateUser(${user.idUsuario})">
-                                    ✅ Reactivar
+                                    🔄 Reactivar
                                 </button>
                             </div>
                         </td>
@@ -302,6 +340,12 @@
 
                 if (reactivateAllBtn) reactivateAllBtn.style.display = 'inline-flex';
                 console.log(`✅ ${rejectedUsers.length} usuarios rechazados cargados exitosamente`);
+                
+                // ✅ CERRAR NOTIFICACIÓN
+                if (loadingNotification && typeof hideNotification === 'function') {
+                    hideNotification(loadingNotification);
+                }
+                showSuccess(`${rejectedUsers.length} usuarios rechazados cargados`);
 
             } catch (error) {
                 console.error('❌ Error loading rejected users:', error);
@@ -309,22 +353,30 @@
                 if (tbody) {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="6" class="admin-error">
-                                ❌ Error al cargar usuarios: ${error.message}
+                            <td colspan="6" style="text-align: center; color: var(--admin-danger); padding: 2rem;">
+                                Error al cargar usuarios: ${error.message}
                             </td>
                         </tr>
                     `;
                 }
+                // ✅ CERRAR NOTIFICACIÓN
+                if (loadingNotification && typeof hideNotification === 'function') {
+                    hideNotification(loadingNotification);
+                }
+                showError(`Error al cargar usuarios: ${error.message}`);
             }
         }
 
-        // Función para reactivar usuario
+        // ✅ FUNCIÓN CORREGIDA - SIN USAR showLoading
         async function reactivateUser(userId) {
             console.log(`👍 Reactivando usuario ${userId}`);
             
             if (!confirm('¿Estás seguro de que quieres reactivar este usuario? Será movido a la lista de pendientes.')) {
                 return;
             }
+
+            // ✅ USAR NOTIFICACIÓN SIMPLE
+            const loadingNotification = showInfo('Reactivando usuario...', 10000);
 
             try {
                 const response = await fetch(`/Consultas/api/reactivarUsuario/${userId}`, {
@@ -361,17 +413,26 @@
                     }
                     
                     console.log(`✅ Usuario ${userId} reactivado exitosamente`);
-                    alert('Usuario reactivado exitosamente. Ahora aparece en la lista de usuarios pendientes.');
+                    // ✅ CERRAR NOTIFICACIÓN
+                    if (loadingNotification && typeof hideNotification === 'function') {
+                        hideNotification(loadingNotification);
+                    }
+                    showSuccess('Usuario reactivado exitosamente. Ahora aparece en la lista de usuarios pendientes.');
                 } else {
-                    throw new Error('Error en la respuesta del servidor');
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error en la respuesta del servidor');
                 }
             } catch (error) {
                 console.error('❌ Error reactivating user:', error);
-                alert('Error al reactivar usuario. Inténtalo de nuevo.');
+                // ✅ CERRAR NOTIFICACIÓN
+                if (loadingNotification && typeof hideNotification === 'function') {
+                    hideNotification(loadingNotification);
+                }
+                showError(`Error al reactivar usuario: ${error.message}`);
             }
         }
 
-        // Función para reactivar todos los usuarios visibles
+        // ✅ FUNCIÓN CORREGIDA - SIN USAR showLoading
         async function reactivateAllVisible() {
             if (!confirm('¿Estás seguro de que quieres reactivar todos los usuarios rechazados? Serán movidos a la lista de pendientes.')) {
                 return;
@@ -380,18 +441,62 @@
             const userRows = document.querySelectorAll('#rejectedUsersTableBody tr[id^="user-"]');
             
             if (userRows.length === 0) {
-                alert('No hay usuarios rechazados para reactivar');
+                showWarning('No hay usuarios rechazados para reactivar');
                 return;
             }
 
             console.log(`📦 Reactivando ${userRows.length} usuarios en lote`);
+
+            // ✅ USAR NOTIFICACIÓN SIMPLE
+            const loadingNotification = showInfo('Reactivando todos los usuarios...', 20000);
+            let successCount = 0;
+            let errorCount = 0;
             
             for (let row of userRows) {
                 const userId = row.id.split('-')[1];
-                await reactivateUser(parseInt(userId));
+                try {
+                    const response = await fetch(`/Consultas/api/reactivarUsuario/${userId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${userToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        successCount++;
+                        row.style.background = 'rgba(16, 185, 129, 0.1)';
+                    } else {
+                        errorCount++;
+                        row.style.background = 'rgba(239, 68, 68, 0.1)';
+                    }
+                } catch (error) {
+                    errorCount++;
+                    row.style.background = 'rgba(239, 68, 68, 0.1)';
+                    console.error(`Error reactivating user ${userId}:`, error);
+                }
+                
                 // Pequeña pausa entre reactivaciones
                 await new Promise(resolve => setTimeout(resolve, 200));
             }
+
+            // ✅ CERRAR NOTIFICACIÓN
+            if (loadingNotification && typeof hideNotification === 'function') {
+                hideNotification(loadingNotification);
+            }
+            
+            // Mostrar resultado
+            const message = `Reactivación completada: ${successCount} exitosos, ${errorCount} errores`;
+            if (errorCount === 0) {
+                showSuccess(message);
+            } else {
+                showWarning(message);
+            }
+
+            // Recargar la lista después de un momento
+            setTimeout(() => {
+                loadRejectedUsers();
+            }, 1000);
         }
 
         // Funciones auxiliares
@@ -408,23 +513,82 @@
         // Función para cerrar sesión
         function logout() {
             localStorage.removeItem('token');
-            window.location.href = 'login.html';
+            localStorage.removeItem('userData');
+            showInfo('Cerrando sesión...', 2000);
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
         }
 
-        // Inicialización cuando el DOM está listo
+        // ✅ INICIALIZACIÓN - COPIADO DE SAaceptarusuarios.html
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🎯 DOM cargado, inicializando página de usuarios rechazados');
+            console.log('🎯 Inicializando página usuarios-rechazados...');
             
             if (!checkAuth()) {
                 return;
-            }            loadSidebar();
-            
-            // Cargar scripts de sidebar enhanced
-            const script = document.createElement('script');
-            script.src = 'js/sidebar-enhanced.js';
-            document.head.appendChild(script);
-            
-            loadRejectedUsers();
+            }
+
+            // Cargar sidebar
+            loadSidebar();
+
+            // Cargar usuarios rechazados automáticamente
+            setTimeout(() => {
+                loadRejectedUsers();
+            }, 1000);
+
+            // Actualizar información del usuario si está disponible
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    const userNameElement = document.getElementById('userName');
+                    const userAvatarElement = document.getElementById('userAvatar');
+                    
+                    if (user.name && userNameElement) {
+                        userNameElement.textContent = user.name;
+                    }
+                    if (user.name && userAvatarElement) {
+                        userAvatarElement.textContent = user.name.charAt(0).toUpperCase();
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Error parsing user data:', e);
+                }
+            }
+
+            // Mensaje de bienvenida
+            setTimeout(() => {
+                showSuccess('Página de usuarios rechazados cargada correctamente', 2000);
+            }, 1500);
+        });
+
+        // ✅ CERRAR SIDEBAR AL HACER CLIC FUERA (MÓVIL) - COPIADO DE SAaceptarusuarios.html
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth < 1024 && sidebarIsOpen) {
+                const sidebar = document.querySelector('.admin-sidebar');
+                const toggleBtn = document.querySelector('.sidebar-toggle');
+                
+                if (sidebar && 
+                    !sidebar.contains(e.target) && 
+                    !toggleBtn.contains(e.target)) {
+                    toggleSidebar();
+                }
+            }
+        });
+
+        // ✅ AJUSTAR POSICIÓN DEL BOTÓN AL REDIMENSIONAR VENTANA - COPIADO DE SAaceptarusuarios.html
+        window.addEventListener('resize', function() {
+            const toggleBtn = document.querySelector('.sidebar-toggle');
+            if (toggleBtn) {
+                if (window.innerWidth < 1024) {
+                    toggleBtn.classList.remove('sidebar-open');
+                } else {
+                    if (sidebarIsOpen) {
+                        toggleBtn.classList.add('sidebar-open');
+                    } else {
+                        toggleBtn.classList.remove('sidebar-open');
+                    }
+                }
+            }
         });
     </script>
 </body>
