@@ -1,6 +1,7 @@
 const userService = require('../../Service/usersService');
 const hashService = require('../../Service/hashPassword');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const e = require('express');
 require('dotenv').config();
 
@@ -662,6 +663,67 @@ async function getAnteproyectoPDF(req, res) {
     }
 }
 
+async function sendRecoveryEmail(req, res) {
+    const { email } = req.body;
+
+    try {
+        if (!email) {
+            return res.status(400).json({ status: 'error', message: 'Correo no proporcionado' });
+        }
+
+        // Generar token JWT con expiración de 15 minutos
+        const token = jwt.sign({ email }, SECRET, { expiresIn: '15m' });
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        const mailOptions = {
+            from: 'Mawi <no-reply@mawi.com>',
+            to: email,
+            subject: 'Recuperación de contraseña',
+            html: `
+                <p>Hola,</p>
+                <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+                <a href="http://localhost:3000/recover-password.html?token=${token}">Recuperar contraseña</a>
+                <p>Si no solicitaste esto, puedes ignorar este mensaje.</p>
+            `,
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        return res.status(200).json({ status: 'success', message: 'Correo enviado correctamente' });
+    } catch (error) {
+        console.error('Error al enviar correo:', error);
+        return res.status(500).json({ status: 'error', message: 'Error al enviar el correo' });
+    }
+}
+async function resetPassword(req, res) {
+    const { token, password } = req.body;
+
+    try {
+        const decoded = jwt.verify(token, process.env.SECRET);
+        const email = decoded.email;
+
+        const salt = hashService.getSalt();
+        const hashedPassword = hashService.encryptPassword(password, salt);
+
+        const result = await userService.updatePasswordByEmail(email, hashedPassword);
+        if (result.getStatus()) {
+            return res.json({ status: "success", message: "Contraseña actualizada correctamente" });
+        } else {
+            return res.status(400).json({ status: "error", message: "No se pudo actualizar la contraseña" });
+        }
+    } catch (error) {
+        return res.status(400).json({ status: "error", message: "Token inválido o expirado" });
+    }
+}
+
+
 module.exports = {
     execLogin, 
     authenticateToken, 
@@ -679,5 +741,8 @@ module.exports = {
     insertAnteproyecto,
     getAnteproyectosAbiertos,
     getAnteproyectosCerrados,
-    getAnteproyectoPDF
+    getAnteproyectoPDF,
+    resetPassword,
+    sendRecoveryEmail
+
 }

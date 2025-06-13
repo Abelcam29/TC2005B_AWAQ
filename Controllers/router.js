@@ -10,6 +10,9 @@ const aiChatRest = require('./API/aiChatController');
 
 const router = express.Router();
 
+//rutas recoverpassword
+router.post(constants.contextURL + constants.apiURL + "/send-recovery-email", usersRest.sendRecoveryEmail);
+router.post(constants.contextURL + constants.apiURL + "/reset-password", usersRest.resetPassword);
 
 
 //Rutas de la API

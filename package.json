@@ -26,6 +26,7 @@
     "multer": "^1.4.5-lts.2",
     "mysql2": "^3.14.1",
     "node-fetch": "^2.7.0",
+    "nodemailer": "^7.0.3",
     "nodemon": "^3.1.10",
     "osf_sm": "file:"
   }
