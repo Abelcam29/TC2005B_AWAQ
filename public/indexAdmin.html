@@ -5,35 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard - Mawi</title>
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: sans-serif;
-      background: #1a1a1a;
-      color: white;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* ✅ ESTILOS PARA LA NUEVA SIDEBAR */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* ✅ SIDEBAR CORREGIDA */
     .sidebar {
       width: 280px;
-      background: linear-gradient(180deg, #1a1f26 0%, #242b36 100%);
-      border-right: 1px solid #374151;
+      background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+      border-right: 1px solid #475569;
       position: fixed;
       top: 0;
       left: 0;
       height: 100vh;
       overflow-y: auto;
-      z-index: 999;
+      z-index: 1000;
       display: flex;
       flex-direction: column;
+      transition: transform 0.3s ease;
     }
 
     .sidebar-header {
       padding: 1.5rem;
-      border-bottom: 1px solid #374151;
-      background: linear-gradient(135deg, #30a046 0%, #268a3a 100%);
+      border-bottom: 1px solid #475569;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     }
 
     .sidebar-logo {
@@ -43,166 +47,217 @@
     }
 
     .sidebar-logo-icon {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       background: rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: bold;
-      font-size: 1.125rem;
+      font-size: 1.25rem;
     }
 
     .sidebar-logo .sidebar-text {
       color: white;
-      font-weight: 600;
-      font-size: 1.25rem;
+      font-weight: 700;
+      font-size: 1.375rem;
     }
 
     .sidebar-nav {
       flex: 1;
-      padding: 1rem 0;
+      padding: 1.5rem 0;
     }
 
     .sidebar-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 0.75rem 1.5rem;
-      color: #d1d5db;
+      gap: 14px;
+      padding: 1rem 1.5rem;
+      color: #cbd5e1;
       text-decoration: none;
-      transition: all 0.2s ease;
-      border-left: 3px solid transparent;
+      transition: all 0.25s ease;
+      border-left: 4px solid transparent;
+      margin: 0.25rem 0;
+      cursor: pointer;
     }
 
     .sidebar-item:hover {
-      background: rgba(48, 160, 70, 0.1);
-      color: #30a046;
-      border-left-color: #30a046;
+      background: rgba(34, 197, 94, 0.1);
+      color: #22c55e;
+      border-left-color: #22c55e;
+      transform: translateX(4px);
     }
 
     .sidebar-item.active {
-      background: rgba(48, 160, 70, 0.15);
-      color: #30a046;
-      border-left-color: #30a046;
-      font-weight: 500;
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      border-left-color: #22c55e;
+      font-weight: 600;
     }
 
     .sidebar-icon {
-      font-size: 1.125rem;
-      width: 20px;
+      font-size: 1.25rem;
+      width: 24px;
       text-align: center;
       flex-shrink: 0;
     }
 
     .sidebar-text {
-      font-size: 0.875rem;
+      font-size: 0.95rem;
       flex: 1;
     }
 
     .sidebar-footer {
-      padding: 1rem;
-      border-top: 1px solid #374151;
+      padding: 1.5rem;
+      border-top: 1px solid #475569;
       margin-top: auto;
     }
 
     .support-link {
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: #9ca3af;
+      gap: 10px;
+      color: #94a3b8;
       text-decoration: none;
       font-size: 0.875rem;
-      padding: 0.5rem;
-      border-radius: 6px;
-      transition: all 0.2s ease;
+      padding: 0.75rem;
+      border-radius: 8px;
+      transition: all 0.25s ease;
+      margin-bottom: 1rem;
     }
 
     .support-link:hover {
-      background: rgba(156, 163, 175, 0.1);
-      color: #d1d5db;
+      background: rgba(148, 163, 184, 0.1);
+      color: #cbd5e1;
     }
 
     .logout-btn {
-      background: #dc3545;
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
       color: white;
       border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 0.875rem;
-      transition: all 0.2s ease;
-      margin-top: 0.5rem;
+      font-weight: 600;
+      transition: all 0.25s ease;
       width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .logout-btn:hover {
-      background: #c82333;
-      transform: translateY(-1px);
+      background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
     }
 
-    /* ✅ AJUSTAR CONTENIDO PRINCIPAL */
+    /* ✅ CONTENIDO PRINCIPAL */
     .main-content {
-      flex: 1;
       margin-left: 280px;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: margin-left 0.3s ease;
     }
 
     .top-bar {
-      background: #1a1a1a;
-      padding: 16px 24px;
-      border-bottom: 1px solid #333;
+      background: #1e293b;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #475569;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #22c55e;
+    }
+
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
     .top-bar span {
-      margin-right: 12px;
-      color: #d1d5db;
+      color: #cbd5e1;
+      font-weight: 500;
     }
 
     .avatar {
-      background: #30a046;
-      width: 32px;
-      height: 32px;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: bold;
-    }
-
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      font-size: 1.125rem;
+      border: 2px solid rgba(34, 197, 94, 0.3);
     }
 
     .content-area {
       flex: 1;
-      padding: 24px;
-      overflow: auto;
+      padding: 2rem;
+      background: #0f172a;
     }
 
     iframe {
       width: 100%;
-      height: calc(100vh - 120px);
+      height: calc(100vh - 140px);
       border: none;
       border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      background: white;
+    }
+
+    /* ✅ BOTÓN MÓVIL */
+    .mobile-menu-btn {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1100;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      border: none;
+      border-radius: 10px;
+      width: 48px;
+      height: 48px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+      transition: all 0.25s ease;
+    }
+
+    .mobile-menu-btn:hover {
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      transform: scale(1.05);
     }
 
     /* ✅ RESPONSIVE */
     @media (max-width: 1023px) {
       .sidebar {
         transform: translateX(-100%);
-        transition: transform 0.3s ease;
       }
       
       .sidebar.show {
@@ -214,50 +269,62 @@
       }
       
       .mobile-menu-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1000;
-        background: #30a046;
-        border: none;
-        border-radius: 8px;
-        width: 44px;
-        height: 44px;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
       }
-      
-      .mobile-menu-btn:hover {
-        background: #268a3a;
+
+      .content-area {
+        padding: 1rem;
+      }
+
+      iframe {
+        height: calc(100vh - 120px);
       }
     }
 
+    /* ✅ OVERLAY PARA MÓVIL */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
     @media (min-width: 1024px) {
-      .mobile-menu-btn {
+      .sidebar-overlay {
         display: none;
       }
     }
   </style>
 </head>
 <body data-page="dashboard">
-  <!-- ✅ BOTÓN PARA MÓVIL -->
-  <button class="mobile-menu-btn" onclick="toggleSidebar()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+  <!-- ✅ OVERLAY PARA CERRAR SIDEBAR EN MÓVIL -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- ✅ BOTÓN HAMBURGUESA PARA MÓVIL -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <line x1="3" y1="6" x2="21" y2="6"></line>
       <line x1="3" y1="12" x2="21" y2="12"></line>
       <line x1="3" y1="18" x2="21" y2="18"></line>
     </svg>
   </button>
 
-  <!-- ✅ NUEVA SIDEBAR INTEGRADA -->
+  <!-- ✅ SIDEBAR CORREGIDA -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
       <div class="sidebar-logo">
-        <div class="sidebar-logo-icon">M</div>
+        <div class="sidebar-logo-icon">🌿</div>
         <span class="sidebar-text">MAWI Admin</span>
       </div>
     </div>
@@ -298,21 +365,26 @@
     </nav>
     
     <div class="sidebar-footer">
-      <a href="#" class="support-link">
+      <a href="#" class="support-link" onclick="contactSupport()">
         <span class="sidebar-icon">💬</span>
         <span class="sidebar-text">Contacta con el soporte</span>
       </a>
       <button class="logout-btn" onclick="logout()">
-        <span>🚪</span> Cerrar Sesión
+        <span>🚪</span> 
+        <span>Cerrar Sesión</span>
       </button>
     </div>
   </aside>
 
-  <div class="main-content">
+  <!-- ✅ CONTENIDO PRINCIPAL -->
+  <div class="main-content" id="mainContent">
     <div class="top-bar">
-      <span>Administrador</span>
-      <div class="avatar" id="userAvatar">
-        A
+      <div class="top-bar-left">
+        <h1 class="page-title">📊 Dashboard Principal</h1>
+      </div>
+      <div class="top-bar-right">
+        <span id="adminName">Administrador</span>
+        <div class="avatar" id="userAvatar">A</div>
       </div>
     </div>
 
@@ -325,10 +397,35 @@
   </div>
 
   <script>
-    // ✅ FUNCIÓN PARA TOGGLE DE SIDEBAR EN MÓVIL
+    // ✅ VARIABLES GLOBALES
+    let sidebarOpen = false;
+
+    // ✅ FUNCIÓN PARA TOGGLE SIDEBAR
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('show');
+      const overlay = document.getElementById('sidebarOverlay');
+      
+      if (window.innerWidth < 1024) {
+        sidebarOpen = !sidebarOpen;
+        
+        if (sidebarOpen) {
+          sidebar.classList.add('show');
+          overlay.classList.add('show');
+        } else {
+          sidebar.classList.remove('show');
+          overlay.classList.remove('show');
+        }
+      }
+    }
+
+    // ✅ FUNCIÓN PARA CERRAR SIDEBAR
+    function closeSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      
+      sidebar.classList.remove('show');
+      overlay.classList.remove('show');
+      sidebarOpen = false;
     }
 
     // ✅ FUNCIÓN PARA MARCAR ELEMENTO ACTIVO
@@ -350,43 +447,57 @@
 
     // ✅ FUNCIÓN DE LOGOUT
     function logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('userRole');
-      localStorage.removeItem('userData');
-      window.location.href = 'login.html';
+      if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userData');
+        window.location.href = 'login.html';
+      }
     }
 
-    // ✅ CERRAR SIDEBAR AL HACER CLIC FUERA EN MÓVIL
+    // ✅ FUNCIÓN DE SOPORTE
+    function contactSupport() {
+      alert('Contacta con soporte en: soporte@mawi.com\nO llama al: +52 81 1234-5678');
+    }
+
+    // ✅ MANEJAR RESIZE DE VENTANA
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 1024) {
+        closeSidebar();
+      }
+    });
+
+    // ✅ MANEJAR CLICKS EN LINKS DE SIDEBAR
     document.addEventListener('click', function(e) {
-      if (window.innerWidth < 1024) {
-        const sidebar = document.getElementById('sidebar');
-        const menuBtn = document.querySelector('.mobile-menu-btn');
-        
-        if (sidebar.classList.contains('show') && 
-            !sidebar.contains(e.target) && 
-            !menuBtn.contains(e.target)) {
-          sidebar.classList.remove('show');
-        }
+      if (e.target.closest('.sidebar-item') && window.innerWidth < 1024) {
+        setTimeout(closeSidebar, 100);
       }
     });
 
     // ✅ INICIALIZACIÓN
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('🚀 Inicializando Dashboard Admin...');
+      
       setActiveMenuItem();
       
-      // Configurar avatar si hay datos de usuario
+      // Configurar datos de usuario
       const userData = localStorage.getItem('userData');
       if (userData) {
         try {
           const user = JSON.parse(userData);
           const avatar = document.getElementById('userAvatar');
-          if (user.name && avatar) {
-            avatar.textContent = user.name.charAt(0).toUpperCase();
+          const adminName = document.getElementById('adminName');
+          
+          if (user.name) {
+            if (avatar) avatar.textContent = user.name.charAt(0).toUpperCase();
+            if (adminName) adminName.textContent = user.name;
           }
         } catch (e) {
-          console.warn('Error parsing user data:', e);
+          console.warn('⚠️ Error parsing user data:', e);
         }
       }
+
+      console.log('✅ Dashboard inicializado correctamente');
     });
   </script>
 </body>
