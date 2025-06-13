@@ -55,6 +55,7 @@ h1 {
   font-weight: 500;
   cursor: pointer;
   width: 100%;
+  max-width: 24px;
   transition: background-color 0.2s;
   text-decoration: none;
   display: inline-block;
