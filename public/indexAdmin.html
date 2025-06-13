@@ -15,38 +15,138 @@
       overflow: hidden;
     }
 
+    /* ✅ ESTILOS PARA LA NUEVA SIDEBAR */
     .sidebar {
-      width: 240px;
-      background: #111;
-      padding: 24px;
+      width: 280px;
+      background: linear-gradient(180deg, #1a1f26 0%, #242b36 100%);
+      border-right: 1px solid #374151;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 999;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
     }
 
-    .sidebar h2 {
-      color: #30a046;
-      margin-bottom: 32px;
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #374151;
+      background: linear-gradient(135deg, #30a046 0%, #268a3a 100%);
     }
 
-    .sidebar nav a {
-      display: block;
-      color: #ccc;
-      text-decoration: none;
-      margin-bottom: 16px;
-      padding: 10px 12px;
-      border-radius: 6px;
-      transition: 0.2s;
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    .sidebar nav a:hover,
-    .sidebar nav a.active {
-      background: #30a046;
+    .sidebar-logo-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
+      font-weight: bold;
+      font-size: 1.125rem;
     }
 
+    .sidebar-logo .sidebar-text {
+      color: white;
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.75rem 1.5rem;
+      color: #d1d5db;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(48, 160, 70, 0.1);
+      color: #30a046;
+      border-left-color: #30a046;
+    }
+
+    .sidebar-item.active {
+      background: rgba(48, 160, 70, 0.15);
+      color: #30a046;
+      border-left-color: #30a046;
+      font-weight: 500;
+    }
+
+    .sidebar-icon {
+      font-size: 1.125rem;
+      width: 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-text {
+      font-size: 0.875rem;
+      flex: 1;
+    }
+
+    .sidebar-footer {
+      padding: 1rem;
+      border-top: 1px solid #374151;
+      margin-top: auto;
+    }
+
+    .support-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #9ca3af;
+      text-decoration: none;
+      font-size: 0.875rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .support-link:hover {
+      background: rgba(156, 163, 175, 0.1);
+      color: #d1d5db;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+
+    .logout-btn:hover {
+      background: #c82333;
+      transform: translateY(-1px);
+    }
+
+    /* ✅ AJUSTAR CONTENIDO PRINCIPAL */
     .main-content {
       flex: 1;
+      margin-left: 280px;
       display: flex;
       flex-direction: column;
     }
@@ -62,6 +162,7 @@
 
     .top-bar span {
       margin-right: 12px;
+      color: #d1d5db;
     }
 
     .avatar {
@@ -70,6 +171,11 @@
       height: 32px;
       border-radius: 50%;
       overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
     }
 
     .avatar img {
@@ -86,45 +192,127 @@
 
     iframe {
       width: 100%;
-      height: calc(100vh - 100px);
+      height: calc(100vh - 120px);
       border: none;
       border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    .logout-btn {
-      background: #dc3545;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-left: 16px;
+    /* ✅ RESPONSIVE */
+    @media (max-width: 1023px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      
+      .sidebar.show {
+        transform: translateX(0);
+      }
+      
+      .main-content {
+        margin-left: 0;
+      }
+      
+      .mobile-menu-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1000;
+        background: #30a046;
+        border: none;
+        border-radius: 8px;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      }
+      
+      .mobile-menu-btn:hover {
+        background: #268a3a;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .mobile-menu-btn {
+        display: none;
+      }
     }
   </style>
 </head>
-<body>
-  <aside class="sidebar">
-    <div>
-      <h2>Mawi</h2>
-      <nav>
-        <a href="#" class="active">Inicio</a>
-        <a href="#">Número de Biomos</a>
-        <a href="#">Número de EcoRangers</a>
-        <a href="#">Número de Anteproyectos</a>
-        <a href="#">Conexión SFDC</a>
-        <a href="#">Informes, Métricas y Análisis</a>
-        <a href="#">Crear EcoRanger</a>
-        <a href="#">Ver EcoRanger</a>
-      </nav>
+<body data-page="dashboard">
+  <!-- ✅ BOTÓN PARA MÓVIL -->
+  <button class="mobile-menu-btn" onclick="toggleSidebar()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+
+  <!-- ✅ NUEVA SIDEBAR INTEGRADA -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">M</div>
+        <span class="sidebar-text">MAWI Admin</span>
+      </div>
     </div>
-    <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+
+    <nav class="sidebar-nav">
+      <a href="indexAdmin.html" class="sidebar-item active" data-page="dashboard">
+        <span class="sidebar-icon">🏠</span>
+        <span class="sidebar-text">Dashboard</span>
+      </a>
+      <a href="biomonitoreo.html" class="sidebar-item" data-page="biomonitoreo">
+        <span class="sidebar-icon">🌿</span>
+        <span class="sidebar-text">Biomonitoreo</span>
+      </a>
+      <a href="ecorangers.html" class="sidebar-item" data-page="ecorangers">
+        <span class="sidebar-icon">🦅</span>
+        <span class="sidebar-text">EcoRangers</span>
+      </a>
+      <a href="anteproyectos.html" class="sidebar-item" data-page="anteproyectos">
+        <span class="sidebar-icon">📋</span>
+        <span class="sidebar-text">Anteproyectos</span>
+      </a>
+      <a href="conexion-sfdc.html" class="sidebar-item" data-page="conexion">
+        <span class="sidebar-icon">🔗</span>
+        <span class="sidebar-text">Conexión SFDC</span>
+      </a>
+      <a href="reportes.html" class="sidebar-item" data-page="reportes">
+        <span class="sidebar-icon">📊</span>
+        <span class="sidebar-text">Informes y Métricas</span>
+      </a>
+      <a href="crear-ecoranger.html" class="sidebar-item" data-page="crear-ecoranger">
+        <span class="sidebar-icon">➕</span>
+        <span class="sidebar-text">Crear EcoRanger</span>
+      </a>
+      <a href="ver-ecorangers.html" class="sidebar-item" data-page="ver-ecorangers">
+        <span class="sidebar-icon">👥</span>
+        <span class="sidebar-text">Ver EcoRangers</span>
+      </a>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a href="#" class="support-link">
+        <span class="sidebar-icon">💬</span>
+        <span class="sidebar-text">Contacta con el soporte</span>
+      </a>
+      <button class="logout-btn" onclick="logout()">
+        <span>🚪</span> Cerrar Sesión
+      </button>
+    </div>
   </aside>
 
   <div class="main-content">
     <div class="top-bar">
       <span>Administrador</span>
-      <div class="avatar">
-        <img src="avatar-placeholder.svg" alt="Admin" />
+      <div class="avatar" id="userAvatar">
+        A
       </div>
     </div>
 
@@ -137,11 +325,69 @@
   </div>
 
   <script>
+    // ✅ FUNCIÓN PARA TOGGLE DE SIDEBAR EN MÓVIL
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('show');
+    }
+
+    // ✅ FUNCIÓN PARA MARCAR ELEMENTO ACTIVO
+    function setActiveMenuItem() {
+      const currentPage = document.body.getAttribute('data-page');
+      if (!currentPage) return;
+
+      // Remover clase active de todos los elementos
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.classList.remove('active');
+      });
+
+      // Agregar clase active al elemento correspondiente
+      const activeItem = document.querySelector(`.sidebar-item[data-page="${currentPage}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+    }
+
+    // ✅ FUNCIÓN DE LOGOUT
     function logout() {
       localStorage.removeItem('token');
       localStorage.removeItem('userRole');
+      localStorage.removeItem('userData');
       window.location.href = 'login.html';
     }
+
+    // ✅ CERRAR SIDEBAR AL HACER CLIC FUERA EN MÓVIL
+    document.addEventListener('click', function(e) {
+      if (window.innerWidth < 1024) {
+        const sidebar = document.getElementById('sidebar');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        
+        if (sidebar.classList.contains('show') && 
+            !sidebar.contains(e.target) && 
+            !menuBtn.contains(e.target)) {
+          sidebar.classList.remove('show');
+        }
+      }
+    });
+
+    // ✅ INICIALIZACIÓN
+    document.addEventListener('DOMContentLoaded', function() {
+      setActiveMenuItem();
+      
+      // Configurar avatar si hay datos de usuario
+      const userData = localStorage.getItem('userData');
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          const avatar = document.getElementById('userAvatar');
+          if (user.name && avatar) {
+            avatar.textContent = user.name.charAt(0).toUpperCase();
+          }
+        } catch (e) {
+          console.warn('Error parsing user data:', e);
+        }
+      }
+    });
   </script>
 </body>
 </html>

@@ -495,7 +495,30 @@ async function getAnteproyectoById(idAnteproyecto) {
         return new dataSource.QueryResult(false, [], 0, 0, err.message);
     }
 }
-
+/**
+ * @param {*} user
+ */
+async function updatePassword(user)
+{
+    try
+    {
+        let qResult
+        let query = "UPDATE usuario SET password = ? WHERE idUsuario = ?";
+        const salt = hashService.getSalt();
+        const hash = await hashService.encryptPassword(user.password, salt);
+        const hash_password = salt + hash;
+        let params = [
+            hash_password,
+            user.idUsuario
+        ];
+        qResult = await dataSource.updateData(query, params);
+    }
+    catch(err)
+    {
+        qResult = new DataSource = QueryResult(false, [], 0, 0, err.message);
+    }
+    return qResult;
+}
 // Exportar funciones
 // ✅ ACTUALIZAR: Exportar todas las funciones
 module.exports = {
@@ -514,5 +537,6 @@ module.exports = {
     getAnteproyectosAbiertos,
     getAnteproyectosCerrados,
     getAnteproyectoWithBiomos,
-    getAnteproyectoById
+    getAnteproyectoById,
+    updatePassword
 }
